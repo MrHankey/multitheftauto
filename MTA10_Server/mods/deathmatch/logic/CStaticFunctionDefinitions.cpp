@@ -1508,9 +1508,9 @@ bool CStaticFunctionDefinitions::SetPlayerName ( CElement* pElement, const char*
                         // Check that it doesn't already exist, or if it matches our current nick case-independantly (means we changed to the same nick but in a different case)
                         if ( ( szNick && stricmp ( szNick, szName ) == 0 ) || m_pPlayerManager->Get ( szName ) == NULL )
                         {
-						    // Call the event
+                            // Call the event
                             CLuaArguments Arguments;
-							Arguments.PushString ( pClient->GetNick () );
+                            Arguments.PushString ( szNick );
                             Arguments.PushString ( szName );
                             if ( pPlayer->CallEvent ( "onPlayerChangeNick", Arguments ) ) {
                                 // Tell the console
