@@ -1508,18 +1508,24 @@ bool CStaticFunctionDefinitions::SetPlayerName ( CElement* pElement, const char*
                         // Check that it doesn't already exist, or if it matches our current nick case-independantly (means we changed to the same nick but in a different case)
                         if ( ( szNick && stricmp ( szNick, szName ) == 0 ) || m_pPlayerManager->Get ( szName ) == NULL )
                         {
-                            // Tell the console
-                            CLogger::LogPrintf ( "NICK: %s is now known as %s\n", szNick, szName );
+						    // Call the event
+                            CLuaArguments Arguments;
+							Arguments.PushString ( pClient->GetNick () );
+                            Arguments.PushString ( szName );
+                            if ( pPlayer->CallEvent ( "onPlayerChangeNick", Arguments ) ) {
+                                // Tell the console
+                                CLogger::LogPrintf ( "NICK: %s is now known as %s\n", szNick, szName );
 
-                            // Change the nick
-                            pPlayer->SetNick ( szName );
+                                // Change the nick
+                                pPlayer->SetNick ( szName );
 
-                            // Tell all ingame players about the nick change
-                            CPlayerChangeNickPacket Packet ( szName );
-                            Packet.SetSourceElement ( pPlayer );
-                            m_pPlayerManager->BroadcastOnlyJoined ( Packet );
+                                // Tell all ingame players about the nick change
+                                CPlayerChangeNickPacket Packet ( szName );
+                                Packet.SetSourceElement ( pPlayer );
+                                m_pPlayerManager->BroadcastOnlyJoined ( Packet );
 
-                            return true;
+                                return true;
+                            }
                         }
                     }
                 }
