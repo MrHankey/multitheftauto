@@ -1512,20 +1512,19 @@ bool CStaticFunctionDefinitions::SetPlayerName ( CElement* pElement, const char*
                             CLuaArguments Arguments;
                             Arguments.PushString ( szNick );
                             Arguments.PushString ( szName );
-                            if ( pPlayer->CallEvent ( "onPlayerChangeNick", Arguments ) ) {
-                                // Tell the console
-                                CLogger::LogPrintf ( "NICK: %s is now known as %s\n", szNick, szName );
+                            pPlayer->CallEvent ( "onPlayerChangeNick", Arguments );
+                            // Tell the console
+                            CLogger::LogPrintf ( "NICK: %s is now known as %s\n", szNick, szName );
 
-                                // Change the nick
-                                pPlayer->SetNick ( szName );
+                            // Change the nick
+                            pPlayer->SetNick ( szName );
 
-                                // Tell all ingame players about the nick change
-                                CPlayerChangeNickPacket Packet ( szName );
-                                Packet.SetSourceElement ( pPlayer );
-                                m_pPlayerManager->BroadcastOnlyJoined ( Packet );
+                            // Tell all ingame players about the nick change
+                            CPlayerChangeNickPacket Packet ( szName );
+                            Packet.SetSourceElement ( pPlayer );
+                            m_pPlayerManager->BroadcastOnlyJoined ( Packet );
 
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
