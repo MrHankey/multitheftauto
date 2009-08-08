@@ -2806,7 +2806,7 @@ void CClientVehicle::SetTargetPosition ( CVector& vecPosition, unsigned long ulD
             GetPosition ( m_interp.pos.vecOrigin );
         m_interp.pos.vecTarget = vecPosition;
 
-        unsigned long ulTime = CClientTime::GetTime ();
+       unsigned long ulTime = CClientTime::GetTime ();
         m_interp.pos.ulStartTime = ulTime;
         m_interp.pos.ulFinishTime = ulTime + ulDelay;
         m_interp.pos.bExtrapolateAfterInterpolation = bExtrapolateAfterInterpolation;
@@ -2889,6 +2889,15 @@ void CClientVehicle::UpdateTargetPosition ( void )
                                                 fAlpha,
                                                 m_interp.pos.vecTarget );
         }
+
+        // If the new position is close enough to the previous position, apply a filter to smooth the result
+        if ( ( vecPrevPos - vecNewPosition ).Length () < INTERPOLATION_WARP_THRESHOLD )
+        {
+            vecNewPosition = SharedUtil::Lerp ( vecPrevPos,
+                                                0.25f,
+                                                vecNewPosition );
+        }
+
         SetPosition ( vecNewPosition, false );
 
 #ifdef MTA_DEBUG
