@@ -989,8 +989,7 @@ void CKeyBinds::CallGTAControlBind ( CGTAControlBind* pBind, bool bState )
             return;
 
         // Don't allow custom track skips. Crashes for some reason.
-        if ( pBind->control->action == RADIO_USER_TRACK_SKIP )
-            return;
+        if ( pBind->control->action == RADIO_USER_TRACK_SKIP ) return;
 
         // Set this binds state
         pBind->bState = bState;
