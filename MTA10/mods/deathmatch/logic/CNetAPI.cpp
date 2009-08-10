@@ -204,9 +204,9 @@ void CNetAPI::AddInterpolation ( const CVector& vecPosition )
 {
     // Store our current position for interpolation purposes
     unsigned long ulCurrentTime = CClientTime::GetTime ();
-    m_Interpolator.Push ( vecPosition.fX, vecPosition.fY, vecPosition.fZ, ulCurrentTime );
+    m_Interpolator.Push ( vecPosition, ulCurrentTime );
     CVector vecTemp;
-    while ( m_Interpolator.GetOldestEntry ( vecTemp ) < ulCurrentTime - 2500 )
+    while ( m_Interpolator.GetOldestEntry ( &vecTemp ) < ulCurrentTime - 2500 )
     {
         m_Interpolator.Pop ();
     }
@@ -216,7 +216,7 @@ void CNetAPI::AddInterpolation ( const CVector& vecPosition )
 bool CNetAPI::GetInterpolation ( CVector& vecPosition, unsigned short usLatency )
 {
     unsigned long ulInterTime = CClientTime::GetTime () - usLatency;
-    return m_Interpolator.Evaluate ( ulInterTime, vecPosition );
+    return m_Interpolator.Evaluate ( ulInterTime, &vecPosition );
 }
 
 
