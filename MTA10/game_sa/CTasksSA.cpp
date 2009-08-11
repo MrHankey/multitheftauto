@@ -191,7 +191,7 @@ CTaskComplexDie* CTasksSA::CreateTaskComplexDie ( const eWeaponType eMeansOfDeat
 }
 
 
-CTaskSimpleStealthKill* CTasksSA::CreateTaskSimpleStealthKill ( bool bKiller, class CPed * pPed, const AnimationId animGroup )
+CTaskSimpleStealthKill* CTasksSA::CreateTaskSimpleStealthKill ( bool bKiller, class CPed * pPed, const AssocGroupId animGroup )
 {
     DEBUG_TRACE("CTaskSimpleStealthKill* CTasksSA::CreateTaskSimpleStealthKill ( bool bKiller, class CPed * pPed, const AnimationId anim )");
 

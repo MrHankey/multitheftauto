@@ -154,6 +154,9 @@ DWORD RETURN_CAnimManager_BlendAnimation =                  0x4D4617;
 #define HOOKPOS_CPed_GetWeaponSkill                         0x5e3b60
 DWORD RETURN_CPed_GetWeaponSkill =                          0x5E3B68;
 
+#define HOOKPOS_CTaskSimplePlayerOnFoot_MakeAbortable       0x68596F
+DWORD RETURN_CTaskSimplePlayerOnFoot_MakeAbortable =        0x685980;
+
 CPed* pContextSwitchedPed = 0;
 CVector vecCenterOfWorld;
 FLOAT fFalseHeading;
@@ -265,6 +268,7 @@ void HOOK_CEventHandler_ComputeKnockOffBikeResponse ();
 void HOOK_CAnimManager_AddAnimation ();
 void HOOK_CAnimManager_BlendAnimation ();
 void HOOK_CPed_GetWeaponSkill ();
+void HOOK_CTaskSimplePlayerOnFoot_MakeAbortable ();
 
 void vehicle_lights_init ();
 
@@ -376,6 +380,7 @@ void CMultiplayerSA::InitHooks()
     HookInstall(HOOKPOS_CAnimManager_AddAnimation, (DWORD)HOOK_CAnimManager_AddAnimation, 10 ); 
     HookInstall(HOOKPOS_CAnimManager_BlendAnimation, (DWORD)HOOK_CAnimManager_BlendAnimation, 7 );
     HookInstall(HOOKPOS_CPed_GetWeaponSkill, (DWORD)HOOK_CPed_GetWeaponSkill, 8 );
+    HookInstall(HOOKPOS_CTaskSimplePlayerOnFoot_MakeAbortable, (DWORD)HOOK_CTaskSimplePlayerOnFoot_MakeAbortable, 11 );
     
     HookInstallCall ( CALL_CBike_ProcessRiderAnims, (DWORD)HOOK_CBike_ProcessRiderAnims );
     HookInstallCall ( CALL_Render3DStuff, (DWORD)HOOK_Render3DStuff );
@@ -4074,6 +4079,46 @@ void _declspec(naked) HOOK_CPed_GetWeaponSkill ()
             mov     esi, [esp+8]
             cmp     esi, 16h
             jmp     RETURN_CPed_GetWeaponSkill
+        }
+    }
+}
+
+CPedSAInterface * pOnFootPed;
+DWORD FUNC_CCamera_ClearPlayerWeaponMode = 0x50AB10;
+DWORD FUNC_CWeaponEffects_ClearCrossHair = 0x742C60;
+void _declspec(naked) HOOK_CTaskSimplePlayerOnFoot_MakeAbortable ()
+{
+    /* Replaces:
+        call    CCamera_ClearPlayerWeaponMode
+        mov     eax, [esi+598h]
+        push    eax
+        call    CWeaponEffects_ClearCrossHair
+    */
+    _asm
+    {
+        mov     pOnFootPed, esi
+        pushad
+    }
+    if ( IsLocalPlayer ( pOnFootPed ) )
+    {
+        _asm
+        {
+            popad
+            call    FUNC_CCamera_ClearPlayerWeaponMode
+            mov     eax, [esi+598h]
+            push    eax
+            call    FUNC_CWeaponEffects_ClearCrossHair
+            jmp     RETURN_CTaskSimplePlayerOnFoot_MakeAbortable
+        }
+    }
+    else
+    {
+        _asm
+        {
+            popad
+            mov     eax, [esi+598h]
+            push    eax
+            jmp     RETURN_CTaskSimplePlayerOnFoot_MakeAbortable
         }
     }
 }

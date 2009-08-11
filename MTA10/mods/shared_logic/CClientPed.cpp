@@ -1574,7 +1574,7 @@ void CClientPed::Kill ( eWeaponType weaponType, unsigned char ucBodypart, bool b
 
         if ( bStealth )
         {
-            pTask = g_pGame->GetTasks ()->CreateTaskSimpleStealthKill ( false, m_pPlayerPed, 87 );
+            pTask = g_pGame->GetTasks ()->CreateTaskSimpleStealthKill ( false, m_pPlayerPed, ANIM_GROUP_STEALTH_KN );
             if ( pTask )
             {
                 pTask->SetAsPedTask ( m_pPlayerPed, TASK_PRIORITY_PRIMARY );
@@ -1609,7 +1609,7 @@ void CClientPed::StealthKill ( CClientPed * pPed )
         CPlayerPed * pPlayerPed = pPed->GetGamePlayer ();
         if ( pPlayerPed )
         {
-            CTask * pTask = g_pGame->GetTasks ()->CreateTaskSimpleStealthKill ( true, pPlayerPed, 87 );
+            CTask * pTask = g_pGame->GetTasks ()->CreateTaskSimpleStealthKill ( true, pPlayerPed, ANIM_GROUP_STEALTH_KN );
             if ( pTask )
             {
                 pTask->SetAsPedTask ( m_pPlayerPed, TASK_PRIORITY_PRIMARY );

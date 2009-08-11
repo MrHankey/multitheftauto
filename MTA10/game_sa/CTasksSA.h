@@ -64,7 +64,7 @@ public:
     CTaskSimpleRunNamedAnim*            CreateTaskSimpleRunNamedAnim            ( const char* pAnimName, const char* pAnimGroupName, const int flags, const float fBlendDelta, const int iTime = -1, const bool bDontInterrupt = false, const bool bRunInSequence = false, const bool bOffsetPed = false, const bool bHoldLastFrame = false );
 
     CTaskComplexDie*                    CreateTaskComplexDie                    ( const eWeaponType eMeansOfDeath=WEAPONTYPE_UNARMED, const AssocGroupId animGroup=0/*ANIM_STD_PED*/, const AnimationId anim=0/*ANIM_STD_KO_FRONT*/, const float fBlendDelta=4.0f, const float fAnimSpeed=0.0f, const bool bBeingKilledByStealth=false, const bool bFallingToDeath=false, const int iFallToDeathDir=0, const bool bFallToDeathOverRailing=false );
-    CTaskSimpleStealthKill*             CreateTaskSimpleStealthKill             ( bool bAttacker, class CPed * pPed, const AnimationId anim );
+    CTaskSimpleStealthKill*             CreateTaskSimpleStealthKill             ( bool bAttacker, class CPed * pPed, const AssocGroupId animGroup );
 
     CTaskComplexSunbathe*               CreateTaskComplexSunbathe               ( class CObject* pTowel, const bool bStartStanding );
 
