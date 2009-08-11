@@ -16,7 +16,7 @@
 
 #include "Utils.h"
 
-template < class T, unsigned int uiMaxElements = 256 >
+template < class T, unsigned int uiMaxElements = 64 >
 class CInterpolator
 {
 protected:
@@ -53,8 +53,10 @@ public:
     void                Pop                 ( )
     {
         if ( Size () > 0 )
+        {
             m_uiStartIdx = Index ( m_uiStartIdx + 1 );
-        --m_uiSize;
+            --m_uiSize;
+        }
     }
 
     bool                Evaluate            ( unsigned long ulTime, T* output )
