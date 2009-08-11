@@ -30,6 +30,7 @@ public:
 
     bool                    ProcessMessage              ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 protected:
+    bool                    ProcessCharacter            ( WPARAM wChar );
     bool                    ProcessKeyStroke            ( const SBindableKey * pKey, bool bState );
 public:
 
@@ -108,6 +109,8 @@ public:
     bool                    IsKey                       ( const char* szKey );
     char*                   GetKeyFromGTARelative       ( int iGTAKey );
     const SBindableKey*     GetBindableFromMessage      ( UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bState );
+    inline void             SetKeyStrokeHandler         ( KeyStrokeHandler Handler )    { m_KeyStrokeHandler = Handler; }
+    inline void             SetCharacterKeyHandler      ( CharacterKeyHandler Handler ) { m_CharacterKeyHandler = Handler; }
 
     // Control/action funcs
     char*                   GetControlFromAction        ( eControllerAction action );
@@ -152,6 +155,8 @@ private:
     bool                        m_bInVehicle;
     CCommandBind*               m_pChatBoxBind;
     bool                        m_bProcessingKeyStroke;
+    KeyStrokeHandler            m_KeyStrokeHandler;
+    CharacterKeyHandler         m_CharacterKeyHandler;
 };
 
 #endif

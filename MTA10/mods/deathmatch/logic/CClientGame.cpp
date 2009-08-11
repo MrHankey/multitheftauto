@@ -211,7 +211,7 @@ CClientGame::CClientGame ( bool bLocalPlay )
     m_dwFrameTimeSlice = 0;
     m_dwLastFrameTick = 0;
 
-    // Register the message and the net packet handler
+    // Register our handlers
     g_pMultiplayer->SetPreWeaponFireHandler ( CClientGame::PreWeaponFire );
     g_pMultiplayer->SetPostWeaponFireHandler ( CClientGame::PostWeaponFire );
     g_pMultiplayer->SetExplosionHandler ( CClientExplosionManager::Hook_StaticExplosionCreation );
@@ -230,6 +230,8 @@ CClientGame::CClientGame ( bool bLocalPlay )
     g_pMultiplayer->SetPreHudDrawHandler ( CClientGame::StaticPreHudDrawHandler );
     m_pProjectileManager->SetInitiateHandler ( CClientGame::StaticProjectileInitiateHandler );
     g_pCore->SetMessageProcessor ( CClientGame::StaticProcessMessage );
+    g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( CClientGame::StaticKeyStrokeHandler );
+    g_pCore->GetKeyBinds ()->SetCharacterKeyHandler ( CClientGame::StaticCharacterKeyHandler );
     g_pNet->RegisterPacketHandler ( CClientGame::StaticProcessPacket );
 
     m_pLuaManager = new CLuaManager ( this );
@@ -363,6 +365,8 @@ CClientGame::~CClientGame ( void )
     g_pMultiplayer->SetPreHudDrawHandler ( NULL );
     m_pProjectileManager->SetInitiateHandler ( NULL );
     g_pCore->SetMessageProcessor ( NULL );
+    g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( NULL );
+    g_pCore->GetKeyBinds ()->SetCharacterKeyHandler ( NULL );
     g_pNet->StopNetwork ();
     g_pNet->RegisterPacketHandler ( NULL );
     CKeyBindsInterface * pKeyBinds = g_pCore->GetKeyBinds ();
@@ -1952,6 +1956,53 @@ void CClientGame::SetAllDimensions ( unsigned short usDimension )
 }
 
 
+void CClientGame::StaticKeyStrokeHandler ( const SBindableKey * pKey, bool bState )
+{
+    g_pClientGame->KeyStrokeHandler ( pKey, bState );
+}
+
+
+void CClientGame::KeyStrokeHandler ( const SBindableKey * pKey, bool bState )
+{
+    // Do we have a root yet?
+    if ( m_pRootEntity )
+    {
+        // Call our key-stroke event
+        CLuaArguments Arguments;
+        Arguments.PushString ( pKey->szKey );
+        Arguments.PushBoolean ( bState );
+        m_pRootEntity->CallEvent ( "onClientKey", Arguments, false );
+    }
+}
+
+
+bool CClientGame::StaticCharacterKeyHandler ( WPARAM wChar )
+{
+    return g_pClientGame->CharacterKeyHandler ( wChar );
+}
+
+
+bool CClientGame::CharacterKeyHandler ( WPARAM wChar )
+{
+    // Do we have a root yet?
+    if ( m_pRootEntity )
+    {
+        // Safe character?
+        if ( wChar >= 32 && wChar <= 126 )
+        {
+            char szCharacter [ 2 ] = { wChar, 0 };
+
+            // Call our character event
+            CLuaArguments Arguments;
+            Arguments.PushString ( szCharacter );
+            m_pRootEntity->CallEvent ( "onClientCharacter", Arguments, false );
+        }
+    }
+
+    return false;
+}
+
+
 void CClientGame::StaticProcessClientKeyBind ( CKeyFunctionBind* pBind )
 {
     g_pClientGame->ProcessClientKeyBind ( pBind );
@@ -2253,7 +2304,6 @@ void CClientGame::SetMoney ( long lMoney )
 
 void CClientGame::AddBuiltInEvents ( void )
 {
-
     // Resource events
     m_Events.AddEvent ( "onClientResourceStart", "resource", NULL, false );
     m_Events.AddEvent ( "onClientResourceStop", "resource", NULL, false );
@@ -2309,6 +2359,7 @@ void CClientGame::AddBuiltInEvents ( void )
     //m_Events.AddEvent ( "onClientGUIKeyDown", "element", NULL, false );
     m_Events.AddEvent ( "onClientGUITabSwitched", "element", NULL, false );
 
+    // Input events
     m_Events.AddEvent ( "onClientDoubleClick", "button, state, screenX, screenY, worldX, worldY, worldZ, element", NULL, false );
     m_Events.AddEvent ( "onClientMouseMove", "screenX, screenY", NULL, false );
     m_Events.AddEvent ( "onClientMouseEnter", "screenX, screenY", NULL, false );
@@ -2316,6 +2367,8 @@ void CClientGame::AddBuiltInEvents ( void )
     m_Events.AddEvent ( "onClientMouseWheel", "", NULL, false );
     m_Events.AddEvent ( "onClientGUIMove", "", NULL, false );
     m_Events.AddEvent ( "onClientGUISize", "", NULL, false );
+    m_Events.AddEvent ( "onClientKey", "key, state", NULL, false );
+    m_Events.AddEvent ( "onClientCharacter", "character", NULL, false );
 
     // Console events
     m_Events.AddEvent ( "onClientConsole", "text", NULL, false );

@@ -292,12 +292,16 @@ public:
 
     void                                SetAllDimensions                ( unsigned short usDimension );
 
+    static void                         StaticKeyStrokeHandler          ( const SBindableKey * pKey, bool bState );
+    void                                KeyStrokeHandler                ( const SBindableKey * pKey, bool bState );
+    static bool                         StaticCharacterKeyHandler       ( WPARAM wChar );
+    bool                                CharacterKeyHandler             ( WPARAM wChar );
+
     static void                         StaticProcessClientKeyBind      ( CKeyFunctionBind* pBind );
     void                                ProcessClientKeyBind            ( CKeyFunctionBind* pBind );
     static void                         StaticProcessClientControlBind  ( CControlFunctionBind* pBind );
     void                                ProcessClientControlBind        ( CControlFunctionBind* pBind );
   
-
     static void                         StaticProcessServerKeyBind      ( CKeyFunctionBind* pBind );
     void                                ProcessServerKeyBind            ( CKeyFunctionBind* pBind );
     static void                         StaticProcessServerControlBind  ( CControlFunctionBind* pBind );
