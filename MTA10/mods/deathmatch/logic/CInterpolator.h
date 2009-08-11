@@ -14,16 +14,12 @@
 
 #pragma once
 
-#include <list>
 #include "Utils.h"
 
-
-// the logic may seem backwards in some places, because i'm inserting at the front, so the list is 
-// reversed to what you'd think, like a stack
-template < class T >
+template < class T, unsigned int uiMaxElements = 256 >
 class CInterpolator
 {
-private:
+protected:
     struct VecMap
     {
         unsigned long   m_ulTime;
@@ -33,85 +29,117 @@ private:
 public:
     CInterpolator       ( )
     {
+        Clear ();
     }
 
     ~CInterpolator      ( )
     {
-        m_listNodes.clear ();
+        Clear ();
     }
 
     void                Push                ( const T& newData, unsigned long ulTime )
     {
-        m_listNodes.push_front ( VecMap () );
-        VecMap& map = m_listNodes.front ();
-        map.data = newData;
-        map.m_ulTime = ulTime;
-    }
+        unsigned int uiIndex = Index ( m_uiEndIdx + 1 );
+        m_nodes [ m_uiEndIdx ].data = newData;
+        m_nodes [ m_uiEndIdx ].m_ulTime = ulTime;
+        m_uiEndIdx = uiIndex;
 
-    bool                Evaluate            ( unsigned long ulTime, T* output )
-    {
-        if ( m_listNodes.empty () )
-            return false;
-
-	    // Time later than newest point, so use the newest point
-        VecMap& front = m_listNodes.front ();
-        if ( ulTime > front.m_ulTime )
-        {
-            *output = front.data;
-            return true;
-        }
-
-    	// Find the two points either side and interpolate
-        std::list < VecMap >::const_iterator iterPrev = m_listNodes.begin ();
-        std::list < VecMap >::const_iterator iter = m_listNodes.begin ();
-        for ( ++iter; iter != m_listNodes.end (); ++iter )
-        {
-            const VecMap& currentMap = *iter;
-            if ( ulTime > currentMap.m_ulTime )
-                return Eval ( *iterPrev, currentMap, ulTime, output );
-            iterPrev = iter;
-        }
-
-	    // Time earlier than oldest point, so use the oldest point
-        VecMap& back = m_listNodes.back ();
-        *output = back.data;
-        return true;
+        if ( Size () < uiMaxElements )
+            ++m_uiSize;
+        else
+            m_uiStartIdx = Index ( m_uiStartIdx + 1 );
     }
 
     void                Pop                 ( )
     {
-        if ( !m_listNodes.empty () )
-            m_listNodes.pop_back ();
+        if ( Size () > 0 )
+            m_uiStartIdx = Index ( m_uiStartIdx + 1 );
+        --m_uiSize;
+    }
+
+    bool                Evaluate            ( unsigned long ulTime, T* output )
+    {
+        if ( Size () == 0 )
+            return false;
+
+	    // Time later than newest point, so use the newest point
+        if ( ulTime >= m_nodes [ Index ( m_uiEndIdx - 1 ) ].m_ulTime )
+        {
+            *output = m_nodes [ Index ( m_uiEndIdx - 1 ) ].data;
+        }
+        // Time earlier than oldest point, so use the oldest point
+        else if ( ulTime <= m_nodes [ m_uiStartIdx ].m_ulTime )
+        {
+            *output = m_nodes [ m_uiStartIdx ].data;
+        }
+        else
+        {
+        	// Find the two points either side and interpolate
+            unsigned int uiCurrent = Index ( m_uiStartIdx + 1 );
+            for ( ; uiCurrent != m_uiEndIdx; uiCurrent = Index ( uiCurrent + 1 ) )
+            {
+                if ( ulTime < m_nodes [ uiCurrent ].m_ulTime )
+                    return Eval ( m_nodes [ Index ( uiCurrent - 1 ) ], m_nodes [ uiCurrent ], ulTime, output );
+            }
+        }
+
+        return true;
     }
 
     unsigned long       GetOldestEntry      ( T* output )
     {
-        VecMap& map = m_listNodes.back ();
-        *output = map.data;
-        return map.m_ulTime;
+        if ( Size () > 0 )
+        {
+            *output = m_nodes [ m_uiStartIdx ].data;
+            return m_nodes [ m_uiStartIdx ].m_ulTime;
+        }
+        else
+            return 0UL;
     }
 
-private:
-    bool                Eval                ( const VecMap& Left,
+    unsigned int        Size                ( ) const
+    {
+        return m_uiSize;
+    }
+
+    void                Clear               ( )
+    {
+        m_uiStartIdx = 0;
+        m_uiEndIdx = 0;
+        m_uiSize = 0;
+    }
+
+protected:
+    virtual bool        Eval                ( const VecMap& Left,
                                               const VecMap& Right,
                                               unsigned long ulTimeEval,
                                               T* output )
     {
         // Check for being the same or maybe wrap around
-        if ( Right.m_ulTime >= Left.m_ulTime )
+        if ( Left.m_ulTime >= Right.m_ulTime )
         {
-            *output = Left.data;
+            *output = Right.data;
             return true;
         }
 
         // Find the relative position of ulTimeEval between R.m_ulTimeStamp and L.m_ulTimeStamp
-        float fAlpha = Unlerp ( Right.m_ulTime, ulTimeEval, Left.m_ulTime );
+        float fAlpha = Unlerp ( Left.m_ulTime, ulTimeEval, Right.m_ulTime );
 
         // Lerp between Right.pos and Left.pos
-        *output = Lerp ( Right.data, fAlpha, Left.data );
+        *output = Lerp ( Left.data, fAlpha, Right.data );
         return true;
     }
 
 private:
-    std::list < VecMap >  m_listNodes;
+    unsigned int        Index               ( unsigned int uiIndex ) const
+    {
+        return ( uiIndex % uiMaxElements );
+    }
+
+
+private:
+    VecMap          m_nodes [ uiMaxElements ];
+    unsigned int    m_uiStartIdx;
+    unsigned int    m_uiEndIdx;
+    unsigned int    m_uiSize;
 };
