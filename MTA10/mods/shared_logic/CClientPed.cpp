@@ -3711,11 +3711,11 @@ bool CClientPed::IsClimbing ( void )
 }
 
 
-void CClientPed::GetShotData ( CVector * pvecOrigin, CVector * pvecTarget, CVector * pvecGunMuzzle, CVector * pvecFireOffset, float* fAimX, float* fAimY )
+bool CClientPed::GetShotData ( CVector * pvecOrigin, CVector * pvecTarget, CVector * pvecGunMuzzle, CVector * pvecFireOffset, float* fAimX, float* fAimY )
 {
     CWeapon* pWeapon = GetWeapon ( GetCurrentWeaponSlot () );
     if ( !pWeapon )
-        return;
+        return false;
 
     unsigned char ucWeaponType = pWeapon->GetType ();
     CClientVehicle* pVehicle = GetRealOccupiedVehicle ();
@@ -3815,6 +3815,7 @@ void CClientPed::GetShotData ( CVector * pvecOrigin, CVector * pvecTarget, CVect
     if ( pvecGunMuzzle ) *pvecGunMuzzle = vecGunMuzzle;    
     if ( fAimX ) *fAimX = m_shotSyncData->m_fArmDirectionX;
     if ( fAimY ) *fAimY = m_shotSyncData->m_fArmDirectionY;
+    return true;
 }
 
 

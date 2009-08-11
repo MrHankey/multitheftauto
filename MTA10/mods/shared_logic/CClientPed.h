@@ -289,7 +289,7 @@ public:
 
     inline CTaskManager*        GetTaskManager              ( void ) { return m_pTaskManager; }
 
-    void                        GetShotData                 ( CVector * pvecOrigin, CVector * pvecTarget = NULL, CVector * pvecGunMuzzle = NULL, CVector * pvecFireOffset = NULL, float* fAimX = NULL, float* fAimY = NULL );
+    bool                        GetShotData                 ( CVector * pvecOrigin, CVector * pvecTarget = NULL, CVector * pvecGunMuzzle = NULL, CVector * pvecFireOffset = NULL, float* fAimX = NULL, float* fAimY = NULL );
 
     eFightingStyle              GetFightingStyle            ( void );
     void                        SetFightingStyle            ( eFightingStyle style );
