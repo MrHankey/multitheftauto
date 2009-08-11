@@ -1987,16 +1987,13 @@ bool CClientGame::CharacterKeyHandler ( WPARAM wChar )
     // Do we have a root yet?
     if ( m_pRootEntity )
     {
-        // Safe character?
-        if ( wChar >= 32 && wChar <= 126 )
-        {
-            char szCharacter [ 2 ] = { wChar, 0 };
+        char szCharacter [ 2 ] = { wChar, 0 };
 
-            // Call our character event
-            CLuaArguments Arguments;
-            Arguments.PushString ( szCharacter );
-            m_pRootEntity->CallEvent ( "onClientCharacter", Arguments, false );
-        }
+        // Call our character event
+        CLuaArguments Arguments;
+        Arguments.PushString ( szCharacter );
+        Arguments.PushNumber ( wChar );
+        m_pRootEntity->CallEvent ( "onClientCharacter", Arguments, false );
     }
 
     return false;
