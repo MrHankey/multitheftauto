@@ -47,6 +47,7 @@
 #define     VAR_ExtraBunnyhopEnabled        0x969161 // ##SA##
 #define     VAR_HoveringCarsEnabled         0x969152 // ##SA##
 #define     VAR_ExtraJumpEnabled            0x96916C // ##SA##
+#define     VAR_CWeapon_TakingPhoto         0xC8A7C1
 
 #define CHEAT_HOVERINGCARS   "hovercars"
 #define CHEAT_FLYINGCARS     "aircars"
@@ -160,6 +161,8 @@ public:
     bool                    IsCheatEnabled          ( const char* szCheatName );
     bool                    SetCheatEnabled         ( const char* szCheatName, bool bEnable );
     void                    ResetCheats             ();
+
+    bool                    IsTakingPhoto           ( void );
 
 private:
 	CPools					* m_pPools;

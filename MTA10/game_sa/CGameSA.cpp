@@ -516,3 +516,9 @@ void CGameSA::ResetCheats ()
     for ( it = m_Cheats.begin (); it != m_Cheats.end (); it++ )
         *(it->second) = 0;
 }
+
+
+bool CGameSA::IsTakingPhoto ( void )
+{
+    return * ( bool * ) ( VAR_CWeapon_TakingPhoto );
+}

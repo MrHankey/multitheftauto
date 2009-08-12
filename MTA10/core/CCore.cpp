@@ -777,6 +777,13 @@ void CCore::SetCenterCursor ( bool bEnabled )
 		m_pSetCursorPosHook->DisableSetCursorPos ();
 }
 
+bool CCore::CanDrawGUI ( void )
+{
+    // Are we taking a photo with the camera?
+    if ( m_pGame && m_pGame->IsTakingPhoto () ) return false;
+    return true;
+}
+
 void CCore::CreateGame ( )
 {
     // Create function pointer type and variable.
