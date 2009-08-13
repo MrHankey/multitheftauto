@@ -32,9 +32,10 @@ public:
 
     eWeaponType             m_LastWeaponType;
     CClientEntity *         m_pLastCreator;
+    bool                    m_bCreatingExplosion;
 
 private:
-    CClientManager *        m_pManager;
+    CClientManager *        m_pManager;    
 };
 
 #endif

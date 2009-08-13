@@ -3380,6 +3380,8 @@ bool CClientGame::DamageHandler ( CPed* pDamagePed, CEventDamage * pEvent )
 {
     // CEventDamage::AffectsPed: This is/can be called more than once for each bit of damage (and may not actually take any more health (even if we return true))
     
+    CClientExplosionManager * pExplosionManager = m_pManager->GetExplosionManager ();
+        
     // Grab some data from the event
     CEntity * pInflictor = pEvent->GetInflictingEntity ();
     eWeaponType weaponUsed = pEvent->GetWeaponUsed ();
@@ -3404,15 +3406,14 @@ bool CClientGame::DamageHandler ( CPed* pDamagePed, CEventDamage * pEvent )
     if ( pInflictor ) pInflictingEntity = m_pManager->FindEntity ( pInflictor );
 
     // If the damage was caused by an explosion
-    if ( weaponUsed == WEAPONTYPE_EXPLOSION )
-    {
-        CClientEntity * pLastExplosionCreator = m_pManager->GetExplosionManager ()->m_pLastCreator;
-        
-        // If we don't have an inflictor, look for the last explosion creator
-        if ( !pInflictor && pLastExplosionCreator ) pInflictingEntity = pLastExplosionCreator;
-        
+    if ( weaponUsed == WEAPONTYPE_EXPLOSION || pExplosionManager->m_bCreatingExplosion )
+    {       
         // Change the weapon used to whatever created the explosion
-        weaponUsed = m_pManager->GetExplosionManager ()->m_LastWeaponType;
+        weaponUsed = pExplosionManager->m_LastWeaponType;
+
+        // Look for the last explosion creator
+        CClientEntity * pLastExplosionCreator = pExplosionManager->m_pLastCreator;        
+        if ( pLastExplosionCreator && ( !pInflictor || pExplosionManager->m_bCreatingExplosion ) ) pInflictingEntity = pLastExplosionCreator;
     }
 
     // Do we have a damaged ped?
