@@ -1306,6 +1306,12 @@ bool CStaticFunctionDefinitions::IsPedOnFire ( CClientPed & Ped, bool & bOnFire 
     return true;
 }
 
+bool CStaticFunctionDefinitions::IsPedInVehicle ( CClientPed & Ped, bool & bInVehicle )
+{
+    bInVehicle = ( Ped.GetRealOccupiedVehicle () != NULL );
+    return true;
+}
+
 char* CStaticFunctionDefinitions::GetPedSimplestTask ( CClientPed& Ped )
 {
     CTaskManager* pTaskManager = Ped.GetTaskManager ();
