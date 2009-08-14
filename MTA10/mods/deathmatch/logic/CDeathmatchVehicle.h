@@ -28,6 +28,15 @@ public:
     bool                            SyncDamageModel                 ( void );
     void                            ResetDamageModelSync            ( void );
 
+    // Overloaded
+    void                            SetAdjustablePropertyValue      ( unsigned short usValue );
+    void                            SetTurretRotation               ( float fHorizontal, float fVertical );
+    void                            SetLandingGearPosition          ( float fPosition );
+
+protected:
+    bool                            UseSmoothing                    ( void );
+    void                            StreamedInPulse                 ( void );
+
 private:
     class CUnoccupiedVehicleSync*   m_pUnoccupiedVehicleSync;
     bool                            m_bIsSyncing;
@@ -36,6 +45,10 @@ private:
     unsigned char                   m_ucLastWheelStates [MAX_WHEELS];
     unsigned char                   m_ucLastPanelStates [MAX_PANELS];
     unsigned char                   m_ucLastLightStates [MAX_LIGHTS];
+
+    CSmoothVar < unsigned short >   m_adjustableProperty;
+    CSmoothVar < float >            m_turretX, m_turretY;
+    CSmoothVar < float >            m_landingGear;
 };
 
 #endif

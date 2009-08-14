@@ -655,7 +655,7 @@ void CClientGame::SendVoiceData ( const unsigned char * pData, int len )
 
 
 void CClientGame::DoPulsePostFrame ( void )
-{
+{        
     #ifdef DEBUG_KEYSTATES
         // Get the controller state
         CControllerState cs;
@@ -2682,7 +2682,7 @@ void CClientGame::UpdateMimics ( void )
         }
 
         // Simulate lag (or not)
-        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 200 ) // TICK_RATE )
+        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 1000 ) // TICK_RATE )
         {
             m_ulLastMimicLag = CClientTime::GetTime ();
 
@@ -2839,6 +2839,10 @@ void CClientGame::UpdateMimics ( void )
 					pVehicle->GetMoveSpeed ( vecMoveSpeed );
                     pVehicle->GetTurnSpeed ( vecTurnSpeed );
                     fHealth = pVehicle->GetHealth ();
+                    unsigned short usAdjustable = pVehicle->GetAdjustablePropertyValue ();
+                    float turretX, turretY;
+                    pVehicle->GetTurretRotation ( turretX, turretY );
+                    float fLandingGear = pVehicle->GetLandingGearPosition ();
 
                     if ( pMimicVehicle && pMimicVehicle->GetModel () != uiModel )
                     {
@@ -2867,10 +2871,10 @@ void CClientGame::UpdateMimics ( void )
 
                     if ( m_bMimicLag )
                     {
-                        pMimicVehicle->SetTargetPosition ( vecPosition, TICK_RATE );
-                        pMimicVehicle->SetTargetRotation ( vecRotationDegrees, TICK_RATE );
+                        pMimicVehicle->SetTargetPosition ( vecPosition, TICK_RATE, false );
+                        pMimicVehicle->SetTargetRotation ( vecRotationDegrees, TICK_RATE, false );
                         pMimicVehicle->SetMoveSpeed ( vecMoveSpeed );
-                        pMimicVehicle->SetTurnSpeed ( vecTurnSpeed );
+                        pMimicVehicle->SetTurnSpeed ( vecTurnSpeed );                        
                     }
                     else
                     {
@@ -2880,6 +2884,9 @@ void CClientGame::UpdateMimics ( void )
                         pMimicVehicle->SetTurnSpeed ( vecTurnSpeed );
                     }
                     pMimicVehicle->SetHealth ( fHealth );
+                    pMimicVehicle->SetAdjustablePropertyValue ( usAdjustable );
+                    pMimicVehicle->SetTurretRotation ( turretX, turretY );
+                    pMimicVehicle->SetLandingGearPosition ( fLandingGear );
                     if ( pMimic->GetOccupiedVehicle () != pMimicVehicle )
                         pMimic->WarpIntoVehicle ( pMimicVehicle, uiSeat );
 

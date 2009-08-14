@@ -216,4 +216,24 @@ void            MakeSureDirExists           ( const char* szPath );
 HMODULE RemoteLoadLibrary(HANDLE hProcess, const char* szLibPath);
 #endif
 
+// Simple class to smooth var changes by gradually updating towards the target
+template < class T >
+class CSmoothVar
+{
+public:
+                CSmoothVar          ( void ) { current = 0, target = 0; }
+    
+    T &         operator =          ( T var )               { return current = target = var; }
+    T *         operator &          ( void )                { return &current; }
+    operator    T &                 ( void )                { return current; }
+    T &         update              ( float multiplier )    { current += ( ( target - current ) * multiplier ); return current; }
+    // Disgusting I know!
+    T &         updateRotationRad   ( float multiplier )    { current += ( ConvertDegreesToRadiansNoWrap ( GetOffsetDegrees ( ConvertRadiansToDegrees ( current ), ConvertRadiansToDegrees ( target ) ) ) * multiplier ); return current; }
+    T &         updateRotationDeg   ( float multiplier )    { current += ( GetOffsetDegrees ( current, target ) * multiplier ); return current; }
+
+    T           target;
+private:
+    T           current;
+};
+
 #endif

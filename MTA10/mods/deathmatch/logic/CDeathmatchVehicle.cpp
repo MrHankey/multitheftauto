@@ -14,6 +14,8 @@
 #include "StdInc.h"
 #include "net/SyncStructures.h"
 
+#define SMOOTH_MULTIPLIER 0.1f
+
 CDeathmatchVehicle::CDeathmatchVehicle ( CClientManager* pManager, CUnoccupiedVehicleSync* pUnoccupiedVehicleSync, ElementID ID, unsigned short usVehicleModel ) : CClientVehicle ( pManager, ID, usVehicleModel )
 {
     m_pUnoccupiedVehicleSync = pUnoccupiedVehicleSync;
@@ -132,4 +134,71 @@ void CDeathmatchVehicle::ResetDamageModelSync ( void )
     for ( int i = 0; i < MAX_WHEELS; i++ ) m_ucLastWheelStates [i] = GetWheelStatus ( i );
     for ( int i = 0; i < MAX_PANELS; i++ ) m_ucLastPanelStates [i] = GetPanelStatus ( i );
     for ( int i = 0; i < MAX_LIGHTS; i++ ) m_ucLastLightStates [i] = GetLightStatus ( i );
+}
+
+
+void CDeathmatchVehicle::SetAdjustablePropertyValue ( unsigned short usValue )
+{
+    if ( UseSmoothing () )
+    {
+        if ( m_usModel == VT_HYDRA ) usValue = 5000 - usValue;
+        m_adjustableProperty.target = usValue;
+    }
+    else
+    {
+        CClientVehicle::SetAdjustablePropertyValue ( usValue );
+    }
+}
+
+
+void CDeathmatchVehicle::SetTurretRotation ( float fHorizontal, float fVertical )
+{
+    if ( UseSmoothing () )
+    {
+        m_turretX.target = fHorizontal;
+        m_turretY.target = fVertical;
+    }
+    else
+    {
+        CClientVehicle::SetTurretRotation ( fHorizontal, fVertical );
+    }
+}
+
+
+void CDeathmatchVehicle::SetLandingGearPosition ( float fPosition )
+{
+    if ( UseSmoothing () )
+    {
+        m_landingGear.target = fPosition;
+    }
+    else
+    {
+        CClientVehicle::SetLandingGearPosition ( fPosition );
+    }
+}
+
+
+bool CDeathmatchVehicle::UseSmoothing ( void )
+{
+    // Use smoothing if: It has a driver and it's not local and we're not syncing it or
+    //                    It has no driver and we're not syncing it.
+    if ( ( m_pDriver && !m_pDriver->IsLocalPlayer () && !IsSyncing () ) ||
+         ( !m_pDriver && !IsSyncing () ) )
+    {
+        return true;
+    }
+    return false;
+}
+
+
+void CDeathmatchVehicle::StreamedInPulse ( void )
+{
+    CClientVehicle::StreamedInPulse ();
+
+    if ( UseSmoothing () )
+    {
+        CClientVehicle::_SetAdjustablePropertyValue ( m_adjustableProperty.update ( SMOOTH_MULTIPLIER ) );
+        CClientVehicle::SetTurretRotation ( m_turretX.updateRotationRad ( SMOOTH_MULTIPLIER ), m_turretY.updateRotationRad ( SMOOTH_MULTIPLIER ) );
+        CClientVehicle::SetLandingGearPosition ( m_landingGear.update ( SMOOTH_MULTIPLIER ) );
+    }
 }

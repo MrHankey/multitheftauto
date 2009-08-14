@@ -160,7 +160,7 @@ public:
 	void						SetColor				( unsigned char ucColor1, unsigned char ucColor2, unsigned char ucColor3, unsigned char ucColor4 );
 
 	void						GetTurretRotation		( float& fHorizontal, float& fVertical );
-    void                        SetTurretRotation       ( float fHorizontal, float fVertical );
+    virtual void                SetTurretRotation       ( float fHorizontal, float fVertical );
 
     inline unsigned short       GetModel                ( void )                            { return m_usModel; };
     void                        SetModelBlocking        ( unsigned short usModel, bool bLoadImmediately = false );
@@ -192,15 +192,15 @@ public:
 
     inline bool                 HasLandingGear          ( void )                            { return m_bHasLandingGear; };
     float                       GetLandingGearPosition  ( void );
-    void                        SetLandingGearPosition  ( float fPosition );
+    virtual void                SetLandingGearPosition  ( float fPosition );
     bool                        IsLandingGearDown       ( void );
     void                        SetLandingGearDown      ( bool bLandingGearDown );
 
     inline bool                 HasAdjustableProperty       ( void )                        { return m_bHasAdjustableProperty; };
     unsigned short              GetAdjustablePropertyValue  ( void );
-    void                        SetAdjustablePropertyValue  ( unsigned short usValue );
+    virtual void                SetAdjustablePropertyValue  ( unsigned short usValue );
     bool                        HasMovingCollision          ( void );
-private:
+protected:
     void                        _SetAdjustablePropertyValue ( unsigned short usValue );
 public:
 
@@ -324,7 +324,6 @@ public:
 	void						AddVelocity				( CVector& vecVelocity );
 
 
-
     // Time dependent interpolation
     inline void                 GetTargetPosition       ( CVector& vecPosition )            { vecPosition = m_interp.pos.vecTarget; }
     void                        SetTargetPosition       ( CVector& vecPosition, unsigned long ulDelay, bool bExtrapolateAfterInterpolation = true );
@@ -382,7 +381,7 @@ protected:
 
     bool                        DoCheckHasLandingGear   ( void );
 
-    void                        StreamedInPulse         ( void );
+    virtual void                StreamedInPulse         ( void );
     void                        Dump                    ( FILE* pFile, bool bDumpDetails, unsigned int uiIndex );
 
     class CClientObjectManager* m_pObjectManager;
