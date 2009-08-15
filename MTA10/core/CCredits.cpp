@@ -15,125 +15,118 @@
 extern CCore* g_pCore;
 
 const char g_szCredits [] = "== The Multi Theft Auto Development Team ==\n" \
-                            "Cecill \"IJs\" Etheredge\n" \
-                            "Chris \"Cray\" McArthur\n" \
+                            "Adge \"Jax\" Cutler\n" \
+                            "Alberto \"ryden\" Alonso\n" \
+                            "arc_\n" \
+                            "Aru\n" \
+                            "Cecill \"IJs\" Etheredge\n" \   
+                            "ccw\n" \
                             "Christian \"ChrML\" Lundheim\n" \
                             "Derek \"Slush\" Abdine\n" \
                             "Ed \"eAi\" Lyons\n" \
-                            "Adge \"Jax\" Cutler\n" \
-                            "Kent \"Kent747\" Simon\n" \
+                            "Frank \"Aim\" Spijkerman\n" \
                             "Kevin \"Kevuwk\" Whiteside\n" \
-                            "Oliver \"Oli\" Brown\n" \
-                            "Stanislav \"lil_Toady\" Bobrov\n"
-                            "Alberto \"ryden\" Alonso\n" \
+                            "Richard \"Cazomino05\" Whitlock\n" \
+                            "Stanislav \"lil_Toady\" Bobrov\n" \
+                            "Talidan\n" \
+                            "\n" \
+
+                            "== The Multi Theft Auto Community Management ==\n" \
+                            "erorr404\n" \
+                            "jhxp\n" \
+                            "Johnline\n" \
+                            "MACK\n" \
+                            "norby89\n" \
+                            "Ransom\n" \
+                            "Slothman\n" \
+                            "\n" \                            
+
+                            "== Community Contributors ==\n" \
+                            "50p\n" \
+                            "Ciaho\n" \
+                            "Fenix\n" \
+                            "Florian \"Flobu\" Busse\n" \
+                            "Gabor888\n" \ 
+                            "Gabriel \"Scarface\" Gauci Maistre\n" \
+                            "Gamesnert\n" \
+                            "hannu\n" \
+                            "KWKSND\n" \
+                            "lucasc190\n" \
+                            "Marcus \"mabako\" Bauer\n" \
+                            "Mr.Hankey\n" \
+                            "robhol\n" \
+                            "SkyBon\n" \
+                            "theromb\n" \
                             "\n" \
 
                             "== Special Thanks ==\n" \
-                            "Anne-Jan \"AJH\" Hak\n" \
                             "Alexandru \"Rzialix\" Panait\n" \
+                            "Anne-Jan \"AJH\" Hak\n" \
                             "Bill \"Sintax\" Blaiklock\n" \
                             "Bloodymess\n" \
+                            "Chris \"Cray\" McArthur\n" \
                             "Chris \"RISO\" Hancock\n" \
                             "Hans \"Blokker\" Roes\n" \
+                            "Harry\n" \
                             "Headfonez\n" \
-							"kktos\n" \
-							"MrBump\n" \
-							"ohsix\n" \
+                            "Kent \"Kent747\" Simon\n" \
+                            "kktos\n" \
+                            "MrBump\n" \
+                            "ohsix\n" \
+                            "Oliver \"Oli\" Brown\n" \
                             "Pieter \"trx\" Plantenga\n" \
-							"spec\n" \
-							"xerox\n" \
-							"Wojjie\n" \
-                            "\n" \
-
-                            "== The Multi Theft Auto Website Development Team ==\n" \
-							"AlienX\n" \
-                            "Arc_\n" \
-                            "driver2\n" \
-                            "lil_Toady\n" \
-                            "\n" \
-
-							"== The Multi Theft Auto Quality Assurance Team Managers ==\n" \
-                            "jhxp\n" \
-                            "Ransom\n" \
-							"\n" \
-
-                            "== The Multi Theft Auto Quality Assurance Team ==\n" \
-                            "AlienX\n" \
-                            "arc_\n" \
-                            "BB101\n" \
-                            "Boss\n" \
-                            "Brophy\n" \
-                            "deez\n" \
-                            "Dragon (Black Dragon)\n" \
-                            "driver2\n" \
-                            "erorr404\n" \
-                            "Fedor\n" \
-                            "Iggy\n" \
-                            "jbeta\n" \
-                            "Johnline\n" \
-                            "Joriz\n" \
-                            "Kcuf\n" \
-                            "lil_Toady\n" \
-                            "Lucif3r\n" \
-                            "MACK\n" \
-                            "MeanpantheR\n" \
-                            "nick\n" \
-                            "norby89\n" \
-                            "Outback\n" \
-                            "Paradox\n" \
-                            "RAF\n" \
-                            "Ratt\n" \
-                            "ryden\n" \
-                            "Scooby\n" \
-                            "SinnerG (TvKe)\n" \
-                            "Sintax\n" \
-                            "Slick\n" \
-                            "Slothman\n" \
-                            "Solide\n" \
-                            "Talidan\n" \
-                            "Tweak\n" \
-                            "Vandalite\n" \
-                            "x16\n" \
-                            "Xanarki\n" \
+                            "spec\n" \
                             "xerox\n" \
-			                "\n" \
+                            "Wojjie\n" \
+                            "\n" \
 
                             "== Past contributors ==\n" \
                             "Aeron\n" \
-                            "Au{R}oN\n" \
+                            "AlienX\n" \
+                            "BB101\n" \
                             "Bishop\n" \
-                            "Boro\n" \
+                            "Black_Dragon\n" \
                             "Boss (Thesord)\n" \
+                            "Brophy\n" \
                             "Des (Marcel)\n" \
-                            "Dome\n" \
                             "DominionSpy\n" \
                             "DracoBlue\n" \
-                            "Dross\n" \
+                            "driver2\n" \
+                            "Fedor\n" \
                             "Fusion\n" \
                             "Gamefreek\n" \
-                            "Harry\n" \
                             "HAZJ\n" \
-                            "Hedning\n" \
-                            "JackC\n" \
+                            "Iggy\n" \
+                            "jbeta\n" \
+                            "Joriz\n" \
                             "Jigga\n" \
-                            "Kalle\n" \
-                            "KriS\n" \
+                            "Lucif3r\n" \
                             "MAD_BOY\n" \
-                            "Mif\n" \
                             "Monk\n" \
+                            "nick\n" \
+                            "Outback\n" \
                             "ParoXum\n" \
+                            "Peter\n" \
                             "PhatLooser\n" \
                             "Prontera\n" \
+                            "RAF\n" \
+                            "Ratt\n" \
                             "rebel (l2ebel)\n" \
-                            "Samppa\n" \
                             "Samurai_Ohk\n" \
-                            "SGB\n" \
+                            "SinnerG (TvKe)\n" \
+                            "Siyo\n" \
+                            "Solide\n" \
                             "TheBoas\n" \
+                            "Tweak\n" \
                             "Twig\n" \
+                            "Vandalite\n" \
                             "VRocker\n" \
                             "Welder\n" \
+                            "Willy\n" \
                             "Zerbian\n" \
-                            "Zircon (Blue Zircon)\n";
+                            "Zircon (Blue Zircon)\n" \
+                            "xerox\n" \
+                            "\n" \;
 
 namespace CCreditsGUI
 {
