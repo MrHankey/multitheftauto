@@ -1332,6 +1332,11 @@ int CLuaFunctionDefs::SetElementData ( lua_State* luaVM )
             CClientEntity* pEntity = lua_toelement ( luaVM, 1 );
             const char* szName = lua_tostring ( luaVM, 2 );
 
+            // Give a warning in case the old syntax is used (elem, name, synchronize, data)
+            if ( lua_type ( luaVM, 3 ) == LUA_TBOOLEAN &&
+                 lua_type ( luaVM, 4 ) != LUA_TNONE && lua_type ( luaVM, 4 ) != LUA_TBOOLEAN )
+                m_pScriptDebugging->LogCustom ( luaVM, "Using outdated setElementData syntax. Consult the wiki" );
+
             CLuaArgument Variable;
             Variable.Read ( luaVM, 3 );
 
