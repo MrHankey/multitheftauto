@@ -174,6 +174,11 @@ inline float GetOffsetDegrees ( float a, float b )
         c = ( 360.0f + c );
     return c;
 }
+inline float GetOffsetRadians ( float a, float b )
+{
+    float c = GetOffsetDegrees ( ConvertRadiansToDegrees ( a ), ConvertRadiansToDegrees ( b ) );
+    return ConvertDegreesToRadiansNoWrap ( c );
+}
 
 
 bool            DoesFileExist               ( const char* szFilename );
@@ -227,8 +232,7 @@ public:
     T *         operator &          ( void )                { return &current; }
     operator    T &                 ( void )                { return current; }
     T &         update              ( float multiplier )    { current += ( ( target - current ) * multiplier ); return current; }
-    // Disgusting I know!
-    T &         updateRotationRad   ( float multiplier )    { current += ( ConvertDegreesToRadiansNoWrap ( GetOffsetDegrees ( ConvertRadiansToDegrees ( current ), ConvertRadiansToDegrees ( target ) ) ) * multiplier ); return current; }
+    T &         updateRotationRad   ( float multiplier )    { current += ( GetOffsetRadians ( current, target ) * multiplier ); return current; }
     T &         updateRotationDeg   ( float multiplier )    { current += ( GetOffsetDegrees ( current, target ) * multiplier ); return current; }
 
     T           target;

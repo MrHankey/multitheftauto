@@ -31,7 +31,6 @@ public:
     // Overloaded
     void                            SetAdjustablePropertyValue      ( unsigned short usValue );
     void                            SetTurretRotation               ( float fHorizontal, float fVertical );
-    void                            SetLandingGearPosition          ( float fPosition );
 
 protected:
     bool                            UseSmoothing                    ( void );
@@ -48,7 +47,6 @@ private:
 
     CSmoothVar < unsigned short >   m_adjustableProperty;
     CSmoothVar < float >            m_turretX, m_turretY;
-    CSmoothVar < float >            m_landingGear;
 };
 
 #endif

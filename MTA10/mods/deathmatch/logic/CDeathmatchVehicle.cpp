@@ -165,19 +165,6 @@ void CDeathmatchVehicle::SetTurretRotation ( float fHorizontal, float fVertical 
 }
 
 
-void CDeathmatchVehicle::SetLandingGearPosition ( float fPosition )
-{
-    if ( UseSmoothing () )
-    {
-        m_landingGear.target = fPosition;
-    }
-    else
-    {
-        CClientVehicle::SetLandingGearPosition ( fPosition );
-    }
-}
-
-
 bool CDeathmatchVehicle::UseSmoothing ( void )
 {
     // Use smoothing if: It has a driver and it's not local and we're not syncing it or
@@ -199,6 +186,5 @@ void CDeathmatchVehicle::StreamedInPulse ( void )
     {
         CClientVehicle::_SetAdjustablePropertyValue ( m_adjustableProperty.update ( SMOOTH_MULTIPLIER ) );
         CClientVehicle::SetTurretRotation ( m_turretX.updateRotationRad ( SMOOTH_MULTIPLIER ), m_turretY.updateRotationRad ( SMOOTH_MULTIPLIER ) );
-        CClientVehicle::SetLandingGearPosition ( m_landingGear.update ( SMOOTH_MULTIPLIER ) );
     }
 }
