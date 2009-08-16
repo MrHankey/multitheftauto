@@ -14,118 +14,63 @@
 
 extern CCore* g_pCore;
 
-const char g_szCredits [] = "== The Multi Theft Auto Development Team ==\n" \
-                            "Adge \"Jax\" Cutler\n" \
+const char g_szCredits [] = "== Multi Theft Auto: San Andreas v1.0 ==\n" \
+                            "\n" \
+
+                            "Programming\n" \
+                            "\n" \
+
                             "Alberto \"ryden\" Alonso\n" \
-                            "arc_\n" \
-                            "Aru\n" \
-                            "Cecill \"IJs\" Etheredge\n" \   
-                            "ccw\n" \
+                            "Marcus \"mabako\" Bauer\n" \
+                            "Stanislav \"lil_Toady\" Bobrov\n" \
+                            "Adge \"Jax\" Cutler\n" \
+                            "Cecill \"ijs\" Etheredge\n" \
                             "Christian \"ChrML\" Lundheim\n" \
-                            "Derek \"Slush\" Abdine\n" \
                             "Ed \"eAi\" Lyons\n" \
                             "Frank \"Aim\" Spijkerman\n" \
                             "Kevin \"Kevuwk\" Whiteside\n" \
                             "Richard \"Cazomino05\" Whitlock\n" \
-                            "Stanislav \"lil_Toady\" Bobrov\n" \
+                            "\n" \
+
+                            "arc_\n" \
+                            "aru\n" \
+                            "ccw\n" \
                             "Talidan\n" \
                             "\n" \
 
-                            "== The Multi Theft Auto Community Management ==\n" \
-                            "erorr404\n" \
-                            "jhxp\n" \
-                            "Johnline\n" \
-                            "MACK\n" \
-                            "norby89\n" \
-                            "Ransom\n" \
-                            "Slothman\n" \
-                            "\n" \                            
+                            "Game Design / Scripting\n" \
 
-                            "== Community Contributors ==\n" \
+                            "Florian \"Flobu\" Busse\n" \
+                            "John \"Johnline\" Borsberry\n" \
+                            "Gabriel \"Scarface\" Gauci Maistre\n" \
+                            "Norbert \"norby89\" Juhos\n" \
+
                             "50p\n" \
                             "Ciaho\n" \
+                            "erorr404\n" \
                             "Fenix\n" \
-                            "Florian \"Flobu\" Busse\n" \
-                            "Gabor888\n" \ 
-                            "Gabriel \"Scarface\" Gauci Maistre\n" \
                             "Gamesnert\n" \
                             "hannu\n" \
+                            "jhxp\n" \
                             "KWKSND\n" \
                             "lucasc190\n" \
-                            "Marcus \"mabako\" Bauer\n" \
+                            "MACK\n" \
                             "Mr.Hankey\n" \
+                            "Ransom\n" \
                             "robhol\n" \
                             "SkyBon\n" \
+                            "Slothman\n" \
                             "theromb\n" \
                             "\n" \
 
-                            "== Special Thanks ==\n" \
-                            "Alexandru \"Rzialix\" Panait\n" \
-                            "Anne-Jan \"AJH\" Hak\n" \
-                            "Bill \"Sintax\" Blaiklock\n" \
-                            "Bloodymess\n" \
-                            "Chris \"Cray\" McArthur\n" \
-                            "Chris \"RISO\" Hancock\n" \
-                            "Hans \"Blokker\" Roes\n" \
-                            "Harry\n" \
-                            "Headfonez\n" \
-                            "Kent \"Kent747\" Simon\n" \
-                            "kktos\n" \
-                            "MrBump\n" \
-                            "ohsix\n" \
-                            "Oliver \"Oli\" Brown\n" \
-                            "Pieter \"trx\" Plantenga\n" \
-                            "spec\n" \
-                            "xerox\n" \
-                            "Wojjie\n" \
-                            "\n" \
+                            "Special Thanks\n" \
 
-                            "== Past contributors ==\n" \
-                            "Aeron\n" \
-                            "AlienX\n" \
-                            "BB101\n" \
-                            "Bishop\n" \
-                            "Black_Dragon\n" \
-                            "Boss (Thesord)\n" \
-                            "Brophy\n" \
-                            "Des (Marcel)\n" \
-                            "DominionSpy\n" \
-                            "DracoBlue\n" \
-                            "driver2\n" \
-                            "Fedor\n" \
-                            "Fusion\n" \
-                            "Gamefreek\n" \
-                            "HAZJ\n" \
-                            "Iggy\n" \
-                            "jbeta\n" \
-                            "Joriz\n" \
-                            "Jigga\n" \
-                            "Lucif3r\n" \
-                            "MAD_BOY\n" \
-                            "Monk\n" \
-                            "nick\n" \
-                            "Outback\n" \
-                            "ParoXum\n" \
-                            "Peter\n" \
-                            "PhatLooser\n" \
-                            "Prontera\n" \
-                            "RAF\n" \
-                            "Ratt\n" \
-                            "rebel (l2ebel)\n" \
-                            "Samurai_Ohk\n" \
-                            "SinnerG (TvKe)\n" \
-                            "Siyo\n" \
-                            "Solide\n" \
-                            "TheBoas\n" \
-                            "Tweak\n" \
-                            "Twig\n" \
-                            "Vandalite\n" \
-                            "VRocker\n" \
-                            "Welder\n" \
-                            "Willy\n" \
-                            "Zerbian\n" \
-                            "Zircon (Blue Zircon)\n" \
-                            "xerox\n" \
+                            "Derek \"slush\" Abdine\n" \
+                            "Oliver \"Oli\" Brown\n" \
+                            "Wojciech \"Wojjie\" Hlibowicki\n" \
+                            "Chris \"Cray\" McArthur\n" \
+                            "Hans \"Blokker\" Roes\n" \
+                            "Kent \"Kent747\" Simon\n" \
                             "\n" \;
 
 namespace CCreditsGUI
