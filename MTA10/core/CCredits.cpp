@@ -71,8 +71,8 @@ const char g_szCredits [] = "== Multi Theft Auto: San Andreas v1.0 ==\n" \
                             "Wojciech \"Wojjie\" Hlibowicki\n" \
                             "Chris \"Cray\" McArthur\n" \
                             "Hans \"Blokker\" Roes\n" \
-                            "Kent \"Kent747\" Simon\n" \
-                            "\n" \;
+                            "Kent \"Kent747\" Simon\n";
+                            "\n";
 
 namespace CCreditsGUI
 {
