@@ -46,6 +46,7 @@ const char g_szCredits [] = "== Multi Theft Auto: San Andreas v1.0 ==\n" \
                             "Norbert \"norby89\" Juhos\n" \
 
                             "50p\n" \
+                            "Brophy\n" \
                             "Ciaho\n" \
                             "erorr404\n" \
                             "Fenix\n" \
