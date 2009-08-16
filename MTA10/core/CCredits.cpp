@@ -14,65 +14,65 @@
 
 extern CCore* g_pCore;
 
-const char g_szCredits [] = "== Multi Theft Auto: San Andreas v1.0 ==\n" \
-                            "\n" \
+const char* g_szCredits = "== Multi Theft Auto: San Andreas v1.0 ==\n"
+                          "\n"
 
-                            "Programming\n" \
-                            "\n" \
+                          "Programming\n"
+                          "\n"
 
-                            "Alberto \"ryden\" Alonso\n" \
-                            "Marcus \"mabako\" Bauer\n" \
-                            "Stanislav \"lil_Toady\" Bobrov\n" \
-                            "Adge \"Jax\" Cutler\n" \
-                            "Cecill \"ijs\" Etheredge\n" \
-                            "Christian \"ChrML\" Lundheim\n" \
-                            "Ed \"eAi\" Lyons\n" \
-                            "Frank \"Aim\" Spijkerman\n" \
-                            "Kevin \"Kevuwk\" Whiteside\n" \
-                            "Richard \"Cazomino05\" Whitlock\n" \
-                            "\n" \
+                          "Alberto \"ryden\" Alonso\n"
+                          "Hendrik \"arc_\" van den Berge\n"
+                          "Marcus \"mabako\" Bauer\n"
+                          "Stanislav \"lil_Toady\" Bobrov\n"
+                          "Adge \"Jax\" Cutler\n"
+                          "Cecill \"ijs\" Etheredge\n"
+                          "Christian \"ChrML\" Lundheim\n"
+                          "Ed \"eAi\" Lyons\n"
+                          "Frank \"Aim\" Spijkerman\n"
+                          "Kevin \"Kevuwk\" Whiteside\n"
+                          "Richard \"Cazomino05\" Whitlock\n"
+                          "\n"
 
-                            "arc_\n" \
-                            "aru\n" \
-                            "ccw\n" \
-                            "Talidan\n" \
-                            "\n" \
+                          "aru\n"
+                          "ccw\n"
+                          "Talidan\n"
+                          "\n"
 
-                            "Game Design / Scripting\n" \
+                          "Game Design / Scripting\n"
 
-                            "Florian \"Flobu\" Busse\n" \
-                            "John \"Johnline\" Borsberry\n" \
-                            "Gabriel \"Scarface\" Gauci Maistre\n" \
-                            "Norbert \"norby89\" Juhos\n" \
+                          "Florian \"Flobu\" Busse\n"
+                          "John \"Johnline\" Borsberry\n"
+                          "Gabriel \"Scarface\" Gauci Maistre\n"
+                          "Norbert \"norby89\" Juhos\n"
 
-                            "50p\n" \
-                            "Brophy\n" \
-                            "Ciaho\n" \
-                            "erorr404\n" \
-                            "Fenix\n" \
-                            "Gamesnert\n" \
-                            "hannu\n" \
-                            "jhxp\n" \
-                            "KWKSND\n" \
-                            "lucasc190\n" \
-                            "MACK\n" \
-                            "Mr.Hankey\n" \
-                            "Ransom\n" \
-                            "robhol\n" \
-                            "SkyBon\n" \
-                            "Slothman\n" \
-                            "theromb\n" \
-                            "\n" \
+                          "50p\n"
+                          "Brophy\n"
+                          "Ciaho\n"
+                          "erorr404\n"
+                          "Fenix\n"
+                          "Gamesnert\n"
+                          "hannu\n"
+                          "jhxp\n"
+                          "KWKSND\n"
+                          "lucasc190\n"
+                          "MACK\n"
+                          "Mr.Hankey\n"
+                          "Ransom\n"
+                          "robhol\n"
+                          "SkyBon\n"
+                          "Slothman\n"
+                          "theromb\n"
+                          "\n"
 
-                            "Special Thanks\n" \
+                          "Special Thanks\n"
 
-                            "Derek \"slush\" Abdine\n" \
-                            "Oliver \"Oli\" Brown\n" \
-                            "Wojciech \"Wojjie\" Hlibowicki\n" \
-                            "Chris \"Cray\" McArthur\n" \
-                            "Hans \"Blokker\" Roes\n" \
-                            "Kent \"Kent747\" Simon\n";
-                            "\n";
+                          "Derek \"slush\" Abdine\n"
+                          "Oliver \"Oli\" Brown\n"
+                          "Wojciech \"Wojjie\" Hlibowicki\n"
+                          "Chris \"Cray\" McArthur\n"
+                          "Hans \"Blokker\" Roes\n"
+                          "Kent \"Kent747\" Simon\n"
+                          "\n";
 
 namespace CCreditsGUI
 {
