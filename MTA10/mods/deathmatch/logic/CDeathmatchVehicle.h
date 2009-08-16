@@ -19,34 +19,39 @@
 class CDeathmatchVehicle : public CClientVehicle
 {
 public:
-                                    CDeathmatchVehicle              ( CClientManager* pManager, class CUnoccupiedVehicleSync* pUnoccupiedVehicleSync, ElementID ID, unsigned short usVehicleModel  );
-                                    ~CDeathmatchVehicle             ( void );
+                                        CDeathmatchVehicle              ( CClientManager* pManager, class CUnoccupiedVehicleSync* pUnoccupiedVehicleSync, ElementID ID, unsigned short usVehicleModel  );
+                                        ~CDeathmatchVehicle             ( void );
 
-    inline bool                     IsSyncing                       ( void )                    { return m_bIsSyncing; };
-    void                            SetIsSyncing                    ( bool bIsSyncing );
+    inline bool                         IsSyncing                       ( void )                        { return m_bIsSyncing; };
+    void                                SetIsSyncing                    ( bool bIsSyncing );
 
-    bool                            SyncDamageModel                 ( void );
-    void                            ResetDamageModelSync            ( void );
+    bool                                SyncDamageModel                 ( void );
+    void                                ResetDamageModelSync            ( void );
+
+    void                                UpdateSyncTimes                 ( void );
 
     // Overloaded
-    void                            SetAdjustablePropertyValue      ( unsigned short usValue );
-    void                            SetTurretRotation               ( float fHorizontal, float fVertical );
+    void                                SetAdjustablePropertyValue      ( unsigned short usValue );
+    void                                SetTurretRotation               ( float fHorizontal, float fVertical );
 
 protected:
-    bool                            UseSmoothing                    ( void );
-    void                            StreamedInPulse                 ( void );
+    bool                                UseSmoothing                    ( void );
+    void                                StreamedInPulse                 ( void );
 
 private:
-    class CUnoccupiedVehicleSync*   m_pUnoccupiedVehicleSync;
-    bool                            m_bIsSyncing;
+    class CUnoccupiedVehicleSync*       m_pUnoccupiedVehicleSync;
+    bool                                m_bIsSyncing;
 
-    unsigned char                   m_ucLastDoorStates [MAX_DOORS];
-    unsigned char                   m_ucLastWheelStates [MAX_WHEELS];
-    unsigned char                   m_ucLastPanelStates [MAX_PANELS];
-    unsigned char                   m_ucLastLightStates [MAX_LIGHTS];
+    unsigned char                       m_ucLastDoorStates [MAX_DOORS];
+    unsigned char                       m_ucLastWheelStates [MAX_WHEELS];
+    unsigned char                       m_ucLastPanelStates [MAX_PANELS];
+    unsigned char                       m_ucLastLightStates [MAX_LIGHTS];
 
-    CSmoothVar < unsigned short >   m_adjustableProperty;
-    CSmoothVar < float >            m_turretX, m_turretY;
+    unsigned long                       m_ulLastSyncTick;
+    unsigned long                       m_ulSyncFrequency;
+
+    CInterpolatedVar < unsigned short > m_adjustableProperty;
+    CInterpolatedVar < float >          m_turretX, m_turretY;
 };
 
 #endif

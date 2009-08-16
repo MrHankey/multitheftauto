@@ -14,8 +14,6 @@
 #include "StdInc.h"
 #include "net/SyncStructures.h"
 
-#define SMOOTH_MULTIPLIER 0.1f
-
 CDeathmatchVehicle::CDeathmatchVehicle ( CClientManager* pManager, CUnoccupiedVehicleSync* pUnoccupiedVehicleSync, ElementID ID, unsigned short usVehicleModel ) : CClientVehicle ( pManager, ID, usVehicleModel )
 {
     m_pUnoccupiedVehicleSync = pUnoccupiedVehicleSync;
@@ -24,6 +22,8 @@ CDeathmatchVehicle::CDeathmatchVehicle ( CClientManager* pManager, CUnoccupiedVe
     memset ( m_ucLastPanelStates, 0, sizeof ( m_ucLastPanelStates ) );
     memset ( m_ucLastLightStates, 0, sizeof ( m_ucLastLightStates ) );
     m_bIsSyncing = false;
+    m_ulSyncFrequency = 0;
+    m_ulLastSyncTick = 0;
 
     SetIsSyncing ( false );
 }
@@ -137,12 +137,21 @@ void CDeathmatchVehicle::ResetDamageModelSync ( void )
 }
 
 
+void CDeathmatchVehicle::UpdateSyncTimes ( void )
+{
+    unsigned long time = GetTickCount ();
+    m_ulSyncFrequency = time - m_ulLastSyncTick;
+    m_ulLastSyncTick = time;
+}
+
+
+
 void CDeathmatchVehicle::SetAdjustablePropertyValue ( unsigned short usValue )
 {
     if ( UseSmoothing () )
     {
         if ( m_usModel == VT_HYDRA ) usValue = 5000 - usValue;
-        m_adjustableProperty.target = usValue;
+        m_adjustableProperty.lerp ( usValue, m_ulSyncFrequency );
     }
     else
     {
@@ -155,8 +164,8 @@ void CDeathmatchVehicle::SetTurretRotation ( float fHorizontal, float fVertical 
 {
     if ( UseSmoothing () )
     {
-        m_turretX.target = fHorizontal;
-        m_turretY.target = fVertical;
+        m_turretX.lerp ( fHorizontal, m_ulSyncFrequency );
+        m_turretY.lerp ( fVertical, m_ulSyncFrequency );
     }
     else
     {
@@ -184,7 +193,7 @@ void CDeathmatchVehicle::StreamedInPulse ( void )
 
     if ( UseSmoothing () )
     {
-        CClientVehicle::_SetAdjustablePropertyValue ( m_adjustableProperty.update ( SMOOTH_MULTIPLIER ) );
-        CClientVehicle::SetTurretRotation ( m_turretX.updateRotationRad ( SMOOTH_MULTIPLIER ), m_turretY.updateRotationRad ( SMOOTH_MULTIPLIER ) );
+        CClientVehicle::_SetAdjustablePropertyValue ( m_adjustableProperty.update () );
+        CClientVehicle::SetTurretRotation ( m_turretX.updateRotRad (), m_turretY.updateRotRad () );
     }
 }

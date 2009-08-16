@@ -2852,7 +2852,7 @@ void CClientGame::UpdateMimics ( void )
 
                     vecPosition.fX += ( ( float ) ( uiMimicIndex + 1 ) * 10.0f );
 
-                    if ( pMimicVehicle == NULL )
+                    if ( !pMimicVehicle )
                     {
                         pMimicVehicle = new CDeathmatchVehicle ( m_pManager, m_pUnoccupiedVehicleSync, INVALID_ELEMENT_ID, uiModel );
                         pMimicVehicle->SetPosition ( vecPosition );
@@ -2869,6 +2869,7 @@ void CClientGame::UpdateMimics ( void )
                         m_vecLastMimicPos = vecPosition;
                     }
 
+                    static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->UpdateSyncTimes ();
                     if ( m_bMimicLag )
                     {
                         pMimicVehicle->SetTargetPosition ( vecPosition );

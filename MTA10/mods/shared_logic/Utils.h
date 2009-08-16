@@ -221,23 +221,41 @@ void            MakeSureDirExists           ( const char* szPath );
 HMODULE RemoteLoadLibrary(HANDLE hProcess, const char* szLibPath);
 #endif
 
-// Simple class to smooth var changes by gradually updating towards the target
+// Simple class to interpolate variables
 template < class T >
-class CSmoothVar
+class CInterpolatedVar
 {
 public:
-                CSmoothVar          ( void ) { current = 0, target = 0; }
+                    CInterpolatedVar    ( void ) { begin = end = current = beginTime = endTime = 0; }
     
-    T &         operator =          ( T var )               { return current = target = var; }
-    T *         operator &          ( void )                { return &current; }
-    operator    T &                 ( void )                { return current; }
-    T &         update              ( float multiplier )    { current += ( ( target - current ) * multiplier ); return current; }
-    T &         updateRotationRad   ( float multiplier )    { current += ( GetOffsetRadians ( current, target ) * multiplier ); return current; }
-    T &         updateRotationDeg   ( float multiplier )    { current += ( GetOffsetDegrees ( current, target ) * multiplier ); return current; }
+    T &             operator =          ( T var )               { return current = target = var; }
+    T *             operator &          ( void )                { return &current; }
+    operator        T &                 ( void )                { return current; }
 
-    T           target;
+    void            lerp                ( T target, unsigned long time )
+    {
+        update ();
+        begin = current;
+        end = target;
+        beginTime = GetTickCount ();
+        endTime = beginTime + time;
+    }        
+    T &             update              ( void )
+    {
+        return current = Lerp < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
+    }
+    T &             updateRotRad        ( void )
+    {
+        return current = LerpRotationRad < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
+    }
+    T &             updateRotDeg        ( void )
+    {
+        return current = LerpRotationDeg < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
+    }
+
 private:
-    T           current;
+    T               begin, end, current;
+    unsigned long   beginTime, endTime;
 };
 
 #endif

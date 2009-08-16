@@ -104,6 +104,20 @@ namespace SharedUtil
         return static_cast < int > ( floor ( value + 0.5f ) );
     }
 
+    // Lerps between two radian values depending on the weight
+    template< class T >
+    T LerpRotationRad ( T& from, float fAlpha, T& to )
+    {
+        return GetOffsetRadians ( float ( from ), float ( to ) ) * fAlpha + from;
+    }
+
+    // Lerps between two degree values depending on the weight
+    template< class T >
+    T LerpRotationDeg ( T& from, float fAlpha, T& to )
+    {
+        return GetOffsetDegrees ( float ( from ), float ( to ) ) * fAlpha + from;
+    }
+
 
     //
     // SColor
