@@ -3638,6 +3638,13 @@ void CPacketHandler::Packet_ExplosionSync ( NetBitStreamInterface& bitStream )
         bCancelExplosion = !g_pClientGame->GetRootEntity ()->CallEvent ( "onClientExplosion", Arguments, false );
     }
 
+    // Do our tank firing effect? (disabled through the fire key in CNetAPI)
+    if ( pCreator && !pCreator->IsLocalPlayer () && Type == EXP_TYPE_TANK_GRENADE )
+    {
+        CClientVehicle * pVehicle = pCreator->GetOccupiedVehicle ();
+        if ( pVehicle ) pVehicle->DoTankFire ();
+    }
+
     // Is it a vehicle explosion?
     if ( pOrigin && pOrigin->GetType () == CCLIENTVEHICLE )
     {

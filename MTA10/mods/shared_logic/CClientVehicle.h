@@ -346,6 +346,8 @@ public:
     bool                        HasRadio                ( void );
     bool                        HasPoliceRadio          ( void );
 
+    void                        DoTankFire              ( void );
+
     void                        ReCreate                ( void );
 
     void                        ModelRequestCallback    ( CModelInfo* pModelInfo );

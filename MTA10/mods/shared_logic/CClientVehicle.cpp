@@ -3009,6 +3009,34 @@ bool CClientVehicle::HasPoliceRadio ( void )
     return false;
 }
 
+
+void CClientVehicle::DoTankFire ( void )
+{
+    if ( m_pVehicle && m_usModel == VT_RHINO )
+    {
+        // Our turret offset
+        CVector vecOffset ( 0, 6.5f, 1.4f );
+
+        // Apply turret rotation
+        float turretX, turretY;
+        GetTurretRotation ( turretX, turretY );
+        RotateVector ( vecOffset, CVector ( -turretY, 0, -turretX ) );
+
+        // Apply vehicle rotation
+        CMatrix matrix, returnMatrix;
+        GetMatrix ( matrix );
+        AttachedMatrix ( matrix, returnMatrix, vecOffset, CVector () );
+
+        // Grab turret firing direction
+        CVector vecDirection = returnMatrix.vPos - matrix.vPos;    
+        vecDirection.Normalize ();
+
+        // Fiiiiiiiire!
+        g_pGame->GetFx ()->TriggerTankFire ( returnMatrix.vPos, vecDirection );
+    }
+}
+
+
 void CClientVehicle::RemoveAllProjectiles ( void )
 {
     CClientProjectile * pProjectile = NULL;
