@@ -1365,11 +1365,6 @@ void CGame::Packet_PedWasted ( CPedWastedPacket& Packet )
 
         CElement * pKiller = ( Packet.m_Killer != INVALID_ELEMENT_ID ) ? CElementIDs::GetElement ( Packet.m_Killer ) : NULL;
 
-        if ( pKiller && !IS_PED ( pKiller ) && !IS_VEHICLE ( pKiller ) ) 
-        {
-            // Fix for people dieing with object as a death reason.
-            pKiller = NULL;
-        }
         // Create a new packet to send to everyone
         CPedWastedPacket ReturnWastedPacket ( pPed, pKiller, Packet.m_ucKillerWeapon, Packet.m_ucBodyPart, false, Packet.m_AnimGroup, Packet.m_AnimID );
         m_pPlayerManager->BroadcastOnlyJoined ( ReturnWastedPacket );
@@ -1405,11 +1400,6 @@ void CGame::Packet_PlayerWasted ( CPlayerWastedPacket& Packet )
 
         CElement * pKiller = ( Packet.m_Killer != INVALID_ELEMENT_ID ) ? CElementIDs::GetElement ( Packet.m_Killer ) : NULL;
 
-        if ( pKiller && !IS_PED ( pKiller ) && !IS_VEHICLE ( pKiller ) ) 
-        {
-            // Fix for people dieing with object as a death reason.
-            pKiller = NULL;
-        }
         // Create a new packet to send to everyone
         CPlayerWastedPacket ReturnWastedPacket ( pPlayer, pKiller, Packet.m_ucKillerWeapon, Packet.m_ucBodyPart, false, Packet.m_AnimGroup, Packet.m_AnimID );
         m_pPlayerManager->BroadcastOnlyJoined ( ReturnWastedPacket );
