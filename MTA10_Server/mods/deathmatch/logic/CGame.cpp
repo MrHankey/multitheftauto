@@ -1365,7 +1365,7 @@ void CGame::Packet_PedWasted ( CPedWastedPacket& Packet )
 
         CElement * pKiller = ( Packet.m_Killer != INVALID_ELEMENT_ID ) ? CElementIDs::GetElement ( Packet.m_Killer ) : NULL;
 
-        if ( IS_OBJECT ( pKiller ) ) 
+        if ( pKiller && !IS_PED ( pKiller ) && !IS_VEHICLE ( pKiller ) ) 
         {
             // Fix for people dieing with object as a death reason.
             pKiller = NULL;
@@ -1405,7 +1405,7 @@ void CGame::Packet_PlayerWasted ( CPlayerWastedPacket& Packet )
 
         CElement * pKiller = ( Packet.m_Killer != INVALID_ELEMENT_ID ) ? CElementIDs::GetElement ( Packet.m_Killer ) : NULL;
 
-        if ( IS_OBJECT ( pKiller ) ) 
+        if ( pKiller && !IS_PED ( pKiller ) && !IS_VEHICLE ( pKiller ) ) 
         {
             // Fix for people dieing with object as a death reason.
             pKiller = NULL;
