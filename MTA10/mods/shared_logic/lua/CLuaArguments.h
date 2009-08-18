@@ -31,8 +31,11 @@ class CLuaArguments;
 
 class CLuaArguments
 {
+private:
+    enum { MAX_EXPECTED_ARGS = 64 };
+
 public:
-                                                        CLuaArguments       ( void )                { }
+                                                        CLuaArguments       ( void );
                                                         CLuaArguments       ( const CLuaArguments& Arguments, std::map < CLuaArguments*, CLuaArguments* > * pKnownTables = NULL );
 														CLuaArguments		( NetBitStreamInterface& bitStream, std::vector < CLuaArguments* > * pKnownTables = NULL );
                                                         ~CLuaArguments      ( void )                { DeleteArguments (); };
@@ -40,7 +43,8 @@ public:
     void                                                CopyRecursive       ( const CLuaArguments& Arguments, std::map < CLuaArguments*, CLuaArguments* > * pKnownTables = NULL );
 
     const CLuaArguments&                                operator =          ( const CLuaArguments& Arguments );
-	CLuaArgument*										operator []			( const unsigned int uiPosition ) const;
+	CLuaArgument*                                       operator []         ( const unsigned int uiPosition );
+    const CLuaArgument*                                 operator []         ( const unsigned int uiPosition ) const;
 
     void                                                ReadArgument        ( lua_State* luaVM, signed int uiIndex );
     void                                                ReadArguments       ( lua_State* luaVM, signed int uiIndexBegin = 1 );
@@ -66,12 +70,14 @@ public:
     bool                                                ReadFromBitStream   ( NetBitStreamInterface& bitStream, std::vector < CLuaArguments* > * pKnownTables = NULL );
     bool                                                WriteToBitStream    ( NetBitStreamInterface& bitStream, std::map < CLuaArguments*, unsigned long > * pKnownTables = NULL ) const;
 
-    unsigned int                                        Count               ( void ) const          { return static_cast < unsigned int > ( m_Arguments.size () ); };
-    std::vector < CLuaArgument* > ::const_iterator      IterBegin           ( void )                { return m_Arguments.begin (); };
-    std::vector < CLuaArgument* > ::const_iterator      IterEnd             ( void )                { return m_Arguments.end (); };
+    unsigned int                                        Count               ( void ) const;
+private:
+    CLuaArgument*                                       CreateNew           ();
 
 private:
-    std::vector < CLuaArgument* >                       m_Arguments;
+    CLuaArgument                                        m_Arguments [ MAX_EXPECTED_ARGS ];
+    std::vector < CLuaArgument >                        m_vecArguments;
+    unsigned int                                        m_uiSize;
 };
 
 #endif

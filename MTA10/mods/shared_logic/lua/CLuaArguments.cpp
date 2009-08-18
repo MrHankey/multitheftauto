@@ -25,24 +25,48 @@ using namespace std;
  
 extern CClientGame* g_pClientGame;
 
+CLuaArguments::CLuaArguments ( )
+: m_uiSize ( 0 )
+{
+}
+
 CLuaArguments::CLuaArguments ( NetBitStreamInterface& bitStream, std::vector < CLuaArguments* > * pKnownTables )
+: m_uiSize ( 0 )
 {
     ReadFromBitStream ( bitStream, pKnownTables );
 }
 
 
 CLuaArguments::CLuaArguments ( const CLuaArguments& Arguments, std::map < CLuaArguments*, CLuaArguments* > * pKnownTables )
+: m_uiSize ( 0 )
 {
     // Copy all the arguments
     CopyRecursive ( Arguments, pKnownTables );
 }
 
 
-CLuaArgument* CLuaArguments::operator [] ( const unsigned int uiPosition ) const
+CLuaArgument* CLuaArguments::operator [] ( const unsigned int uiPosition )
 {
-	if ( uiPosition < m_Arguments.size () )
-		return m_Arguments.at ( uiPosition );
-	return NULL;
+    if ( uiPosition < Count () )
+    {
+        if ( uiPosition < MAX_EXPECTED_ARGS )
+            return &( m_Arguments [ uiPosition ] );
+        else
+            return &( m_vecArguments.at ( uiPosition - MAX_EXPECTED_ARGS ) );
+    }
+    return NULL;
+}
+
+const CLuaArgument* CLuaArguments::operator [] ( const unsigned int uiPosition ) const
+{
+    if ( uiPosition < Count () )
+    {
+        if ( uiPosition < MAX_EXPECTED_ARGS )
+            return &( m_Arguments [ uiPosition ] );
+        else
+            return &( m_vecArguments.at ( uiPosition - MAX_EXPECTED_ARGS ) );
+    }
+    return NULL;
 }
 
 
@@ -70,11 +94,10 @@ void CLuaArguments::CopyRecursive ( const CLuaArguments& Arguments, std::map < C
     pKnownTables->insert ( std::make_pair ( (CLuaArguments *)&Arguments, (CLuaArguments *)this ) );
 
     // Copy all the arguments
-    vector < CLuaArgument* > ::const_iterator iter = Arguments.m_Arguments.begin ();
-    for ( ; iter != Arguments.m_Arguments.end (); iter++ )
+    for ( unsigned int i = 0; i < Arguments.Count (); ++i )
     {
-        CLuaArgument* pArgument = new CLuaArgument ( **iter, pKnownTables );
-        m_Arguments.push_back ( pArgument );
+        CLuaArgument* pArgument = CreateNew ();
+        pArgument->Read ( *Arguments [ i ], pKnownTables );
     }
 
     if ( bKnownTablesCreated )
@@ -92,8 +115,8 @@ void CLuaArguments::ReadArguments ( lua_State* luaVM, signed int uiIndexBegin )
     while ( lua_type ( luaVM, uiIndexBegin ) != LUA_TNONE )
     {
         // Create an argument, let it read out the argument and add it to our vector
-        CLuaArgument* pArgument = new CLuaArgument ( luaVM, uiIndexBegin++, &knownTables );
-        m_Arguments.push_back ( pArgument );
+        CLuaArgument* pArgument = CreateNew ();
+        pArgument->Read ( luaVM, uiIndexBegin++, &knownTables );
     }
 }
 
@@ -116,11 +139,11 @@ void CLuaArguments::ReadTable ( lua_State* luaVM, int iIndexBegin, std::map < co
 
     while (lua_next(luaVM, iIndexBegin) != 0) {
         /* uses 'key' (at index -2) and 'value' (at index -1) */
-        CLuaArgument* pArgument = new CLuaArgument ( luaVM, -2, pKnownTables );
-        m_Arguments.push_back ( pArgument ); // push the key first
+        CLuaArgument* pArgument = CreateNew ();
+        pArgument->Read ( luaVM, -2, pKnownTables ); // push the key first
 
-        pArgument = new CLuaArgument ( luaVM, -1, pKnownTables );
-        m_Arguments.push_back ( pArgument ); // then the value
+        pArgument = CreateNew ();
+        pArgument->Read ( luaVM, -1, pKnownTables ); // then the value
        
         /* removes 'value'; keeps 'key' for next iteration */
         lua_pop(luaVM, 1);
@@ -132,18 +155,16 @@ void CLuaArguments::ReadTable ( lua_State* luaVM, int iIndexBegin, std::map < co
 
 void CLuaArguments::ReadArgument ( lua_State* luaVM, int iIndex )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( luaVM, iIndex );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( luaVM, iIndex );
 }
 
 void CLuaArguments::PushArguments ( lua_State* luaVM ) const
 {
     // Push all our arguments
-    vector < CLuaArgument* > ::const_iterator iter = m_Arguments.begin ();
-    for ( ; iter != m_Arguments.end (); iter++ )
-    {
-        (*iter)->Push ( luaVM );
-    }
+    const CLuaArguments& args = *this;
+    for ( unsigned int i = 0; i < Count (); ++i )
+        args[ i ]->Push ( luaVM );
 }
 
 void CLuaArguments::PushAsTable ( lua_State* luaVM, std::map < CLuaArguments*, int > * pKnownTables )
@@ -157,12 +178,13 @@ void CLuaArguments::PushAsTable ( lua_State* luaVM, std::map < CLuaArguments*, i
 
     lua_newtable ( luaVM );
     pKnownTables->insert ( std::make_pair ( (CLuaArguments *)this, lua_gettop(luaVM) ) );
-    vector < CLuaArgument* > ::const_iterator iter = m_Arguments.begin ();
-    for ( ; iter != m_Arguments.end () && (iter+1) != m_Arguments.end (); iter ++ )
+
+    CLuaArguments& args = *this;
+    for ( unsigned int i = 0; i < Count (); ++i )
     {
-        (*iter)->Push ( luaVM, pKnownTables ); // index
-        iter++;
-        (*iter)->Push ( luaVM, pKnownTables ); // value
+        args [ i ]->Push ( luaVM, pKnownTables );
+        ++i;
+        args [ i ]->Push ( luaVM, pKnownTables );
         lua_settable ( luaVM, -3 );
     }
 
@@ -173,11 +195,10 @@ void CLuaArguments::PushAsTable ( lua_State* luaVM, std::map < CLuaArguments*, i
 
 void CLuaArguments::PushArguments ( CLuaArguments& Arguments )
 {
-    vector < CLuaArgument* > ::const_iterator iter = Arguments.IterBegin ();
-    for ( ; iter != Arguments.IterEnd (); iter++ )
+    for ( unsigned int i = 0; i < Arguments.Count (); ++i )
     {
-        CLuaArgument* pArgument = new CLuaArgument ( **iter );
-        m_Arguments.push_back ( pArgument );
+        CLuaArgument* pArgument = CreateNew ();
+        pArgument->Read ( *Arguments [ i ] );
     }
 }
 
@@ -197,7 +218,7 @@ bool CLuaArguments::Call ( CLuaMain* pLuaMain, int iLuaFunction, CLuaArguments *
     // Call the function with our arguments
     pLuaMain->ResetInstructionCount ();
 
-    int iret = lua_pcall ( luaVM, m_Arguments.size (), LUA_MULTRET, 0 );
+    int iret = lua_pcall ( luaVM, Count (), LUA_MULTRET, 0 );
     if ( iret == LUA_ERRRUN || iret == LUA_ERRMEM )
     {
         const char* szRes = lua_tostring( luaVM, -1 );		
@@ -241,7 +262,7 @@ bool CLuaArguments::CallGlobal ( CLuaMain* pLuaMain, const char* szFunction, CLu
     // Call the function with our arguments
     pLuaMain->ResetInstructionCount ();
 
-    int iret = lua_pcall ( luaVM, m_Arguments.size (), LUA_MULTRET, 0 );
+    int iret = lua_pcall ( luaVM, Count (), LUA_MULTRET, 0 );
     if ( iret == LUA_ERRRUN || iret == LUA_ERRMEM )
     {
         const char* szRes = lua_tostring( luaVM, -1 );
@@ -269,80 +290,71 @@ bool CLuaArguments::CallGlobal ( CLuaMain* pLuaMain, const char* szFunction, CLu
 
 CLuaArgument* CLuaArguments::PushNil ( void )
 {
-    CLuaArgument* pArgument = new CLuaArgument;
-    m_Arguments.push_back ( pArgument );
-    return pArgument;
+    return CreateNew ();
 }
 
 
 CLuaArgument* CLuaArguments::PushBoolean ( bool bBool )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( bBool );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( bBool );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushNumber ( double dNumber )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( dNumber );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( dNumber );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushString ( const char* szString )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( szString );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( szString );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushUserData ( void* pUserData )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( pUserData );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( pUserData );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushElement ( CClientEntity* pElement )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( pElement );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( pElement );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushArgument ( CLuaArgument& Argument )
 {
-    CLuaArgument* pArgument = new CLuaArgument ( Argument );
-    m_Arguments.push_back ( pArgument );
+    CLuaArgument* pArgument = CreateNew ();
+    pArgument->Read ( Argument );
     return pArgument;
 }
 
 
 CLuaArgument* CLuaArguments::PushTable ( CLuaArguments * table )
 {
-    CLuaArgument* pArgument = new CLuaArgument (  );
+    CLuaArgument* pArgument = CreateNew ();
     pArgument->Read(table);
-    m_Arguments.push_back ( pArgument );
     return pArgument;
 }
 
 
 void CLuaArguments::DeleteArguments ( void )
 {
-    // Delete each item
-    vector < CLuaArgument* > ::iterator iter = m_Arguments.begin ();
-    for ( ; iter != m_Arguments.end (); iter++ )
-    {
-        delete *iter;
-    }
-
     // Clear the vector
-    m_Arguments.clear ();
+    m_vecArguments.clear ();
+    m_uiSize = 0;
 }
 
 
@@ -361,8 +373,8 @@ bool CLuaArguments::ReadFromBitStream ( NetBitStreamInterface& bitStream, std::v
         pKnownTables->push_back ( this );
         for ( unsigned short us = 0 ; us < usNumArgs ; us++ )
         {
-		    CLuaArgument* pArgument = new CLuaArgument ( bitStream, pKnownTables );
-            m_Arguments.push_back ( pArgument );
+		    CLuaArgument* pArgument = CreateNew ();
+            pArgument->Read ( bitStream, pKnownTables );
         }
 	}
 
@@ -384,11 +396,12 @@ bool CLuaArguments::WriteToBitStream ( NetBitStreamInterface& bitStream, std::ma
 
     bool bSuccess = true;
     pKnownTables->insert ( make_pair ( (CLuaArguments *)this, pKnownTables->size () ) );
-    bitStream.WriteCompressed ( static_cast < unsigned short > ( m_Arguments.size () ) );
-    vector < CLuaArgument* > ::const_iterator iter = m_Arguments.begin ();
-    for ( ; iter != m_Arguments.end () ; iter++ )
+    bitStream.WriteCompressed ( static_cast < unsigned short > ( Count () ) );
+
+    const CLuaArguments& args = *this;
+    for ( unsigned int i = 0; i < Count (); ++i )
     {
-        CLuaArgument* pArgument = *iter;
+        const CLuaArgument* pArgument = args [ i ];
         if ( !pArgument->WriteToBitStream ( bitStream, pKnownTables ) )
         {
             bSuccess = false;
@@ -399,4 +412,25 @@ bool CLuaArguments::WriteToBitStream ( NetBitStreamInterface& bitStream, std::ma
         delete pKnownTables;
 
 	return bSuccess;
+}
+
+unsigned int CLuaArguments::Count () const
+{
+    return m_uiSize;
+}
+
+CLuaArgument* CLuaArguments::CreateNew ()
+{
+    CLuaArgument* pArgument = 0;
+    if ( m_uiSize < MAX_EXPECTED_ARGS )
+        pArgument = &m_Arguments [ m_uiSize ];
+    else
+    {
+        m_vecArguments.push_back ( CLuaArgument () );
+        pArgument = &m_vecArguments.back ();
+    }
+
+    ++m_uiSize;
+    pArgument->Clear ();
+    return pArgument;
 }
