@@ -21,7 +21,7 @@
 class CMovingObjectsManager
 {
 public:
-    inline void                         Add                         ( CDeathmatchObject* pObject )      { m_List.push_back ( pObject ); };
+    inline void                         Add                         ( CDeathmatchObject* pObject )      { if ( !ListContains ( m_List, pObject ) ) m_List.push_back ( pObject ); };
     inline void                         Remove                      ( CDeathmatchObject* pObject )      { if ( !m_List.empty() ) m_List.remove ( pObject ); };
 
     void                                DoPulse                     ( void );

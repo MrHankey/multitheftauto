@@ -145,10 +145,9 @@ void CDeathmatchVehicle::UpdateSyncTimes ( void )
 }
 
 
-
 void CDeathmatchVehicle::SetAdjustablePropertyValue ( unsigned short usValue )
 {
-    if ( UseSmoothing () )
+    if ( UseInterpolation () )
     {
         if ( m_usModel == VT_HYDRA ) usValue = 5000 - usValue;
         m_adjustableProperty.lerp ( usValue, m_ulSyncFrequency );
@@ -162,7 +161,7 @@ void CDeathmatchVehicle::SetAdjustablePropertyValue ( unsigned short usValue )
 
 void CDeathmatchVehicle::SetTurretRotation ( float fHorizontal, float fVertical )
 {
-    if ( UseSmoothing () )
+    if ( UseInterpolation () )
     {
         m_turretX.lerp ( fHorizontal, m_ulSyncFrequency );
         m_turretY.lerp ( fVertical, m_ulSyncFrequency );
@@ -174,7 +173,7 @@ void CDeathmatchVehicle::SetTurretRotation ( float fHorizontal, float fVertical 
 }
 
 
-bool CDeathmatchVehicle::UseSmoothing ( void )
+bool CDeathmatchVehicle::UseInterpolation ( void )
 {
     // Use smoothing if: It has a driver and it's not local and we're not syncing it or
     //                    It has no driver and we're not syncing it.
@@ -191,9 +190,9 @@ void CDeathmatchVehicle::StreamedInPulse ( void )
 {
     CClientVehicle::StreamedInPulse ();
 
-    if ( UseSmoothing () )
+    if ( UseInterpolation () )
     {
         CClientVehicle::_SetAdjustablePropertyValue ( m_adjustableProperty.update () );
-        CClientVehicle::SetTurretRotation ( m_turretX.updateRotRad (), m_turretY.updateRotRad () );
+        CClientVehicle::SetTurretRotation ( m_turretX.updateRotRad (), m_turretY.updateRotRad () ); 
     }
 }

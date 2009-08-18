@@ -2257,12 +2257,16 @@ void CPacketHandler::Packet_EntityAdd ( NetBitStreamInterface& bitStream )
                         if ( bitStream.ReadBit ( bIsMoving ) && bIsMoving )
                         {
                             unsigned long ulMoveTimeLeft;
+                            // Needs to be CVector as we can have a value of over 2xPI here (for multiple rotations)
+                            CVector vecRotationRadians;
                             if ( bitStream.ReadCompressed ( ulMoveTimeLeft ) &&
                                  bitStream.Read ( &position ) &&
-                                 bitStream.Read ( &rotationRadians ) )
+                                 bitStream.Read ( vecRotationRadians.fX ) &&
+                                 bitStream.Read ( vecRotationRadians.fY ) &&
+                                 bitStream.Read ( vecRotationRadians.fZ ) )
                             {
                                 pObject->StartMovement ( position.data.vecPosition,
-                                                         rotationRadians.data.vecRotation,
+                                                         vecRotationRadians,
                                                          ulMoveTimeLeft );
                             }
                         }                                 

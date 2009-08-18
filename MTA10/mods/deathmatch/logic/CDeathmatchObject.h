@@ -30,32 +30,28 @@ public:
     void                                SetOrientation                  ( const CVector& vecPosition, const CVector& vecRotationRadians );
 
     // CDeathmatchObject functions
-    inline const CVector&               GetStartPosition                ( void )        { return m_vecStartPosition; };
-    inline const CVector&               GetStartRotation                ( void )        { return m_vecStartRotation; };
-    inline const CVector&               GetTargetPosition               ( void )        { return m_vecTargetPosition; };
-    inline const CVector&               GetTargetRotation               ( void )        { return m_vecTargetRotation; };
-    inline void                         SetTargetRotation               ( const CVector& vecRotation ) { m_vecTargetRotation = vecRotation; }
-    inline unsigned long                GetStartTime                    ( void )        { return m_ulStartTime; };
-    inline unsigned long                GetTargetTime                   ( void )        { return m_ulTargetTime; };
+    inline const CVector&               GetStartPosition                ( void )        { return m_movePosition.begin; };
+    inline const CVector&               GetStartRotation                ( void )        { return m_moveRotation.begin; };
+    inline const CVector&               GetTargetPosition               ( void )        { return m_movePosition.end; };
+    inline const CVector&               GetTargetRotation               ( void )        { return m_moveRotation.end; };
+    inline void                         SetTargetRotation               ( const CVector& vecRotation ) { m_moveRotation.end = vecRotation; }
+    inline unsigned long                GetStartTime                    ( void )        { return m_movePosition.beginTime; };
+    inline unsigned long                GetTargetTime                   ( void )        { return m_movePosition.endTime; };
 
     void                                StartMovement                   ( const CVector& vecTargetPosition, const CVector& vecTargetRotation, unsigned long ulTime );
     void                                StopMovement                    ( void );
-    void                                FinishMovement                  ( void );
     void                                UpdateMovement                  ( void );
+    
     void                                UpdateContactingBegin           ( const CVector& vecPreviousPosition, const CVector& vecPreviousRotation );
     void                                UpdateContacting                ( const CVector& vecCenterOfRotation, const CVector& vecFrameTranslation, const CVector& vecFrameRotation );
 
-    inline bool                         IsMoving                        ( void )        { return m_ulStartTime != 0; };
+    inline bool                         IsMoving                        ( void )        { return !m_movePosition.finished (); }
 
 protected:
     class CMovingObjectsManager*        m_pMovingObjectsManager;
 
-    CVector                             m_vecStartPosition;
-    CVector                             m_vecStartRotation;
-    CVector                             m_vecTargetPosition;
-    CVector                             m_vecTargetRotation;
-    unsigned long                       m_ulStartTime;
-    unsigned long                       m_ulTargetTime;
+    CInterpolatedVar < CVector >        m_movePosition;
+    CInterpolatedVar < CVector >        m_moveRotation;
 };
 
 #endif

@@ -35,7 +35,7 @@ public:
     void                                SetTurretRotation               ( float fHorizontal, float fVertical );
 
 protected:
-    bool                                UseSmoothing                    ( void );
+    bool                                UseInterpolation                ( void );
     void                                StreamedInPulse                 ( void );
 
 private:

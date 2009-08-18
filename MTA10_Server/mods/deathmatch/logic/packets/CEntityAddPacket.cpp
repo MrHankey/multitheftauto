@@ -170,10 +170,12 @@ bool CEntityAddPacket::Write ( NetBitStreamInterface& BitStream ) const
                         position.data.vecPosition = pObject->m_moveData.vecStopPosition;
                         BitStream.Write ( &position );
 
-                        rotationRadians.data.vecRotation = pObject->m_moveData.vecStopRotation - rotationRadians.data.vecRotation;
-                        BitStream.Write ( &rotationRadians );
+                        // Needs to be CVector as we can have a value of over 2xPI here (for multiple rotations)
+                        CVector vecRotationRadians = pObject->m_moveData.vecStopRotation - rotationRadians.data.vecRotation;
+                        BitStream.Write ( vecRotationRadians.fX );
+                        BitStream.Write ( vecRotationRadians.fY );
+                        BitStream.Write ( vecRotationRadians.fZ );
                     }
-
 
                     break;
                 }
