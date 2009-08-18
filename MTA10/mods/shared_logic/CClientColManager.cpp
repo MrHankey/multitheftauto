@@ -31,9 +31,8 @@ void CClientColManager::DoHitDetection ( const CVector& vecNowPosition, float fR
 {
     CClientColShape* pShape = NULL;
     // Call the hit detection event on all our shapes
-    list < CClientColShape * > cloneList = m_List;
-    list < CClientColShape* > ::const_iterator iter = cloneList.begin ();
-    for ( ; iter != cloneList.end (); iter++ )
+    list < CClientColShape* > ::const_iterator iter = m_List.begin ();
+    for ( ; iter != m_List.end (); iter++ )
     {
         pShape = *iter;
 

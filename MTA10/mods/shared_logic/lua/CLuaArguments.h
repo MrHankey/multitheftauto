@@ -76,7 +76,7 @@ private:
 
 private:
     CLuaArgument                                        m_Arguments [ MAX_EXPECTED_ARGS ];
-    std::vector < CLuaArgument >                        m_vecArguments;
+    std::vector < CLuaArgument >*                       m_vecArguments;
     unsigned int                                        m_uiSize;
 };
 

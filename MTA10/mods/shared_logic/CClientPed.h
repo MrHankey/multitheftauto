@@ -517,7 +517,7 @@ public:
     bool                        m_bDestroyingSatchels;
     bool                        m_bDoingGangDriveby;
     CAnimBlock *                m_pAnimationBlock;
-    char *                      m_szAnimationName;
+    char                        m_szAnimationName [ 128 ];
     bool                        m_bRequestedAnimation;
     bool                        m_bLoopAnimation;
     bool                        m_bUpdatePositionAnimation;

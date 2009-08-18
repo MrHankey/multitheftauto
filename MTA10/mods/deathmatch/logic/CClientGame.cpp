@@ -3025,7 +3025,7 @@ void CClientGame::QuitPlayer ( CClientPlayer* pPlayer, eQuitReason Reason )
     }
 
     // Delete the player
-    delete pPlayer;
+    g_pClientGame->GetElementDeleter ()->Delete ( pPlayer );
 }
 
 

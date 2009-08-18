@@ -255,7 +255,8 @@ void CNametags::DrawDefault ( void )
     // Got any players that are not local?
     if ( m_pPlayerManager->Count () <= 1 ) return;
 
-    list < CClientPlayer * > playerTags;
+    CClientPlayer** playerTags = (CClientPlayer**)_alloca ( sizeof ( CClientPlayer* ) * m_pPlayerManager->Count () );
+    unsigned int uiNumTags = 0;
 
     // Grab the local player
     CClientPlayer* pLocalPlayer = m_pPlayerManager->GetLocalPlayer ();
@@ -359,7 +360,8 @@ void CNametags::DrawDefault ( void )
             if ( !bCollision || ( pGameEntity && pPlayerVehicle && pGameEntity == pPlayerVehicle->GetGameEntity() ) )
             {
                 pPlayer->SetNametagDistance ( sqrt ( fDistanceExp ) );
-                playerTags.push_front ( pPlayer );
+                playerTags [ uiNumTags ] = pPlayer;
+                ++uiNumTags;
             }
 
             // Destroy the colpoint
@@ -375,10 +377,9 @@ void CNametags::DrawDefault ( void )
     float fAlphaModifier;
     unsigned char ucAlpha;
     float fDistance;
-    list < CClientPlayer * > ::iterator iterTags = playerTags.begin ();
-    for ( ; iterTags != playerTags.end () ; iterTags++ )
+    for ( unsigned int i = uiNumTags; i > 0; --i )
     {
-		pPlayer = *iterTags;
+		pPlayer = playerTags [ i - 1 ];
         fDistance = pPlayer->GetNametagDistance ();
 
         static float fFullAlphaDistance = 7.0f;

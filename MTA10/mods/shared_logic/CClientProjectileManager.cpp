@@ -43,9 +43,8 @@ void CClientProjectileManager::DoPulse ( void )
 {
     CElementDeleter* pElementDeleter = g_pClientGame->GetElementDeleter();
     CClientProjectile* pProjectile = NULL;
-    list < CClientProjectile* > cloneList = m_List;
-    list < CClientProjectile* > ::iterator iter = cloneList.begin ();
-    for ( ; iter != cloneList.end () ; iter++ )
+    list < CClientProjectile* > ::iterator iter = m_List.begin ();
+    while ( iter != m_List.end () )
     {
         pProjectile = *iter;
 
@@ -53,11 +52,12 @@ void CClientProjectileManager::DoPulse ( void )
         if ( pProjectile->IsActive () )
         {
             pProjectile->DoPulse ();
+            ++iter;
         }
         else
         {           
             // Remove this projectile            
-            m_List.remove ( pProjectile );
+            iter = m_List.erase ( iter );
             pProjectile->m_bLinked = false;
             pElementDeleter->Delete ( pProjectile );
         }
