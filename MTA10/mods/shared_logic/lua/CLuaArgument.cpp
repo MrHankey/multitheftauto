@@ -239,7 +239,7 @@ bool CLuaArgument::CompareRecursive ( const CLuaArgument& Argument, std::set < C
                 if ( pKnownTables->find ( m_pTableData ) == pKnownTables->end () )
                 {
                     pKnownTables->insert ( m_pTableData );
-                    if ( (*m_pTableData) [ i ] != (*m_pTableData) [ i ] )
+                    if ( (*m_pTableData) [ i ] != (*Argument.m_pTableData) [ i ] )
                         return false;
                 }
             }
