@@ -65,8 +65,8 @@ void CElementRPCs::SetElementData ( NetBitStreamInterface& bitStream )
     unsigned short usNameLength;
     if ( bitStream.ReadCompressed ( ID ) && bitStream.ReadCompressed ( usNameLength ) )
     {
-        char* szName = (char *)_alloca ( usNameLength + 1 );
-		szName [ usNameLength ] = '\0';
+        char* szName = new char [ usNameLength + 1 ];
+		szName [ usNameLength ] = NULL;
 
         CLuaArgument Argument;
         if ( bitStream.Read ( szName, usNameLength ) && Argument.ReadFromBitStream ( bitStream ) )
@@ -77,6 +77,7 @@ void CElementRPCs::SetElementData ( NetBitStreamInterface& bitStream )
                 pEntity->SetCustomData ( szName, Argument, NULL );
             }
         }            
+        delete [] szName;
     }
 }
 

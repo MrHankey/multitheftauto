@@ -26,19 +26,19 @@ using namespace std;
 extern CClientGame* g_pClientGame;
 
 CLuaArguments::CLuaArguments ( )
-: m_uiSize ( 0 ), m_vecArguments ( 0 )
+: m_uiSize ( 0 )
 {
 }
 
 CLuaArguments::CLuaArguments ( NetBitStreamInterface& bitStream, std::vector < CLuaArguments* > * pKnownTables )
-: m_uiSize ( 0 ), m_vecArguments ( 0 )
+: m_uiSize ( 0 )
 {
     ReadFromBitStream ( bitStream, pKnownTables );
 }
 
 
 CLuaArguments::CLuaArguments ( const CLuaArguments& Arguments, std::map < CLuaArguments*, CLuaArguments* > * pKnownTables )
-: m_uiSize ( 0 ), m_vecArguments ( 0 )
+: m_uiSize ( 0 )
 {
     // Copy all the arguments
     CopyRecursive ( Arguments, pKnownTables );
@@ -51,8 +51,8 @@ CLuaArgument* CLuaArguments::operator [] ( const unsigned int uiPosition )
     {
         if ( uiPosition < MAX_EXPECTED_ARGS )
             return &( m_Arguments [ uiPosition ] );
-        else if ( m_vecArguments )
-            return &( m_vecArguments->at ( uiPosition - MAX_EXPECTED_ARGS ) );
+        else
+            return &( m_vecArguments.at ( uiPosition - MAX_EXPECTED_ARGS ) );
     }
     return NULL;
 }
@@ -63,8 +63,8 @@ const CLuaArgument* CLuaArguments::operator [] ( const unsigned int uiPosition )
     {
         if ( uiPosition < MAX_EXPECTED_ARGS )
             return &( m_Arguments [ uiPosition ] );
-        else if ( m_vecArguments )
-            return &( m_vecArguments->at ( uiPosition - MAX_EXPECTED_ARGS ) );
+        else
+            return &( m_vecArguments.at ( uiPosition - MAX_EXPECTED_ARGS ) );
     }
     return NULL;
 }
@@ -353,9 +353,7 @@ CLuaArgument* CLuaArguments::PushTable ( CLuaArguments * table )
 void CLuaArguments::DeleteArguments ( void )
 {
     // Clear the vector
-    if ( m_vecArguments )
-        delete m_vecArguments;
-    m_vecArguments = 0;
+    m_vecArguments.clear ();
     m_uiSize = 0;
 }
 
@@ -428,10 +426,8 @@ CLuaArgument* CLuaArguments::CreateNew ()
         pArgument = &m_Arguments [ m_uiSize ];
     else
     {
-        if ( !m_vecArguments )
-            m_vecArguments = new std::vector < CLuaArgument > ();
-        m_vecArguments->push_back ( CLuaArgument () );
-        pArgument = &m_vecArguments->back ();
+        m_vecArguments.push_back ( CLuaArgument () );
+        pArgument = &m_vecArguments.back ();
     }
 
     ++m_uiSize;

@@ -305,8 +305,9 @@ bool CKeyBinds::ProcessKeyStroke ( const SBindableKey * pKey, bool bState )
     // Search through binds
     bool bFound = false;
     CKeyBind* pBind = NULL;
-    list < CKeyBind* > ::const_iterator iter = m_pList->begin ();
-    for ( ; iter != m_pList->end (); iter++ )
+    list < CKeyBind* > cloneList = *m_pList;
+    list < CKeyBind* > ::const_iterator iter = cloneList.begin ();
+    for ( ; iter != cloneList.end (); iter++ )
     {
         pBind = *iter;
         if ( pBind->IsBeingDeleted () || !pBind->boundKey ) continue;
@@ -2518,7 +2519,7 @@ void CKeyBinds::BindCommand ( const char* szCmdLine )
     }
 
     // Copy the buffer
-    char* szTemp = (char *)_alloca ( strlen ( szCmdLine ) + 16 );
+    char* szTemp = new char [ strlen ( szCmdLine ) + 16 ];
     strcpy ( szTemp, szCmdLine );
 
     // Split it up into bind key, command and arguments
@@ -2578,13 +2579,15 @@ void CKeyBinds::BindCommand ( const char* szCmdLine )
     }
     else
         pConsole->Print ( szError );
+
+    delete [] szTemp;
 }
 
 
 void CKeyBinds::UnbindCommand ( const char* szCmdLine )
 {
     // Copy the buffer
-    char* szTemp = (char *)_alloca ( strlen ( szCmdLine ) + 16 );
+    char* szTemp = new char [ strlen ( szCmdLine ) + 16 ];
     strcpy ( szTemp, szCmdLine );
 
     // Split it up into bind key and command
@@ -2643,6 +2646,8 @@ void CKeyBinds::UnbindCommand ( const char* szCmdLine )
     }
     else
         pConsole->Print ( "* Syntax: unbind <all/key> [<up/down> <command>]" );
+
+    delete [] szTemp;
 }
 
 
@@ -2657,7 +2662,7 @@ void CKeyBinds::PrintBindsCommand ( const char* szCmdLine )
     if ( szCmdLine )
     {
         // Copy the buffer
-        szTemp = (char *)_alloca ( strlen ( szCmdLine ) + 16 );
+        szTemp = new char [ strlen ( szCmdLine ) + 16 ];
         strcpy ( szTemp, szCmdLine );    
         szKey = strtok ( szTemp, " " );
     }
@@ -2728,6 +2733,7 @@ void CKeyBinds::PrintBindsCommand ( const char* szCmdLine )
         if ( bIsEmpty )
             pConsole->Print ( "empty." );
     }
+    if ( szTemp ) delete [] szTemp;
 }
 
 

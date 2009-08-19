@@ -156,7 +156,7 @@ void CClientPickup::Destroy ( void )
 {
 	if ( m_pCollision )
 	{
-		g_pClientGame->GetElementDeleter ()->Delete ( m_pCollision );
+		delete m_pCollision;
 		m_pCollision = NULL;
 	}
     if ( m_pPickup )

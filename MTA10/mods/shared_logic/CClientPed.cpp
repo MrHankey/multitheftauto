@@ -149,7 +149,7 @@ void CClientPed::Init ( CClientManager* pManager, unsigned long ulModelID, bool 
     m_bDestroyingSatchels = false;
     m_bDoingGangDriveby = false;
     m_pAnimationBlock = NULL;
-    m_szAnimationName [ 0 ] = '\0';
+    m_szAnimationName = NULL;
     m_bRequestedAnimation = false;
     m_bLoopAnimation = false;    
     m_bUpdatePositionAnimation = false;
@@ -2462,8 +2462,12 @@ void CClientPed::StreamedInPulse ( void )
             {
                 m_bRequestedAnimation = false;
 
+                // Copy our name incase it gets deleted
+                char * szAnimName = new char [ strlen ( m_szAnimationName ) + 1 ];
+                strcpy ( szAnimName, m_szAnimationName );
                 // Run our animation
-                RunNamedAnimation ( m_pAnimationBlock, m_szAnimationName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+                RunNamedAnimation ( m_pAnimationBlock, szAnimName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+                delete [] szAnimName;                
             }            
         }
 
@@ -2872,8 +2876,12 @@ void CClientPed::_CreateModel ( void )
         // Are we still playing a looped animation?
         if ( m_bLoopAnimation && m_pAnimationBlock )
         {
+            // Copy our anim name incase it gets deleted
+            char * szAnimName = new char [ strlen ( m_szAnimationName ) + 1 ];
+            strcpy ( szAnimName, m_szAnimationName );
             // Run our animation
-            RunNamedAnimation ( m_pAnimationBlock, m_szAnimationName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+            RunNamedAnimation ( m_pAnimationBlock, szAnimName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+            delete [] szAnimName;
         }
 
         // Set the voice that corresponds to our model
@@ -3100,8 +3108,12 @@ void CClientPed::_ChangeModel ( void )
             // Are we still playing a looped animation?
             if ( m_bLoopAnimation && m_pAnimationBlock )
             {
+                // Copy our anim name incase it gets deleted
+                char * szAnimName = new char [ strlen ( m_szAnimationName ) + 1 ];
+                strcpy ( szAnimName, m_szAnimationName );
                 // Run our animation
-                RunNamedAnimation ( m_pAnimationBlock, m_szAnimationName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+                RunNamedAnimation ( m_pAnimationBlock, szAnimName, m_bLoopAnimation, m_bUpdatePositionAnimation );
+                delete [] szAnimName;
             }
 
             // Set the voice that corresponds to the new model
@@ -4579,13 +4591,8 @@ void CClientPed::RunNamedAnimation ( CAnimBlock * pBlock, const char * szAnimNam
         }
     }
     m_pAnimationBlock = pBlock;
-
-    size_t len = strlen ( szAnimName );
-    if ( len > sizeof ( m_szAnimationName ) - 1 )
-        len = sizeof ( m_szAnimationName ) - 1;
-    strncpy ( m_szAnimationName, szAnimName, len );
-    m_szAnimationName [ len ] = '\0';
-
+    m_szAnimationName = new char [ strlen ( szAnimName ) + 1 ];
+    strcpy ( m_szAnimationName, szAnimName ); 
     m_bLoopAnimation = bLoop;
     m_bUpdatePositionAnimation = bUpdatePosition;
 }
@@ -4608,7 +4615,11 @@ void CClientPed::KillAnimation ( void )
         }
     }
     m_pAnimationBlock = NULL;
-    m_szAnimationName [ 0 ] = '\0';
+    if ( m_szAnimationName )
+    {
+        delete [] m_szAnimationName;
+        m_szAnimationName = NULL;
+    }
     m_bRequestedAnimation = false;
 }
 

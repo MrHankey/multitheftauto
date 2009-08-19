@@ -44,8 +44,9 @@ void CClientPedManager::DoPulse ( void )
 {   
     CClientPed * pPed = NULL;
     // Loop through our streamed-in peds
-    list < CClientPed* > ::iterator iter = m_StreamedIn.begin ();
-    for ( ; iter != m_StreamedIn.end (); iter++ )
+    list < CClientPed * > List = m_StreamedIn;
+    list < CClientPed* > ::iterator iter = List.begin ();
+    for ( ; iter != List.end (); iter++ )
     {
         pPed = *iter;
         // We should have a game ped here
