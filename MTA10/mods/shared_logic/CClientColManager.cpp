@@ -12,7 +12,7 @@
 
 #include "StdInc.h"
 
-using std::list;
+using std::vector;
 
 CClientColManager::~CClientColManager ( void )
 {
@@ -22,7 +22,7 @@ CClientColManager::~CClientColManager ( void )
 
 void CClientColManager::DoPulse ( void )
 {
-    list < CClientColShape* > ::const_iterator iter = m_List.begin ();
+    vector < CClientColShape* > ::const_iterator iter = m_List.begin ();
     for ( ; iter != m_List.end (); iter++ ) (*iter)->DoPulse ();
 }
 
@@ -31,8 +31,9 @@ void CClientColManager::DoHitDetection ( const CVector& vecNowPosition, float fR
 {
     CClientColShape* pShape = NULL;
     // Call the hit detection event on all our shapes
-    list < CClientColShape* > ::const_iterator iter = m_List.begin ();
-    for ( ; iter != m_List.end (); iter++ )
+    vector < CClientColShape* > cloneList = m_List;
+    vector < CClientColShape* > ::const_iterator iter = cloneList.begin ();
+    for ( ; iter != cloneList.end (); iter++ )
     {
         pShape = *iter;
 
@@ -99,9 +100,8 @@ void CClientColManager::DoHitDetection ( const CVector& vecNowPosition, float fR
 bool CClientColManager::Exists ( CClientColShape* pShape )
 {
     // Return true if it exists
-    list < CClientColShape * > cloneList = m_List;
-    list < CClientColShape* > ::const_iterator iter = cloneList.begin ();
-    for ( ; iter != cloneList.end (); iter++ )
+    vector < CClientColShape* > ::const_iterator iter = m_List.begin ();
+    for ( ; iter != m_List.end (); iter++ )
     {
         if ( *iter == pShape )
         {
@@ -116,8 +116,8 @@ bool CClientColManager::Exists ( CClientColShape* pShape )
 void CClientColManager::DeleteAll ( void )
 {
     // Delete all of them
-    list < CClientColShape * > cloneList = m_List;
-    list < CClientColShape* > ::const_iterator iter = cloneList.begin ();
+    vector < CClientColShape * > cloneList = m_List;
+    vector < CClientColShape* > ::const_iterator iter = cloneList.begin ();
     for ( ; iter != cloneList.end (); iter++ )
     {
         delete *iter;
@@ -128,5 +128,16 @@ void CClientColManager::DeleteAll ( void )
 
 void CClientColManager::RemoveFromList ( CClientColShape* pShape )
 {
-    m_List.remove ( pShape );
+    vector < CClientColShape* > ::const_iterator iter = m_List.begin ();
+    while ( iter != m_List.end () )
+    {
+        if ( *iter == pShape )
+        {
+            iter = m_List.erase ( iter );
+        }
+        else
+        {
+            ++iter;
+        }
+    }
 }

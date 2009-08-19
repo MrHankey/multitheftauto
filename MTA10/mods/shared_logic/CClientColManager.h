@@ -37,7 +37,7 @@ protected:
     inline void                     AddToList                   ( CClientColShape* pShape )         { m_List.push_back ( pShape ); };
     void                            RemoveFromList              ( CClientColShape* pShape );
 
-    std::list < CClientColShape* >  m_List;
+    std::vector < CClientColShape* >  m_List;
 };
 
 #endif
