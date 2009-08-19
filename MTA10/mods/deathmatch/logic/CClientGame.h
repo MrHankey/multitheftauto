@@ -172,6 +172,7 @@ public:
         GLITCH_QUICKRELOAD,
         GLITCH_FASTFIRE,
         GLITCH_FASTMOVE,
+        NUM_GLITCHES
     };
     class CStoredWeaponSlot
     {
@@ -340,8 +341,8 @@ public:
     inline bool                         GetHudAreaNameDisabled          ( void )                        { return m_bHudAreaNameDisabled; };
     inline void                         SetHudAreaNameDisabled          ( bool bDisabled )              { m_bHudAreaNameDisabled = bDisabled; };
 
-    bool                                SetGlitchEnabled                ( char cGlitch, bool bEnabled );
-    bool                                IsGlitchEnabled                 ( char cGlitch );
+    bool                                SetGlitchEnabled                ( unsigned char cGlitch, bool bEnabled );
+    bool                                IsGlitchEnabled                 ( unsigned char cGlitch );
 
     bool                                SetCloudsEnabled                ( bool bEnabled );
     bool                                GetCloudsEnabled                ( void );
@@ -563,7 +564,7 @@ private:
     float                               m_fGameSpeed;
     long                                m_lMoney;
 
-    bool                                m_Glitches[3];
+    bool                                m_Glitches[NUM_GLITCHES];
 
     //Clouds Enabled
     bool                                m_bCloudsEnabled;
