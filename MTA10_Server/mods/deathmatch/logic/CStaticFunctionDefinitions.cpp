@@ -3909,6 +3909,8 @@ bool CStaticFunctionDefinitions::BlowVehicle ( CElement* pElement, bool bExplode
         pVehicle->SetHealth ( 0.0f );
         pVehicle->SetBlowTime ( ::GetTime () );
         pVehicle->GenerateSyncTimeContext ();
+        //Update our engine State
+        pVehicle->SetEngineOn( false );
 
         CBitStream BitStream;
         BitStream.pBitStream->Write ( pVehicle->GetID () );

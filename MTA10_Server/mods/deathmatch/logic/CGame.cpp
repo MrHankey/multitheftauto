@@ -1754,6 +1754,8 @@ void CGame::Packet_ExplosionSync ( CExplosionSyncPacket& Packet )
                                     // Call the onVehicleExplode event
                                     CLuaArguments Arguments;
                                     pVehicle->CallEvent ( "onVehicleExplode", Arguments );
+                                    //Update our engine State
+                                    pVehicle->SetEngineOn( false );
                                 }
                                 else
                                 {
@@ -2113,6 +2115,9 @@ void CGame::Packet_Vehicle_InOut ( CVehicleInOutPacket& Packet )
 
                                     // The vehicle is no longer idle
                                     pVehicle->SetIdleTime ( 0 );
+
+                                    //Update our engine State
+                                    pVehicle->SetEngineOn( true );
 
                                     // Tell everyone he's in (they should warp him in)
                                     CVehicleInOutPacket Reply ( ID, ucOccupiedSeat, VEHICLE_NOTIFY_IN_RETURN );
