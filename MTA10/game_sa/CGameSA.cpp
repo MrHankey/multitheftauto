@@ -540,11 +540,12 @@ bool CGameSA::IsTakingPhoto ( void )
     return * ( bool * ) ( VAR_CWeapon_TakingPhoto );
 }
 
+static bool bSpecialCharacterSetup=false;
 void CGameSA::SetupSpecialCharacters ( void )
 {
+    bSpecialCharacterSetup = true;
     ModelInfo[1].MakePedModel ( "TRUTH" );
     ModelInfo[2].MakePedModel ( "MACCER" );
-    //ModelInfo[156].MakePedModel ( "OLD REECE" );
     //ModelInfo[190].MakePedModel ( "BARBARA" );
     //ModelInfo[191].MakePedModel ( "HELENA" );
     //ModelInfo[192].MakePedModel ( "MICHELLE" );
@@ -568,7 +569,7 @@ void CGameSA::SetupSpecialCharacters ( void )
     ModelInfo[296].MakePedModel ( "JIZZY" );
     ModelInfo[297].MakePedModel ( "MADDOGG" );
     ModelInfo[298].MakePedModel ( "CAT" );
-    //ModelInfo[299].MakePedModel ( "CLAUDE" );
+    ModelInfo[299].MakePedModel ( "CLAUDE" );
     ModelInfo[300].MakePedModel ( "RYDER2" );
     ModelInfo[301].MakePedModel ( "RYDER3" );
     ModelInfo[302].MakePedModel ( "EMMET" );
@@ -586,24 +587,41 @@ void CGameSA::SetupSpecialCharacters ( void )
     ModelInfo[314].MakePedModel ( "GUNGRL2" );
     ModelInfo[315].MakePedModel ( "COPGRL2" );
     ModelInfo[316].MakePedModel ( "NURGRL2" );
+    bSpecialCharacterSetup = false;
 }
 
 DWORD _modelInfo;
 DWORD RETURN_CModelInfo_AddPedModel = 0x4C67C2;
 DWORD FUNC_CPedModelInfo_Constructor = 0x4C57A0;
 void _declspec(naked) HOOK_CModelInfo_AddPedModel ()
-{
-    // Construct our new CPedModelInfo
+{    
     _asm
     {
         mov     _modelInfo, esi
         pushad
-        mov     ecx, _modelInfo
-        call    FUNC_CPedModelInfo_Constructor
-        popad
-        mov     eax, [esi]
-        call    dword ptr [eax+18h]
-        mov     ecx, [esp+8]
-        jmp     RETURN_CModelInfo_AddPedModel
+    }
+    if ( bSpecialCharacterSetup )
+    {
+        // Construct our new CPedModelInfo
+        _asm
+        {
+            mov     ecx, _modelInfo
+            call    FUNC_CPedModelInfo_Constructor
+            popad
+            mov     eax, [esi]
+            call    dword ptr [eax+18h]
+            mov     ecx, [esp+8]
+            jmp     RETURN_CModelInfo_AddPedModel
+        }
+    }
+    else
+    {
+        _asm
+        {
+            popad
+            call    dword ptr [eax+18h]
+            mov     ecx, [esp+8]
+            jmp     RETURN_CModelInfo_AddPedModel
+        }
     }
 }

@@ -940,8 +940,11 @@ void CModelInfoSA::MakePedModel ( char * szTexture )
     }
 
     // Copy the default ped model info (0)
-    CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 0 )->GetInterface ();
+    CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 290 )->GetInterface ();
     memcpy ( pInterface, pDefaultPedModelInterface, sizeof ( CPedModelInfoSAInterface ) );
+
+    pInterface->pedStats = NULL;
+    SetColModelInterface ( ( CColModelSAInterface * ) VAR_CTempColModels_ModelPed1 );
 
     // Load our texture
     pGame->GetStreaming ()->RequestSpecialModel ( m_dwModelID, szTexture, 0 );
