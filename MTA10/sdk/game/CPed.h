@@ -19,6 +19,7 @@ class CTaskManager;
 #include "CWeapon.h"
 #include "CPedIntelligence.h"
 #include "CPedSound.h"
+#include "CPedIK.h"
 
 #include <CVector2D.h>
 
@@ -170,7 +171,8 @@ public:
 	virtual void			SetIsStanding( bool bStanding )=0;
 	virtual DWORD			GetType ()=0;
 	virtual CPedIntelligence *  GetPedIntelligence()=0;
-    virtual CPedSound *         GetPedSound () = 0;
+    virtual CPedSound *     GetPedSound () = 0;
+    virtual CPedIK *        GetPedIK () = 0;
     virtual DWORD *         GetMemoryValue ( DWORD dwOffset )=0;
 
 

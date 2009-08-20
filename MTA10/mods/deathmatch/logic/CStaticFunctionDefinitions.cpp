@@ -46,6 +46,7 @@ static CClientExplosionManager*                     m_pExplosionManager;
 static CClientProjectileManager*                    m_pProjectileManager;
 static CClientSoundManager*                         m_pSoundManager;
 static CClientRadio*                                m_pRadio;
+static CClientSpecialCharacters*                    m_pSpecialCharacters;
 
 // Used to run a function on all the children of the elements too
 #define RUN_CHILDREN list<CClientEntity*>::const_iterator iter=Entity.IterBegin();for(;iter!=Entity.IterEnd();iter++)
@@ -85,6 +86,7 @@ CStaticFunctionDefinitions::CStaticFunctionDefinitions (
     m_pProjectileManager = pManager->GetProjectileManager ();
     m_pSoundManager = pManager->GetSoundManager ();
     m_pRadio = pManager->GetRadio ();
+    m_pSpecialCharacters = pManager->GetSpecialCharacters ();
 }
 
 
@@ -4666,6 +4668,16 @@ bool CStaticFunctionDefinitions::SetJetpackMaxHeight ( float fHeight )
 {
     g_pGame->GetWorld ()->SetJetpackMaxHeight ( fHeight );
     return true;
+}
+
+bool CStaticFunctionDefinitions::LoadSpecialCharacter ( unsigned short usModel, const char * szSpecialCharacter )
+{
+    return m_pSpecialCharacters->ReplaceModel ( usModel, szSpecialCharacter );
+}
+
+bool CStaticFunctionDefinitions::UnloadSpecialCharacter ( unsigned short usModel )
+{
+    return m_pSpecialCharacters->RestoreModel ( usModel );
 }
 
 bool CStaticFunctionDefinitions::IsWorldSpecialPropertyEnabled ( const char* szPropName )

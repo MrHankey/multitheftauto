@@ -17,25 +17,28 @@
 
 extern CGameSA* pGame;
 
-CPedSA::CPedSA (  ) :
-    m_pPedIntelligence ( NULL ),
-    m_pPedInterface ( NULL ),
-    m_pPedSound ( NULL )
+CPedSA::CPedSA () 
 {
 	DEBUG_TRACE("CPedSA::CPedSA(  )");
-
-    memset ( this->m_pWeapons, 0, sizeof ( CWeaponSA* ) * WEAPONSLOT_MAX );
+    m_pPedInterface = NULL;
+    Construct ();   
 }
 
-CPedSA::CPedSA( CPedSAInterface * pPedInterface ) :
-    m_pPedIntelligence ( NULL ),
-    m_pPedInterface ( pPedInterface ),
-    m_pPedSound ( NULL )
+CPedSA::CPedSA( CPedSAInterface * pPedInterface )
 {
 	DEBUG_TRACE("CPedSA::CPedSA( CPedSAInterface * pedInterface )");
+    m_pPedInterface = pPedInterface;
+    Construct ();
+}
 
+void CPedSA::Construct ( void )
+{
+    m_pPedIntelligence = NULL;
+    m_pPedSound = NULL;
+    m_pPedIK = NULL;
     memset ( this->m_pWeapons, 0, sizeof ( CWeaponSA* ) * WEAPONSLOT_MAX );
 }
+
 
 VOID CPedSA::SetInterface( CEntitySAInterface * intInterface )
 {
@@ -77,11 +80,10 @@ void CPedSA::Init()
     CPedIntelligenceSAInterface * m_pPedIntelligenceInterface = (CPedIntelligenceSAInterface *)(dwPedIntelligence);
 	this->m_pPedIntelligence = new CPedIntelligenceSA(m_pPedIntelligenceInterface, this);
     this->m_pPedSound = new CPedSoundSA ( &pedInterface->pedSound );
+    this->m_pPedIK = new CPedIKSA ( &pedInterface->pedIK );
 
     for ( int i = 0; i < WEAPONSLOT_MAX; i++ )
 		this->m_pWeapons[i] = new CWeaponSA(&(pedInterface->Weapons[i]), this, (eWeaponSlot)i);
-
-	//this->m_pPedIK = new Cm_pPedIKSA(&(pedInterface->m_pPedIK));
 }
 
 

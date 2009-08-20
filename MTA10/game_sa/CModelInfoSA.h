@@ -64,6 +64,7 @@ class CPedModelInfoSAInterface;
 #define     FUNC_CVehicleModelInfo__GetNumRemaps        0x4C86B0
 
 #define		FUNC_SetColModel				0x4C4BC0
+#define     FUNC_SetTexDictionary           0x4c4b40
 /**
  * \todo Fill this class with info from R*
  */
@@ -230,6 +231,8 @@ protected:
     CColModel*		                m_pCustomColModel;
     CColModelSAInterface*		    m_pOriginalColModelInterface;
 	RpClump*					    m_pCustomClump;
+    unsigned short                  m_usOriginalTexDictionaryID;
+    DWORD                           m_dwOriginalTex;
 
 public:
                                     CModelInfoSA            ( void );
@@ -263,6 +266,7 @@ public:
 	bool			                IsValid                 ( void );
 	float			                GetDistanceFromCentreOfMassToBaseOfModel ( void );
     unsigned short                  GetTextureDictionaryID  ( void );
+    void                            SetTextureDictionaryID  ( unsigned short usID );
     float                           GetLODDistance          ( void );
     void                            SetLODDistance          ( float fDistance );
     void                            RestreamIPL             ( void );
@@ -296,6 +300,12 @@ public:
     inline void                     SetModelID			    ( DWORD dwModelID ) { m_dwModelID = dwModelID; }
 
     inline RwObject*                GetRwObject             ( void ) { return m_pInterface ? m_pInterface->pRwObject : NULL; }
+
+    // Texture
+    void                            SetTexDictionary        ( const char * szTexture );
+    DWORD *                         GetTexFileID            ( void );
+    void                            ReplaceTexture          ( const char * szTexture );
+    void                            RestoreTexture          ( void );
 };
 
 #endif

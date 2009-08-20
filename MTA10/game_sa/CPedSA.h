@@ -328,6 +328,8 @@ public:
 	                    CPedSA( CPedSAInterface * pedInterface );
                         ~CPedSA();
 
+    void                Construct   ( void );
+
     VOID                SetInterface( CEntitySAInterface * intInterface );
     CPedSAInterface *   GetPedInterface ( void ) { return ( CPedSAInterface * ) GetInterface (); }
 	void				Init();
@@ -354,11 +356,12 @@ public:
     void                RemoveWeaponModel ( int iModel );
     void                ClearWeapon     ( eWeaponType weaponType );
 
-	void				SetIsStanding( bool bStanding );
+	void				SetIsStanding   ( bool bStanding );
     CPedIntelligence *  GetPedIntelligence ( void )     { return m_pPedIntelligence; }
-    CPedSound *         GetPedSound ( void )            { return m_pPedSound; }
-	DWORD				GetType ( void );
-	void				SetType ( DWORD dwType );
+    CPedSound *         GetPedSound     ( void )        { return m_pPedSound; }
+    CPedIK *            GetPedIK        ( void )        { return m_pPedIK; }
+	DWORD				GetType         ( void );
+	void				SetType         ( DWORD dwType );
     DWORD               * GetMemoryValue ( DWORD dwOffset );
 
 	FLOAT		        GetCurrentRotation();

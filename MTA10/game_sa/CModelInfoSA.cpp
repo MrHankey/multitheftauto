@@ -27,6 +27,8 @@ CModelInfoSA::CModelInfoSA ( void )
     m_pOriginalColModelInterface = NULL;
     m_pCustomClump = NULL;
     m_pCustomColModel = NULL;
+    m_usOriginalTexDictionaryID = 0xFFFF;
+    m_dwOriginalTex = 0xFFFFFFFF;
 }
 
 
@@ -38,6 +40,8 @@ CModelInfoSA::CModelInfoSA ( DWORD dwModelID )
     m_pOriginalColModelInterface = NULL;
     m_pCustomClump = NULL;
     m_pCustomColModel = NULL;
+    m_usOriginalTexDictionaryID = 0xFFFF;
+    m_dwOriginalTex = 0xFFFFFFFF;
 }
 
 
@@ -472,6 +476,13 @@ unsigned short CModelInfoSA::GetTextureDictionaryID ()
     return 0;
 }
 
+void CModelInfoSA::SetTextureDictionaryID ( unsigned short usID )
+{
+    m_pInterface = ppModelInfo [ m_dwModelID ];
+    if ( m_pInterface )
+        m_pInterface->usTextureDictionary = usID;
+}
+
 float CModelInfoSA::GetLODDistance ()
 {
     m_pInterface = ppModelInfo [ m_dwModelID ];
@@ -896,4 +907,85 @@ void CModelInfoSA::SetVoice ( const char* szVoiceType, const char* szVoice )
     if ( sVoiceID < 0 )
         return;
     SetVoice ( sVoiceType, sVoiceID );
+}
+
+
+void CModelInfoSA::SetTexDictionary ( const char * szTexture )
+{
+    m_pInterface = ppModelInfo [ m_dwModelID ];
+    DWORD dwThis = ( DWORD ) m_pInterface;
+
+    DWORD dwFunc = FUNC_SetTexDictionary;
+    _asm
+    {
+        mov     ecx, dwThis
+        push    szTexture
+        call    dwFunc
+    }
+}
+
+
+DWORD * CModelInfoSA::GetTexFileID ( void )
+{
+    DWORD ModelID = m_dwModelID;
+    DWORD dwTemp;    
+    _asm
+    {
+         mov    ebx, ModelID
+         lea    eax, [ebx+ebx*4]
+         shl    eax, 2
+         mov    dwTemp, eax
+    }
+    // DONT ASK!
+    DWORD Array = 0x8E4CC8;    
+    return ( DWORD * ) ( Array + dwTemp );
+}
+
+
+void CModelInfoSA::ReplaceTexture ( const char * szTexture )
+{    
+    // Regrab our interface
+    m_pInterface = ppModelInfo [ m_dwModelID ];
+
+    DWORD * pTexFileID = GetTexFileID ();
+
+    // Backup our original tex ids
+    if ( m_usOriginalTexDictionaryID == 0xFFFF )
+    {
+        m_usOriginalTexDictionaryID = m_pInterface->usTextureDictionary;        
+        m_dwOriginalTex = *pTexFileID;
+    }
+    
+    SetTexDictionary ( szTexture );
+
+    // Grab our new file ID
+    DWORD VAR_ExtraObjectsDir = 0x8E48D0;
+    DWORD FUNC_CDirectory_FindItem = 0x5324A0;
+    unsigned int texID, B, *ptexID = &texID, *pB = &B;
+    _asm
+    {
+        mov     ecx, VAR_ExtraObjectsDir
+        push    pB
+        push    ptexID
+        push    szTexture
+        call    FUNC_CDirectory_FindItem
+    }
+    texID &= 0xFFFFFF;
+
+    // Set our new file ID
+    *pTexFileID = texID;
+}
+
+
+void CModelInfoSA::RestoreTexture ( void )
+{
+    // Do we need to restore it?
+    if ( m_usOriginalTexDictionaryID != 0xFFFF )
+    {
+        m_pInterface = ppModelInfo [ m_dwModelID ];
+
+        m_pInterface->usTextureDictionary = m_usOriginalTexDictionaryID;
+        DWORD * pTexFileID = GetTexFileID ();
+        *pTexFileID = m_dwOriginalTex;
+    }
 }
