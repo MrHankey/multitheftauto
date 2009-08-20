@@ -16,6 +16,7 @@
 *****************************************************************************/
 
 #include "StdInc.h"
+#include "CPedModelInfoSA.h"
 
 unsigned long* CGameSA::VAR_SystemTime;
 unsigned long* CGameSA::VAR_IsAtMenu;
@@ -604,10 +605,11 @@ void _declspec(naked) HOOK_CModelInfo_AddPedModel ()
     if ( bSpecialCharacterSetup )
     {
         // Construct our new CPedModelInfo
+        DWORD dwFunc = FUNC_CPedModelInfo_Constructor;
         _asm
         {
             mov     ecx, _modelInfo
-            call    FUNC_CPedModelInfo_Constructor
+            call    dwFunc
             popad
             mov     eax, [esi]
             call    dword ptr [eax+18h]
