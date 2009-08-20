@@ -310,7 +310,8 @@ void CNetAPI::DoPulse ( void )
             }
 
             // Time to freeze because of lack of return sync?
-            if ( ( m_bStoredReturnSync ) &&
+            if ( !g_pClientGame->IsDownloadingBigPacket () &&
+                    ( m_bStoredReturnSync ) &&
                     ( m_ulLastPuresyncTime != 0 ) &&
                     ( m_ulLastSyncReturnTime != 0 ) &&
                     ( ulCurrentTime <= m_ulLastPuresyncTime + 5000 ) &&

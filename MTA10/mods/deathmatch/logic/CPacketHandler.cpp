@@ -383,7 +383,7 @@ void CPacketHandler::Packet_ServerJoined ( NetBitStreamInterface& bitStream )
     g_pClientGame->m_Status = CClientGame::STATUS_JOINED;
 
     // Request the on join stuff
-    g_pClientGame->GetNetAPI ()->RPC ( SEND_ONJOIN_STUFF );
+    g_pClientGame->GetNetAPI ()->RPC ( INITIAL_DATA_STREAM );
 
 	// Call the onClientPlayerJoin event for ourselves
     CLuaArguments Arguments;

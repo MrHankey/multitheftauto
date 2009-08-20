@@ -45,7 +45,7 @@ CRPCFunctions::~CRPCFunctions ( void )
 void CRPCFunctions::AddHandlers ( void )
 {
     AddHandler ( PLAYER_INGAME_NOTICE, PlayerInGameNotice );
-    AddHandler ( SEND_ONJOIN_STUFF, SendOnjoinStuff );
+    AddHandler ( INITIAL_DATA_STREAM, InitialDataStream );
     AddHandler ( PLAYER_TARGET, PlayerTarget );
     AddHandler ( PLAYER_WEAPON, PlayerWeapon );
     AddHandler ( KEY_BIND, KeyBind );
@@ -100,7 +100,7 @@ void CRPCFunctions::PlayerInGameNotice ( NetBitStreamInterface & bitStream )
     }
 }
 
-void CRPCFunctions::SendOnjoinStuff ( NetBitStreamInterface & bitStream )
+void CRPCFunctions::InitialDataStream ( NetBitStreamInterface & bitStream )
 {
     // Already sent initial stuff? Protocol error
     if ( m_pSourcePlayer->IsJoined () )
@@ -110,7 +110,7 @@ void CRPCFunctions::SendOnjoinStuff ( NetBitStreamInterface & bitStream )
     else
     {
         // Send him the initial stuff
-        g_pGame->SendInitialStuff ( *m_pSourcePlayer );
+        g_pGame->InitialDataStream ( *m_pSourcePlayer );
     }
 }
 

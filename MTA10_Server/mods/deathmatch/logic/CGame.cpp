@@ -899,7 +899,7 @@ void CGame::JoinPlayer ( CPlayer& Player )
                                               m_pMainConfig->GetHTTPDownloadURL ().c_str () ) );
 }
 
-void CGame::SendInitialStuff ( CPlayer& Player )
+void CGame::InitialDataStream ( CPlayer& Player )
 {
     // He's joined now
     Player.SetStatus ( STATUS_JOINED );
