@@ -408,8 +408,6 @@ public:
     static bool                         SetWorldSpecialPropertyEnabled      ( const char* szPropName, bool bEnabled );
     static bool                         SetBlurLevel                        ( unsigned char ucLevel );
     static bool                         SetJetpackMaxHeight                 ( float fHeight );
-    static bool                         LoadSpecialCharacter                ( unsigned short usModel, const char * szSpecialCharacter );
-    static bool                         UnloadSpecialCharacter              ( unsigned short usModel );
 
     // Input functions
     static bool                         BindKey                             ( const char* szKey, const char* szHitState, CLuaMain* pLuaMain, int iLuaFunction, CLuaArguments& Arguments );

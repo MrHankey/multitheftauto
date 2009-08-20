@@ -61,7 +61,6 @@ CClientManager::CClientManager ( void )
     m_pExplosionManager = new CClientExplosionManager ( this );
     m_pWaterManager = new CClientWaterManager ( this );
     m_pRadio = new CClientRadio ( this );
-    m_pSpecialCharacters = new CClientSpecialCharacters;
 
 	m_pPacketRecorder = new CClientPacketRecorder ( this );
 
@@ -82,9 +81,6 @@ CClientManager::~CClientManager ( void )
     // We need to call this after deleting resources but before deleting entities
     g_pClientGame->GetElementDeleter ()->DoDeleteAll ();
     g_pCore->GetGUI ()->CleanDeadPool ();
-
-    delete m_pSpecialCharacters;
-    m_pSpecialCharacters = NULL;
 
     delete m_pRadio;
     m_pRadio = NULL;

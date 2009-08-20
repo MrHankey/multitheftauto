@@ -837,10 +837,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\shared_logic\CClientSpecialCharacters.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\shared_logic\CClientStreamElement.cpp"
 					>
 				</File>
@@ -1732,10 +1728,6 @@
 				</File>
 				<File
 					RelativePath="..\shared_logic\CClientSoundManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\shared_logic\CClientSpecialCharacters.h"
 					>
 				</File>
 				<File

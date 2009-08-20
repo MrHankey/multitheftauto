@@ -31,6 +31,8 @@ float* CGameSA::VAR_OldTimeStep;
 float* CGameSA::VAR_TimeStep;
 unsigned long* CGameSA::VAR_Framelimiter;
 
+void HOOK_CModelInfo_AddPedModel ();
+
 /**
  * \todo allow the addon to change the size of the pools (see 0x4C0270 - CPools::Initialise) (in start game?)
  */
@@ -120,6 +122,8 @@ CGameSA::CGameSA()
     m_Cheats [ CHEAT_FLYINGCARS    ] = (BYTE *)VAR_FlyingCarsEnabled;
     m_Cheats [ CHEAT_EXTRABUNNYHOP ] = (BYTE *)VAR_ExtraBunnyhopEnabled;
     m_Cheats [ CHEAT_EXTRAJUMP     ] = (BYTE *)VAR_ExtraJumpEnabled;
+
+    HookInstall ( 0x4C67BB, ( DWORD ) HOOK_CModelInfo_AddPedModel, 7 );
 }
 
 CGameSA::~CGameSA ( void )
@@ -212,7 +216,7 @@ bool CGameSA::IsInForeground ()
     return *VAR_IsForegroundWindow;
 }
 
-CModelInfo	* CGameSA::GetModelInfo(DWORD dwModelID )
+CModelInfo	* CGameSA::GetModelInfo(DWORD dwModelID)
 { 
 	DEBUG_TRACE("CModelInfo * CGameSA::GetModelInfo(DWORD dwModelID )");
 	if (dwModelID < MODELINFO_MAX) 
@@ -405,6 +409,8 @@ void CGameSA::Initialize ( void )
 {
     // Initialize garages
     m_pGarages->Initialize();
+
+    SetupSpecialCharacters ();
 }
 
 eGameVersion CGameSA::GetGameVersion ( void )
@@ -532,4 +538,72 @@ void CGameSA::ResetCheats ()
 bool CGameSA::IsTakingPhoto ( void )
 {
     return * ( bool * ) ( VAR_CWeapon_TakingPhoto );
+}
+
+void CGameSA::SetupSpecialCharacters ( void )
+{
+    ModelInfo[1].MakePedModel ( "TRUTH" );
+    ModelInfo[2].MakePedModel ( "MACCER" );
+    //ModelInfo[156].MakePedModel ( "OLD REECE" );
+    //ModelInfo[190].MakePedModel ( "BARBARA" );
+    //ModelInfo[191].MakePedModel ( "HELENA" );
+    //ModelInfo[192].MakePedModel ( "MICHELLE" );
+    //ModelInfo[193].MakePedModel ( "KATIE" );
+    //ModelInfo[194].MakePedModel ( "MILLIE" );
+    //ModelInfo[195].MakePedModel ( "DENISE" );
+    ModelInfo[265].MakePedModel ( "TENPEN" );   
+    ModelInfo[266].MakePedModel ( "PULASKI" );
+    ModelInfo[267].MakePedModel ( "HERN" );
+    ModelInfo[268].MakePedModel ( "DWAYNE" );
+    ModelInfo[269].MakePedModel ( "SMOKE" );
+    ModelInfo[270].MakePedModel ( "SWEET" );
+    ModelInfo[271].MakePedModel ( "RYDER" );
+    ModelInfo[272].MakePedModel ( "FORELLI" );
+    ModelInfo[290].MakePedModel ( "ROSE" );
+    ModelInfo[291].MakePedModel ( "PAUL" );
+    ModelInfo[292].MakePedModel ( "CESAR" );
+    ModelInfo[293].MakePedModel ( "OGLOC" );
+    ModelInfo[294].MakePedModel ( "WUZIMU" );
+    ModelInfo[295].MakePedModel ( "TORINO" );
+    ModelInfo[296].MakePedModel ( "JIZZY" );
+    ModelInfo[297].MakePedModel ( "MADDOGG" );
+    ModelInfo[298].MakePedModel ( "CAT" );
+    //ModelInfo[299].MakePedModel ( "CLAUDE" );
+    ModelInfo[300].MakePedModel ( "RYDER2" );
+    ModelInfo[301].MakePedModel ( "RYDER3" );
+    ModelInfo[302].MakePedModel ( "EMMET" );
+    ModelInfo[303].MakePedModel ( "ANDRE" );
+    ModelInfo[304].MakePedModel ( "KENDL" );
+    ModelInfo[305].MakePedModel ( "JETHRO" );
+    ModelInfo[306].MakePedModel ( "ZERO" );
+    ModelInfo[307].MakePedModel ( "TBONE" );
+    ModelInfo[308].MakePedModel ( "SINDACO" );
+    ModelInfo[309].MakePedModel ( "JANITOR" );
+    ModelInfo[310].MakePedModel ( "BBTHIN" );
+    ModelInfo[311].MakePedModel ( "SMOKEV" );
+    ModelInfo[312].MakePedModel ( "GANGRL2" );
+    ModelInfo[313].MakePedModel ( "MECGRL2" );
+    ModelInfo[314].MakePedModel ( "GUNGRL2" );
+    ModelInfo[315].MakePedModel ( "COPGRL2" );
+    ModelInfo[316].MakePedModel ( "NURGRL2" );
+}
+
+DWORD _modelInfo;
+DWORD RETURN_CModelInfo_AddPedModel = 0x4C67C2;
+DWORD FUNC_CPedModelInfo_Constructor = 0x4C57A0;
+void _declspec(naked) HOOK_CModelInfo_AddPedModel ()
+{
+    // Construct our new CPedModelInfo
+    _asm
+    {
+        mov     _modelInfo, esi
+        pushad
+        mov     ecx, _modelInfo
+        call    FUNC_CPedModelInfo_Constructor
+        popad
+        mov     eax, [esi]
+        call    dword ptr [eax+18h]
+        mov     ecx, [esp+8]
+        jmp     RETURN_CModelInfo_AddPedModel
+    }
 }

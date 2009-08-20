@@ -64,7 +64,8 @@ class CPedModelInfoSAInterface;
 #define     FUNC_CVehicleModelInfo__GetNumRemaps        0x4C86B0
 
 #define		FUNC_SetColModel				0x4C4BC0
-#define     FUNC_SetTexDictionary           0x4c4b40
+#define     FUNC_AddPedModel                0x4c67a0
+#define     VAR_CTempColModels_ModelPed1    0x968DF0
 /**
  * \todo Fill this class with info from R*
  */
@@ -231,14 +232,12 @@ protected:
     CColModel*		                m_pCustomColModel;
     CColModelSAInterface*		    m_pOriginalColModelInterface;
 	RpClump*					    m_pCustomClump;
-    unsigned short                  m_usOriginalTexDictionaryID;
-    DWORD                           m_dwOriginalTex;
 
 public:
                                     CModelInfoSA            ( void );
 	      			                CModelInfoSA            ( DWORD dwModelID );
 
-    CBaseModelInfoSAInterface *     GetInterface             ( void )              { return m_pInterface; }
+    CBaseModelInfoSAInterface *     GetInterface             ( void );
     CPedModelInfoSAInterface *      GetPedModelInfoInterface ( void )              { return reinterpret_cast < CPedModelInfoSAInterface * > ( GetInterface () ); }
 
 	BOOL			                IsBoat                  ( void );
@@ -294,6 +293,7 @@ public:
 	void			                SetCustomModel		    ( RpClump* pClump );
 	void			                RestoreOriginalModel    ( void );
 	void			                SetColModel			    ( CColModel* pColModel );
+    void                            SetColModelInterface    ( CColModelSAInterface * pInterface );
 	void			                RestoreColModel		    ( void );
     void                            MakeCustomModel         ( void );
 
@@ -301,11 +301,7 @@ public:
 
     inline RwObject*                GetRwObject             ( void ) { return m_pInterface ? m_pInterface->pRwObject : NULL; }
 
-    // Texture
-    void                            SetTexDictionary        ( const char * szTexture );
-    DWORD *                         GetTexFileID            ( void );
-    void                            ReplaceTexture          ( const char * szTexture );
-    void                            RestoreTexture          ( void );
+    void                            MakePedModel            ( char * szTexture );
 };
 
 #endif

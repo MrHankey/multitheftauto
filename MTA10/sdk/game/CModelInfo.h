@@ -115,8 +115,7 @@ public:
     virtual void            MakeCustomModel         ( void ) = 0;
     virtual RwObject*       GetRwObject             ( void ) = 0;
 
-    virtual void            ReplaceTexture          ( const char * szTexture ) = 0;
-    virtual void            RestoreTexture          ( void ) = 0;
+    virtual void            MakePedModel            ( char * szTexture ) = 0;
 };
 
 #endif

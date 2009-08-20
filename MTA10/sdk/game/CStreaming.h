@@ -16,6 +16,7 @@ class CStreaming
 {
 public:
     virtual void            RequestAnimations   ( int i, int j ) = 0;
+    virtual void            RequestSpecialModel ( DWORD model, const char * szTexture, DWORD channel ) = 0;
 };
 
 #endif

@@ -795,8 +795,6 @@ void CLuaManager::LoadCFunctions ( void )
     CLuaCFunctions::AddFunction ( "setJetpackMaxHeight", CLuaFunctionDefs::SetJetpackMaxHeight );
     CLuaCFunctions::AddFunction ( "setCloudsEnabled", CLuaFunctionDefs::SetCloudsEnabled );
     CLuaCFunctions::AddFunction ( "getCloudsEnabled", CLuaFunctionDefs::GetCloudsEnabled );
-    CLuaCFunctions::AddFunction ( "loadSpecialCharacter",  CLuaFunctionDefs::LoadSpecialCharacter );
-    CLuaCFunctions::AddFunction ( "unloadSpecialCharacter", CLuaFunctionDefs::UnloadSpecialCharacter );
 
     // Input functions
     CLuaCFunctions::AddFunction ( "bindKey", CLuaFunctionDefs::BindKey );

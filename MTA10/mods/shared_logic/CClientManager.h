@@ -46,7 +46,6 @@ class CClientManager;
 #include "CClientColManager.h"
 #include "CClientGroups.h"
 #include "CClientWaterManager.h"
-#include "CClientSpecialCharacters.h"
 
 class CClientProjectileManager;
 class CClientExplosionManager;
@@ -93,7 +92,6 @@ public:
     inline CClientPacketRecorder*       GetPacketRecorder           ( void )        { return m_pPacketRecorder; }
     inline CClientWaterManager*         GetWaterManager             ( void )        { return m_pWaterManager; }
     inline CClientRadio*                GetRadio                    ( void )        { return m_pRadio; }
-    inline CClientSpecialCharacters*    GetSpecialCharacters        ( void )        { return m_pSpecialCharacters; }
 
     inline CGUITexture*                 GetConnectionTroubleTexture ( void )        { return m_pConnectionTroubleTexture; }
 
@@ -143,7 +141,6 @@ private:
     CGUITexture*                        m_pConnectionTroubleTexture;
     CClientPacketRecorder*              m_pPacketRecorder;
     CClientRadio*                       m_pRadio;
-    CClientSpecialCharacters*           m_pSpecialCharacters;
     bool                                m_bBeingDeleted;
 };
 

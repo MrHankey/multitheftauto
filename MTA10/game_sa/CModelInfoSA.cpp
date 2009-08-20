@@ -27,8 +27,6 @@ CModelInfoSA::CModelInfoSA ( void )
     m_pOriginalColModelInterface = NULL;
     m_pCustomClump = NULL;
     m_pCustomColModel = NULL;
-    m_usOriginalTexDictionaryID = 0xFFFF;
-    m_dwOriginalTex = 0xFFFFFFFF;
 }
 
 
@@ -40,8 +38,12 @@ CModelInfoSA::CModelInfoSA ( DWORD dwModelID )
     m_pOriginalColModelInterface = NULL;
     m_pCustomClump = NULL;
     m_pCustomColModel = NULL;
-    m_usOriginalTexDictionaryID = 0xFFFF;
-    m_dwOriginalTex = 0xFFFFFFFF;
+}
+
+
+CBaseModelInfoSAInterface * CModelInfoSA::GetInterface ( void )
+{
+    return m_pInterface = ppModelInfo [ m_dwModelID ];;
 }
 
 
@@ -817,6 +819,20 @@ void CModelInfoSA::SetColModel ( CColModel* pColModel )
     }
 }
 
+void CModelInfoSA::SetColModelInterface ( CColModelSAInterface * pInterface )
+{
+    DWORD dwColModel = ( DWORD ) pInterface;
+    DWORD dwThis = ( DWORD ) GetInterface ();
+    DWORD dwFunc = FUNC_SetColModel;
+    _asm
+    {
+        mov     ecx, dwThis
+        push    0
+        push    dwColModel
+        call    dwFunc
+    }
+}
+
 void CModelInfoSA::RestoreColModel ( void )
 {
     // Are we loaded?
@@ -910,82 +926,23 @@ void CModelInfoSA::SetVoice ( const char* szVoiceType, const char* szVoice )
 }
 
 
-void CModelInfoSA::SetTexDictionary ( const char * szTexture )
+void CModelInfoSA::MakePedModel ( char * szTexture )
 {
-    m_pInterface = ppModelInfo [ m_dwModelID ];
-    DWORD dwThis = ( DWORD ) m_pInterface;
-
-    DWORD dwFunc = FUNC_SetTexDictionary;
+    CPedModelInfoSAInterface * pInterface;
+    DWORD dwModelID = m_dwModelID;
+    DWORD dwFunc = FUNC_AddPedModel;
     _asm
     {
-        mov     ecx, dwThis
-        push    szTexture
+        push    dwModelID
         call    dwFunc
+        mov     pInterface, eax
+        add     esp, 0x4
     }
-}
 
+    // Copy the default ped model info (0)
+    CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 0 )->GetInterface ();
+    memcpy ( pInterface, pDefaultPedModelInterface, sizeof ( CPedModelInfoSAInterface ) );
 
-DWORD * CModelInfoSA::GetTexFileID ( void )
-{
-    DWORD ModelID = m_dwModelID;
-    DWORD dwTemp;    
-    _asm
-    {
-         mov    ebx, ModelID
-         lea    eax, [ebx+ebx*4]
-         shl    eax, 2
-         mov    dwTemp, eax
-    }
-    // DONT ASK!
-    DWORD Array = 0x8E4CC8;    
-    return ( DWORD * ) ( Array + dwTemp );
-}
-
-
-void CModelInfoSA::ReplaceTexture ( const char * szTexture )
-{    
-    // Regrab our interface
-    m_pInterface = ppModelInfo [ m_dwModelID ];
-
-    DWORD * pTexFileID = GetTexFileID ();
-
-    // Backup our original tex ids
-    if ( m_usOriginalTexDictionaryID == 0xFFFF )
-    {
-        m_usOriginalTexDictionaryID = m_pInterface->usTextureDictionary;        
-        m_dwOriginalTex = *pTexFileID;
-    }
-    
-    SetTexDictionary ( szTexture );
-
-    // Grab our new file ID
-    DWORD VAR_ExtraObjectsDir = 0x8E48D0;
-    DWORD FUNC_CDirectory_FindItem = 0x5324A0;
-    unsigned int texID, B, *ptexID = &texID, *pB = &B;
-    _asm
-    {
-        mov     ecx, VAR_ExtraObjectsDir
-        push    pB
-        push    ptexID
-        push    szTexture
-        call    FUNC_CDirectory_FindItem
-    }
-    texID &= 0xFFFFFF;
-
-    // Set our new file ID
-    *pTexFileID = texID;
-}
-
-
-void CModelInfoSA::RestoreTexture ( void )
-{
-    // Do we need to restore it?
-    if ( m_usOriginalTexDictionaryID != 0xFFFF )
-    {
-        m_pInterface = ppModelInfo [ m_dwModelID ];
-
-        m_pInterface->usTextureDictionary = m_usOriginalTexDictionaryID;
-        DWORD * pTexFileID = GetTexFileID ();
-        *pTexFileID = m_dwOriginalTex;
-    }
+    // Load our texture
+    pGame->GetStreaming ()->RequestSpecialModel ( m_dwModelID, szTexture, 0 );
 }
