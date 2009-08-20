@@ -177,6 +177,7 @@ public:
     virtual void                        SetAkimboTargetUp           ( bool bUp ) = 0;
 
     virtual void                        AllowCreatedObjectsInVerticalLineTest ( bool bOn ) = 0;
+    virtual void                        DeleteAndDisableGangTags    () = 0;
 };
 
 #endif

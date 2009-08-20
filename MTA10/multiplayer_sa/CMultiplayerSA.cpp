@@ -909,18 +909,6 @@ void CMultiplayerSA::InitHooks()
     // Remove this check so that no bullets are ignored.
     *(BYTE *)0x73FDF9 = 0xEB;
 
-    // Disallow spraying gang tags
-    // Nop the whole CTagManager::IsTag function and replace its body with:
-    // xor eax, eax
-    // ret
-    // to make it always return false
-    memset ( (void *)0x49CCE0, 0x90, 74 );
-    *(DWORD *)(0x49CCE0) = 0x90C3C033;
-    // Remove also some hardcoded and inlined checks for if it's a tag
-    memset ( (void *)0x53374A, 0x90, 56 );
-    *(BYTE *)(0x4C4403) = 0xEB;
-
-
     // Allow turning on vehicle lights even if the engine is off
     memset ( (void *)0x6E1DBC, 0x90, 8 );
 
@@ -4159,5 +4147,47 @@ void _declspec(naked) HOOK_CPed_AddGogglesModel ()
 
     skip:
         jmp RETURN_CPed_AddGogglesModel
+    }
+}
+
+void CMultiplayerSA::DeleteAndDisableGangTags ()
+{
+    static bool bDisabled = false;
+    if ( !bDisabled )
+    {
+        bDisabled = true;
+
+        // Destroy all the world tags
+        unsigned int* puiNumTags = (unsigned int *)0xA9AD70;
+        DWORD** ppTags = (DWORD **)0xA9A8C0;
+        DWORD dwFunc = 0x563280; // CWorld::Remove
+
+        for ( unsigned int i = 0; i < *puiNumTags; ++i )
+        {
+            DWORD* pTagInterface = ppTags [ i << 1 ];
+            if ( pTagInterface )
+            {
+                _asm
+                {
+                    push pTagInterface
+                    call dwFunc
+                    add esp, 4
+                }
+            }
+        }
+
+        dwFunc = 0x49CC60; // CTagManager::ShutdownForRestart
+        _asm call dwFunc
+ 
+        // Disallow spraying gang tags
+        // Nop the whole CTagManager::IsTag function and replace its body with:
+        // xor eax, eax
+        // ret
+        // to make it always return false
+        memset ( (void *)0x49CCE0, 0x90, 74 );
+        *(DWORD *)(0x49CCE0) = 0x90C3C033;
+        // Remove also some hardcoded and inlined checks for if it's a tag
+        memset ( (void *)0x53374A, 0x90, 56 );
+        *(BYTE *)(0x4C4403) = 0xEB;
     }
 }
