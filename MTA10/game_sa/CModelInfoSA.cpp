@@ -943,7 +943,7 @@ void CModelInfoSA::MakePedModel ( char * szTexture )
     CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 290 )->GetInterface ();
     memcpy ( pInterface, pDefaultPedModelInterface, sizeof ( CPedModelInfoSAInterface ) );
 
-    pInterface->pedStats = NULL;
+    pInterface->pedStatsID = 0;
     SetColModelInterface ( ( CColModelSAInterface * ) VAR_CTempColModels_ModelPed1 );
 
     // Load our texture

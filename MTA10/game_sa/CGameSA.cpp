@@ -582,17 +582,18 @@ void CGameSA::SetupSpecialCharacters ( void )
     ModelInfo[309].MakePedModel ( "JANITOR" );
     ModelInfo[310].MakePedModel ( "BBTHIN" );
     ModelInfo[311].MakePedModel ( "SMOKEV" );
+    /* Hot-coffee only models
     ModelInfo[312].MakePedModel ( "GANGRL2" );
     ModelInfo[313].MakePedModel ( "MECGRL2" );
     ModelInfo[314].MakePedModel ( "GUNGRL2" );
     ModelInfo[315].MakePedModel ( "COPGRL2" );
     ModelInfo[316].MakePedModel ( "NURGRL2" );
+    */
     bSpecialCharacterSetup = false;
 }
 
 DWORD _modelInfo;
 DWORD RETURN_CModelInfo_AddPedModel = 0x4C67C2;
-DWORD FUNC_CPedModelInfo_Constructor = 0x4C57A0;
 void _declspec(naked) HOOK_CModelInfo_AddPedModel ()
 {    
     _asm

@@ -22,6 +22,7 @@ class ePedStats;
 typedef long AssocGroupID;
 
 #define		FUNC_SetMotionAnimGroup				            0x5b3580
+#define     FUNC_CPedModelInfo_Constructor                  0x4C57A0
 
 // CPedModelInfo:
 // +36 = Motion anim group (AssocGroupID, long)
@@ -44,7 +45,7 @@ public:
     BYTE                pad [ 4 ];              // 32   
     AssocGroupID        motionAnimGroup;        // 36   Motion anim group (AssocGroupID, long)
     DWORD               pedType;                // 40   Default ped type (long)
-    ePedStats *         pedStats;               // 44   Default ped stats (ePedStats)
+    DWORD               pedStatsID;             // 44   Default ped stats (ePedStats)
     BYTE                bCanDriveCars;          // 48   Can drive cars (byte)
     BYTE                pad2 [ 1 ];             // 49   
     short               pedFlags;               // 50   Ped flags (short)
