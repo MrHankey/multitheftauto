@@ -79,7 +79,6 @@ public:
 	virtual CBoundingBox	* GetBoundingBox        () = 0;
 	virtual bool			IsValid                 () = 0;
     virtual unsigned short  GetTextureDictionaryID  () = 0;
-    virtual void            SetTextureDictionaryID  ( unsigned short usID ) = 0;
     virtual float           GetLODDistance          () = 0;
     virtual void            SetLODDistance          ( float fDistance ) = 0;
     virtual void            RestreamIPL             () = 0;
@@ -114,8 +113,6 @@ public:
     // Call this to make sure the custom vehicle models are being used after a load.
     virtual void            MakeCustomModel         ( void ) = 0;
     virtual RwObject*       GetRwObject             ( void ) = 0;
-
-    virtual void            MakePedModel            ( char * szTexture ) = 0;
 };
 
 #endif

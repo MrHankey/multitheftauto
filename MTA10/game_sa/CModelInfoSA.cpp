@@ -41,12 +41,6 @@ CModelInfoSA::CModelInfoSA ( DWORD dwModelID )
 }
 
 
-CBaseModelInfoSAInterface * CModelInfoSA::GetInterface ( void )
-{
-    return m_pInterface = ppModelInfo [ m_dwModelID ];;
-}
-
-
 BOOL CModelInfoSA::IsBoat ( )
 {
 	DEBUG_TRACE("BOOL CModelInfoSA::IsBoat ( )");
@@ -478,13 +472,6 @@ unsigned short CModelInfoSA::GetTextureDictionaryID ()
     return 0;
 }
 
-void CModelInfoSA::SetTextureDictionaryID ( unsigned short usID )
-{
-    m_pInterface = ppModelInfo [ m_dwModelID ];
-    if ( m_pInterface )
-        m_pInterface->usTextureDictionary = usID;
-}
-
 float CModelInfoSA::GetLODDistance ()
 {
     m_pInterface = ppModelInfo [ m_dwModelID ];
@@ -819,20 +806,6 @@ void CModelInfoSA::SetColModel ( CColModel* pColModel )
     }
 }
 
-void CModelInfoSA::SetColModelInterface ( CColModelSAInterface * pInterface )
-{
-    DWORD dwColModel = ( DWORD ) pInterface;
-    DWORD dwThis = ( DWORD ) GetInterface ();
-    DWORD dwFunc = FUNC_SetColModel;
-    _asm
-    {
-        mov     ecx, dwThis
-        push    0
-        push    dwColModel
-        call    dwFunc
-    }
-}
-
 void CModelInfoSA::RestoreColModel ( void )
 {
     // Are we loaded?
@@ -923,29 +896,4 @@ void CModelInfoSA::SetVoice ( const char* szVoiceType, const char* szVoice )
     if ( sVoiceID < 0 )
         return;
     SetVoice ( sVoiceType, sVoiceID );
-}
-
-
-void CModelInfoSA::MakePedModel ( char * szTexture )
-{
-    CPedModelInfoSAInterface * pInterface;
-    DWORD dwModelID = m_dwModelID;
-    DWORD dwFunc = FUNC_AddPedModel;
-    _asm
-    {
-        push    dwModelID
-        call    dwFunc
-        mov     pInterface, eax
-        add     esp, 0x4
-    }
-
-    // Copy the default ped model info (0)
-    CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 290 )->GetInterface ();
-    memcpy ( pInterface, pDefaultPedModelInterface, sizeof ( CPedModelInfoSAInterface ) );
-
-    pInterface->pedStatsID = 0;
-    SetColModelInterface ( ( CColModelSAInterface * ) VAR_CTempColModels_ModelPed1 );
-
-    // Load our texture
-    pGame->GetStreaming ()->RequestSpecialModel ( m_dwModelID, szTexture, 0 );
 }

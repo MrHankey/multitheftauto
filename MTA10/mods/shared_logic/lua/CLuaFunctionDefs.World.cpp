@@ -1272,3 +1272,4 @@ int CLuaFunctionDefs::GetCloudsEnabled ( lua_State* luaVM )
       lua_pushboolean ( luaVM, CStaticFunctionDefinitions::GetCloudsEnabled () );
       return 1;
 }
+

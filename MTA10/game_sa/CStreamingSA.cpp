@@ -23,17 +23,3 @@ void CStreamingSA::RequestAnimations ( int i, int j )
         add     esp, 0x8
     }
 }
-
-
-void CStreamingSA::RequestSpecialModel ( DWORD model, const char * szTexture, DWORD channel )
-{
-    DWORD dwFunc = FUNC_CStreaming_RequestSpecialModel;
-    _asm
-    {
-        push    channel
-        push    szTexture
-        push    model
-        call    dwFunc
-        add     esp, 0xC
-    }
-}

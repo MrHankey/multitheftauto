@@ -600,8 +600,6 @@ public:
     LUA_DECLARE ( SetJetpackMaxHeight );
     LUA_DECLARE ( SetCloudsEnabled );
     LUA_DECLARE ( GetCloudsEnabled );
-    LUA_DECLARE ( LoadSpecialCharacter );
-    LUA_DECLARE ( UnloadSpecialCharacter );
 
     // Input functions
     LUA_DECLARE ( BindKey );

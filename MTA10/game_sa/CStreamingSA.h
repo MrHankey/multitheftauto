@@ -16,14 +16,12 @@
 #include <game/CStreaming.h>
 #include "Common.h"
 
-#define FUNC_CStreaming_RequestAnimations   0x407120
-#define FUNC_CStreaming_RequestSpecialModel 0x409d10
+#define FUNC_CStreaming_RequestAnimations 0x407120
 
 class CStreamingSA : public CStreaming
 {
 public:
     void            RequestAnimations   ( int i, int j );
-    void            RequestSpecialModel ( DWORD model, const char * szTexture, DWORD channel );
 };
 
 #endif
