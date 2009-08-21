@@ -914,19 +914,9 @@ void CModelInfoSA::SetVoice ( const char* szVoiceType, const char* szVoice )
 
 void CModelInfoSA::MakePedModel ( char * szTexture )
 {
-    // Create a new CPedModelInfo for ourselves (which GTA will destroy for us)
-    CPedModelInfoSAInterface * pInterface = new CPedModelInfoSAInterface;
-    m_pInterface = ppModelInfo [ m_dwModelID ] = ( CBaseModelInfoSAInterface * ) pInterface;
-
-    // Copy the default ped model info (0)
-    CPedModelInfoSAInterface * pDefaultPedModelInterface = ( CPedModelInfoSAInterface * ) pGame->GetModelInfo ( 0 )->GetInterface ();
-    memcpy ( pInterface, pDefaultPedModelInterface, sizeof ( CPedModelInfoSAInterface ) );
-    
-    // Make it safe
-    pInterface->pedStatsID = 0;
-    pInterface->pRwObject = NULL;
-    pInterface->pHitColModel = NULL;
-    pInterface->pColModel = ( CColModelSAInterface * ) VAR_CTempColModels_ModelPed1;
+    // Create a new CPedModelInfo
+    CPedModelInfoSA pedModelInfo;
+    ppModelInfo [ m_dwModelID ] = ( CBaseModelInfoSAInterface * ) pedModelInfo.GetPedModelInfoInterface ();
 
     // Load our texture
     pGame->GetStreaming ()->RequestSpecialModel ( m_dwModelID, szTexture, 0 );
