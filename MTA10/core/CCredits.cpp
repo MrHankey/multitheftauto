@@ -91,7 +91,7 @@ CCredits::CCredits ( void )
 
     // Create our window
 	CVector2D RelativeWindow = CVector2D ( fWindowX / pManager->GetResolution ().fX, fWindowY / pManager->GetResolution ().fY );
-    m_pWindow = reinterpret_cast < CGUIWindow* > ( pManager->CreateWnd ( NULL, "Multi Theft Auto: San Andreas" ) );
+    m_pWindow = reinterpret_cast < CGUIWindow* > ( pManager->CreateWnd ( NULL, SString("Multi Theft Auto: San Andreas %s %s", MTA_DM_VERSIONSTRING, MTA_DM_BUILDTYPE).c_str() ) );
     m_pWindow->SetCloseButtonEnabled ( false );
     m_pWindow->SetMovable ( false );
     m_pWindow->SetPosition ( CVector2D ( 0.5f - RelativeWindow.fX*0.5f, 0.5f - RelativeWindow.fY*0.5f ), true );
