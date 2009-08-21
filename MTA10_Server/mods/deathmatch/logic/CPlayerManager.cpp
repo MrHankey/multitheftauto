@@ -287,6 +287,8 @@ void CPlayerManager::BroadcastOnlyJoined ( const CPacket& Packet, CPlayer* pSkip
 bool CPlayerManager::IsValidPlayerModel ( unsigned short usPlayerModel )
 {
     return ( usPlayerModel == 0 ||
+             usPlayerModel == 1 ||
+             usPlayerModel == 2 ||
              usPlayerModel == 7 ||
              (usPlayerModel >= 9 &&
              usPlayerModel != 208 &&
@@ -296,9 +298,12 @@ bool CPlayerManager::IsValidPlayerModel ( unsigned short usPlayerModel )
              usPlayerModel != 74 &&
              usPlayerModel != 65 &&
              usPlayerModel != 42 &&
-             usPlayerModel <= 264) ||
+             usPlayerModel <= 272) ||
              (usPlayerModel >= 274 &&
-             usPlayerModel <= 288) );
+             usPlayerModel <= 288) ||
+             (usPlayerModel >= 290 &&
+             usPlayerModel <= 311 &&
+             usPlayerModel != 299) );
 }
 
 

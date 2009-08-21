@@ -165,6 +165,8 @@ public:
 
     bool                    IsTakingPhoto           ( void );
 
+    void                    SetupSpecialCharacters  ( void );
+
 private:
 	CPools					* m_pPools;
 	CPlayerInfo				* m_pPlayerInfo;
