@@ -160,6 +160,11 @@ DWORD RETURN_CTaskSimplePlayerOnFoot_MakeAbortable =        0x685980;
 #define HOOKPOS_CPed_AddGogglesModel                        0x5E3ACB
 DWORD RETURN_CPed_AddGogglesModel =                         0x5E3AD4;
 
+#define FUNC_CWorld_Remove                                  0x563280
+#define FUNC_CTagManager_ShutdownForRestart                 0x49CC60
+unsigned int* VAR_NumTags                                   = (unsigned int *)0xA9AD70;
+DWORD** VAR_TagInfoArray                                    = (DWORD **)0xA9A8C0;
+
 CPed* pContextSwitchedPed = 0;
 CVector vecCenterOfWorld;
 FLOAT fFalseHeading;
@@ -4191,13 +4196,11 @@ void CMultiplayerSA::DeleteAndDisableGangTags ()
         bDisabled = true;
 
         // Destroy all the world tags
-        unsigned int* puiNumTags = (unsigned int *)0xA9AD70;
-        DWORD** ppTags = (DWORD **)0xA9A8C0;
-        DWORD dwFunc = 0x563280; // CWorld::Remove
+        DWORD dwFunc = FUNC_CWorld_Remove;
 
-        for ( unsigned int i = 0; i < *puiNumTags; ++i )
+        for ( unsigned int i = 0; i < *VAR_NumTags; ++i )
         {
-            DWORD* pTagInterface = ppTags [ i << 1 ];
+            DWORD* pTagInterface = VAR_TagInfoArray [ i << 1 ];
             if ( pTagInterface )
             {
                 _asm
@@ -4209,7 +4212,7 @@ void CMultiplayerSA::DeleteAndDisableGangTags ()
             }
         }
 
-        dwFunc = 0x49CC60; // CTagManager::ShutdownForRestart
+        dwFunc = FUNC_CTagManager_ShutdownForRestart;
         _asm call dwFunc
  
         // Disallow spraying gang tags
@@ -4224,6 +4227,21 @@ void CMultiplayerSA::DeleteAndDisableGangTags ()
         *(BYTE *)(0x4C4403) = 0xEB;
 
         // Force all tags to have zero tagged alpha
+        //
+        // Replaces:
+        // call    CVisibilityPlugins::GetUserValue
+        // push    esi
+        // movzx   edi, al
+        // call    CVisibilityPlugins::GetUserValue
+        // movzx   eax, ax
+        //
+        // With:
+        // push    esi
+        // xor     eax, eax
+        // xor     edi, edi
+        //
+        // No need to worry about the push esi, because at 0x49CE8E the stack is restored.
+        // CVisibilityPlugins::GetUserValue is a cdecl.
         memset ( (void *)0x49CE58, 0x90, 5 );
         memset ( (void *)0x49CE5E, 0x90, 11 );
         *(unsigned short *)0x49CE5E = 0xC033;
