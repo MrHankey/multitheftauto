@@ -2840,7 +2840,7 @@ void CClientVehicle::SetTargetRotation ( CVector& vecRotation, unsigned long ulT
         CVector vecCurrentRotation;
         GetRotationDegrees ( vecCurrentRotation );
         m_vecTargetRotation = vecRotation;
-        m_targetRotationError = GetOffsetDegrees ( m_vecTargetRotation, vecCurrentRotation );
+        m_targetRotationError = GetOffsetDegrees ( vecCurrentRotation, m_vecTargetRotation );
         m_targetRotationError.lerp ( CVector (), ulTime );
         m_bHasTargetRotation = true;
     }
@@ -2870,6 +2870,7 @@ void CClientVehicle::UpdateTargetPosition ( void )
         // Grab our currrent position
         CVector vecPosition;
         GetPosition ( vecPosition );
+        CVector vecPreviousPosition = vecPosition;
 
         // Interpolate a new position which represents what our current offset from our target is
         m_targetPositionError.update ();
@@ -2877,6 +2878,19 @@ void CClientVehicle::UpdateTargetPosition ( void )
         // Adjust our position to match the new offset
         vecPosition -= ( m_targetPositionError.current - m_targetPositionError.previous );
         m_pVehicle->SetPosition ( &vecPosition );
+
+        // Update our contact peds
+        CVector vecOffset, vecPedPosition;
+        CClientPed * pPed;
+        list < CClientPed * > ::iterator iter = m_Contacts.begin ();
+        for ( ; iter != m_Contacts.end () ; iter++ )
+        {
+            pPed = *iter;
+            pPed->GetPosition ( vecPedPosition );
+            vecOffset = vecPedPosition - vecPreviousPosition;
+            vecPedPosition = vecPosition + vecOffset;
+            pPed->SetPosition ( vecPedPosition );
+        }
     }
 }
 
@@ -2894,7 +2908,7 @@ void CClientVehicle::UpdateTargetRotation ( void )
         m_targetRotationError.update ();
 
         // Adjust our rotation to match the new offset
-        vecRotation += ( m_targetRotationError.current - m_targetRotationError.previous );
+        vecRotation -= ( m_targetRotationError.current - m_targetRotationError.previous );
         SetRotationDegrees ( vecRotation );
 
         // SetRotationDegrees clears m_bHasTargetRotation, and we don't want that

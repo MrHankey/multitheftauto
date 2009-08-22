@@ -2672,7 +2672,7 @@ void CClientGame::UpdateMimics ( void )
         }        
 
         // Simulate lag (or not)
-        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 100 ) // TICK_RATE )
+        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 1500 ) // TICK_RATE )
         {
             m_ulLastMimicLag = CClientTime::GetTime ();
 
@@ -2847,7 +2847,7 @@ void CClientGame::UpdateMimics ( void )
                     {
                         pMimicVehicle = new CDeathmatchVehicle ( m_pManager, m_pUnoccupiedVehicleSync, INVALID_ELEMENT_ID, uiModel );
                         pMimicVehicle->SetPosition ( vecPosition );
-                        pMimicVehicle->SetCollisionEnabled ( false );
+                        //pMimicVehicle->SetCollisionEnabled ( false );
 
                         unsigned short * usUpgrades = pVehicle->GetUpgrades ()->GetSlotStates ();
                         for ( unsigned char uc = 0 ; uc < VEHICLE_UPGRADE_SLOTS ; uc++ )
@@ -2864,7 +2864,7 @@ void CClientGame::UpdateMimics ( void )
                     static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->UpdateSyncTimes ();
                     if ( m_bMimicLag )
                     {
-                        pMimicVehicle->SetTargetPosition ( vecPosition, static_cast < CDeathmatchVehicle * > ( pVehicle )->m_ulSyncFrequency );
+                        pMimicVehicle->SetTargetPosition ( vecPosition, static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->m_ulSyncFrequency );
                         pMimicVehicle->SetTargetRotation ( vecRotationDegrees, static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->m_ulSyncFrequency );
                         pMimicVehicle->SetMoveSpeed ( vecMoveSpeed );
                         pMimicVehicle->SetTurnSpeed ( vecTurnSpeed );                        

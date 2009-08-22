@@ -259,6 +259,7 @@ public:
     void            lerp                ( T target, unsigned long time )
     {
         update ();
+        previous = 0;
         begin = current;
         end = target;
         beginTime = GetTickCount ();
@@ -272,10 +273,14 @@ public:
     }
     T &             updateRotRad        ( void )
     {
+        if ( beginTime == 0 && endTime == 0 ) return current;
+        previous = current;
         return current = LerpRotationRad < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
     }
     T &             updateRotDeg        ( void )
     {
+        if ( beginTime == 0 && endTime == 0 ) return current;
+        previous = current;
         return current = LerpRotationDeg < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
     }
     T &             finish             ( void )
