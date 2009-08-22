@@ -245,7 +245,7 @@ public:
 	virtual VOID						SetSlot( eWeaponSlot dwSlot )=0;
     virtual eWeaponSkill                GetSkill()=0;
     virtual VOID                        SetSkill( eWeaponSkill weaponSkill )=0;
-    virtual int                         GetRequiredStatLevel ()=0;
+    virtual FLOAT                       GetRequiredStatLevel ()=0;
     virtual VOID                        SetRequiredStatLevel ( FLOAT fStatLevel )=0;
     virtual void                        SetFlag         (DWORD flag) = 0;
 	virtual void                        ClearFlag       (DWORD flag) = 0;

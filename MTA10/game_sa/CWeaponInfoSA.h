@@ -118,7 +118,7 @@ public:
 	VOID						SetSlot ( eWeaponSlot dwSlot ) { GetInterface()->m_nWeaponSlot = (eWeaponSlot)dwSlot; };
     eWeaponSkill                GetSkill() { return GetInterface()->m_SkillLevel; }
     void                        SetSkill ( eWeaponSkill weaponSkill ) { GetInterface ()->m_SkillLevel = weaponSkill; }
-    int                         GetRequiredStatLevel () { return GetInterface()->m_nReqStatLevel; }
+    float                       GetRequiredStatLevel () { return GetInterface()->m_nReqStatLevel; }
     void                        SetRequiredStatLevel ( float fStatLevel ) { GetInterface()->m_nReqStatLevel = fStatLevel; }
     eFireType                   GetFireType () { return GetInterface()->m_eFireType; }
 };

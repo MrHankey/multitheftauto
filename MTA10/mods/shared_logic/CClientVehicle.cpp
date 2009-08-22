@@ -2805,16 +2805,17 @@ void CClientVehicle::GetInitialDoorStates ( unsigned char * pucDoorStates )
 }
 
 
-void CClientVehicle::SetTargetPosition ( CVector& vecPosition, unsigned long ulTime )
+void CClientVehicle::SetTargetPosition ( CVector& vecPosition )
 {   
     // Are we streamed in?
     if ( m_pVehicle )
     {
-        CVector vecCurrentPosition;
-        GetPosition ( vecCurrentPosition );        
+        CVector vecTemp;
+        GetPosition ( vecTemp );
+        m_bTargetPositionDirections [ 0 ] = ( vecTemp.fX < vecPosition.fX );
+        m_bTargetPositionDirections [ 1 ] = ( vecTemp.fY < vecPosition.fY );
+        m_bTargetPositionDirections [ 2 ] = ( vecTemp.fZ < vecPosition.fZ );
         m_vecTargetPosition = vecPosition;
-        m_targetPositionError = ( m_vecTargetPosition - vecCurrentPosition );
-        m_targetPositionError.lerp ( CVector (), ulTime );
         m_bHasTargetPosition = true;
     }
     else
@@ -2832,16 +2833,13 @@ void CClientVehicle::RemoveTargetPosition ( void )
 }
 
 
-void CClientVehicle::SetTargetRotation ( CVector& vecRotation, unsigned long ulTime )
+void CClientVehicle::SetTargetRotation ( CVector& vecRotation )
 {
     // Are we streamed in?
     if ( m_pVehicle )
     {
-        CVector vecCurrentRotation;
-        GetRotationDegrees ( vecCurrentRotation );
+        // Set our target rotation
         m_vecTargetRotation = vecRotation;
-        m_targetRotationError = GetOffsetDegrees ( vecCurrentRotation, m_vecTargetRotation );
-        m_targetRotationError.lerp ( CVector (), ulTime );
         m_bHasTargetRotation = true;
     }
     else
@@ -2864,32 +2862,68 @@ float fInterpolationStrengthR = 8;
 
 void CClientVehicle::UpdateTargetPosition ( void )
 {
-    // Do we have a target position?
+    // Do we have a position to move towards? and are we streamed in?
     if ( m_bHasTargetPosition && m_pVehicle )
     {
-        // Grab our currrent position
-        CVector vecPosition;
+        // Grab the vehicle's current position
+        CVector vecPosition, vecPreviousPosition;
         GetPosition ( vecPosition );
-        CVector vecPreviousPosition = vecPosition;
+        vecPreviousPosition = vecPosition;
 
-        // Interpolate a new position which represents what our current offset from our target is
-        m_targetPositionError.update ();
+        // Grab the x, y and z distance between target and the real position
+        CVector vecOffset = m_vecTargetPosition - vecPosition;
 
-        // Adjust our position to match the new offset
-        vecPosition -= ( m_targetPositionError.current - m_targetPositionError.previous );
-        m_pVehicle->SetPosition ( &vecPosition );
+        // Grab the distance to between current point and real point
+        float fDistance = DistanceBetweenPoints3D ( m_vecTargetPosition, vecPosition );
 
-        // Update our contact peds
-        CVector vecOffset, vecPedPosition;
-        CClientPed * pPed;
+        /* Incredibly slow code
+        // Is there anything blocking our path to the target position?
+        CColPoint* pColPoint = NULL;
+        CEntity* pEntity = NULL;
+        bool bCollision = g_pGame->GetWorld ()->ProcessLineOfSight ( &vecPosition,
+                                                                     &m_vecTargetPosition,
+                                                                     &pColPoint,
+                                                                     &pEntity,
+                                                                     true, false, false, true,
+                                                                     false, false, false, false );
+
+        // Destroy the colpoint or we get a leak
+        if ( pColPoint ) pColPoint->Destroy ();
+        */
+
+        // If the distance is above our warping threshold
+        if ( fDistance > INTERPOLATION_WARP_THRESHOLD )
+        {
+            // Warp to the target
+            vecPosition = m_vecTargetPosition;
+            if ( m_bHasTargetRotation )
+                SetRotationDegrees ( m_vecTargetRotation );
+        }
+        else
+        {
+            // Calculate how much to interpolate and add it as long as this is the direction we're interpolating
+            vecOffset /= CVector ( fInterpolationStrengthXY, fInterpolationStrengthXY, fInterpolationStrengthZ );
+            //if ( ( vecOffset.fX > 0.0f ) == m_bTargetPositionDirections [ 0 ] )
+                vecPosition.fX += vecOffset.fX;
+            //if ( ( vecOffset.fY > 0.0f ) == m_bTargetPositionDirections [ 1 ] )
+                vecPosition.fY += vecOffset.fY;
+            //if ( ( vecOffset.fZ > 0.0f ) == m_bTargetPositionDirections [ 2 ] )
+                vecPosition.fZ += vecOffset.fZ;
+        }
+
+        // Set the new position
+        m_pVehicle->SetPosition ( const_cast < CVector* > ( &vecPosition ) );
+
+        // Update our contact players
+        CVector vecPlayerPosition;
         list < CClientPed * > ::iterator iter = m_Contacts.begin ();
         for ( ; iter != m_Contacts.end () ; iter++ )
         {
-            pPed = *iter;
-            pPed->GetPosition ( vecPedPosition );
-            vecOffset = vecPedPosition - vecPreviousPosition;
-            vecPedPosition = vecPosition + vecOffset;
-            pPed->SetPosition ( vecPedPosition );
+            CClientPed * pModel = *iter;
+            pModel->GetPosition ( vecPlayerPosition );                
+            vecOffset = vecPlayerPosition - vecPreviousPosition;
+            vecPlayerPosition = vecPosition + vecOffset;
+            pModel->SetPosition ( vecPlayerPosition );
         }
     }
 }
@@ -2897,18 +2931,20 @@ void CClientVehicle::UpdateTargetPosition ( void )
 
 void CClientVehicle::UpdateTargetRotation ( void )
 {
-    // Do we have a target rotation?
+    // Do we have a rotation to move towards? and are we streamed in?
     if ( m_bHasTargetRotation && m_pVehicle )
     {
-        // Grab our currrent rotation
         CVector vecRotation;
         GetRotationDegrees ( vecRotation );
 
-        // Interpolate a new rotation which represents what our current offset from our target is
-        m_targetRotationError.update ();
+        CVector vecOffset;
+        vecOffset.fX = GetOffsetDegrees ( vecRotation.fX, m_vecTargetRotation.fX );
+        vecOffset.fY = GetOffsetDegrees ( vecRotation.fY, m_vecTargetRotation.fY );
+        vecOffset.fZ = GetOffsetDegrees ( vecRotation.fZ, m_vecTargetRotation.fZ );
 
-        // Adjust our rotation to match the new offset
-        vecRotation -= ( m_targetRotationError.current - m_targetRotationError.previous );
+        vecOffset /= CVector ( fInterpolationStrengthR, fInterpolationStrengthR, fInterpolationStrengthR );
+        vecRotation += vecOffset;
+
         SetRotationDegrees ( vecRotation );
 
         // SetRotationDegrees clears m_bHasTargetRotation, and we don't want that

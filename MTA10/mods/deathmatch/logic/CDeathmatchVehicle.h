@@ -47,11 +47,9 @@ private:
     unsigned char                       m_ucLastPanelStates [MAX_PANELS];
     unsigned char                       m_ucLastLightStates [MAX_LIGHTS];
 
-public:
     unsigned long                       m_ulLastSyncTick;
     unsigned long                       m_ulSyncFrequency;
 
-private:
     CInterpolatedVar < unsigned short > m_adjustableProperty;
     CInterpolatedVar < float >          m_turretX, m_turretY;
 };

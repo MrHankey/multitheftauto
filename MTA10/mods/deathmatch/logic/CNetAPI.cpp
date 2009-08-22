@@ -723,7 +723,6 @@ void CNetAPI::ReadPlayerPuresync ( CClientPlayer* pPlayer, NetBitStreamInterface
     {
         return;
     }
-    pPlayer->UpdateSyncTimes ();
 
     // Read out the time it took for the packet to go from the remote client to the server and to us
     unsigned short usLatency;
@@ -878,7 +877,7 @@ void CNetAPI::ReadPlayerPuresync ( CClientPlayer* pPlayer, NetBitStreamInterface
          pPlayer->GetVehicleInOutState () == VEHICLE_INOUT_GETTING_IN ||
          pPlayer->GetVehicleInOutState () == VEHICLE_INOUT_JACKING )
     {
-        pPlayer->SetTargetPosition ( position.data.vecPosition, pPlayer->m_ulSyncFrequency, pContactEntity );
+        pPlayer->SetTargetPosition ( position.data.vecPosition, pContactEntity );
         pPlayer->SetTargetRotation ( rotation.data.fRotation );
     }
 
@@ -1109,8 +1108,8 @@ void CNetAPI::ReadVehiclePuresync ( CClientPlayer* pPlayer, CClientVehicle* pVeh
         pVehicle->SetHealth ( health.data.fValue );
 
         // Set the target position and rotation
-        pVehicle->SetTargetPosition ( position.data.vecPosition, static_cast < CDeathmatchVehicle * > ( pVehicle )->m_ulSyncFrequency );
-        pVehicle->SetTargetRotation ( rotation.data.vecRotation, static_cast < CDeathmatchVehicle * > ( pVehicle )->m_ulSyncFrequency );
+        pVehicle->SetTargetPosition ( position.data.vecPosition );
+        pVehicle->SetTargetRotation ( rotation.data.vecRotation );
 
         // Apply the correct move and turnspeed
         pVehicle->SetMoveSpeed ( velocity.data.vecVelocity );

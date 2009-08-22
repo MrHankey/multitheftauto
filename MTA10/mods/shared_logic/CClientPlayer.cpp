@@ -90,9 +90,6 @@ CClientPlayer::CClientPlayer ( CClientManager* pManager, ElementID ID, bool bIsL
 
     m_fPretendHealthSmoothed = 0;
     m_fPretendArmorSmoothed = 0;
-
-    m_ulSyncFrequency = 0;
-    m_ulLastSyncTick = 0;
 }
 
 
@@ -328,10 +325,3 @@ float CClientPlayer::GetTotalPretendDamage ( void )
     return fDamage;
 }
 
-
-void CClientPlayer::UpdateSyncTimes ( void )
-{
-    unsigned long time = GetTickCount ();
-    m_ulSyncFrequency = time - m_ulLastSyncTick;
-    m_ulLastSyncTick = time;
-}

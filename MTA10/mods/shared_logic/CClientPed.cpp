@@ -113,6 +113,8 @@ void CClientPed::Init ( CClientManager* pManager, unsigned long ulModelID, bool 
     m_fTargetRotationA = 0.0f;
     m_fBeginCameraRotation = 0.0f;
     m_fTargetCameraRotation = 0.0f;
+    m_ulBeginPositionTime = 0;
+    m_ulEndPositionTime = 0;
     m_ulBeginTarget = 0;
     m_ulEndTarget = 0;
     m_bForceGettingIn = false;
@@ -597,8 +599,20 @@ void CClientPed::Spawn ( const CVector& vecPosition,
 }
 
 
+void CClientPed::SetTargetPosition ( unsigned long ulDelay, const CVector& vecPosition )
+{
+    m_ulBeginPositionTime = CClientTime::GetTime ();
+    m_ulEndPositionTime = m_ulBeginPositionTime + ulDelay;
+    GetMatrix ( m_Matrix ); // Test
+    m_vecBeginPosition = m_Matrix.vPos;
+    m_vecTargetPosition = vecPosition;
+}
+
+
 void CClientPed::ResetInterpolation ( void )
 {
+    m_ulBeginPositionTime = 0;
+    m_ulEndPositionTime = 0;
     m_ulBeginRotationTime = 0;
     m_ulEndRotationTime = 0;
     m_ulBeginAimTime = 0;
@@ -4215,34 +4229,42 @@ void CClientPed::GetTargetPosition ( CVector & vecPosition )
 }
 
 
-void CClientPed::SetTargetPosition ( CVector& vecPosition, unsigned long ulTime, CClientEntity* pOriginSource )
+void CClientPed::SetTargetPosition ( CVector& vecPosition, CClientEntity* pOriginSource )
 {
-    CVector vecOrigin;
-    if ( pOriginSource ) pOriginSource->GetPosition ( vecOrigin );
+    CVector vecTemp, vecOrigin;
+    GetPosition ( vecTemp );
+
+    if ( pOriginSource )
+    {        
+        pOriginSource->GetPosition ( vecOrigin );
+        vecTemp -= vecOrigin;
+    }
+
+    m_bTargetDirections [ 0 ] = ( vecTemp.fX < vecPosition.fX );
+    m_bTargetDirections [ 1 ] = ( vecTemp.fY < vecPosition.fY );
+    m_bTargetDirections [ 2 ] = ( vecTemp.fZ < vecPosition.fZ );
+    m_vecTargetPosition = vecPosition;
+    m_bHasTargetPosition = true;
     if ( pOriginSource != m_pTargetOriginSource )
     {
-        if ( m_pTargetOriginSource ) m_pTargetOriginSource->RemoveOriginSourceUser ( this );
-        if ( pOriginSource ) pOriginSource->AddOriginSourceUser ( this );
+        if ( m_pTargetOriginSource )
+            m_pTargetOriginSource->RemoveOriginSourceUser ( this );
+
+        if ( pOriginSource )
+            pOriginSource->AddOriginSourceUser ( this );
+
         m_pTargetOriginSource = pOriginSource;
     }
 
-    // Are we streamed in?
-    if ( m_pPlayerPed )
+    // Jax: if we're streamed out, update our position now and don't interpolate
+    if ( !m_pPlayerPed )
     {
-        CVector vecCurrentPosition;
-        GetPosition ( vecCurrentPosition );
-        vecCurrentPosition -= vecOrigin;     
-
-        m_vecTargetPosition = vecPosition;
-        m_targetPositionError = m_vecTargetPosition - vecCurrentPosition;
-        m_targetPositionError.lerp ( CVector (), ulTime );
-        m_bHasTargetPosition = true;
-    }
-    else
-    {
-        vecPosition += vecOrigin;
-        SetPosition ( vecPosition );
-        m_bHasTargetPosition - false;
+        CVector vecActualPosition = vecPosition;
+        if ( pOriginSource )
+        {
+            vecActualPosition += vecOrigin;
+        }
+        SetPosition ( vecActualPosition );
     }
 }
 
@@ -4263,23 +4285,53 @@ void CClientPed::UpdateTargetPosition ( void )
 {
     if ( m_bHasTargetPosition && m_pPlayerPed )
     {
-        // Grab our origin
-        CVector vecOrigin;
-        if ( m_pTargetOriginSource ) m_pTargetOriginSource->GetPosition ( vecOrigin );
-
-        // Grab our currrent position
         CVector vecPosition;
-        GetPosition ( vecPosition );   
+        GetPosition ( vecPosition );
+        CVector vecOrigin;
+
+        if ( m_pTargetOriginSource )  
+            m_pTargetOriginSource->GetPosition ( vecOrigin );
+
         vecPosition -= vecOrigin;
 
-        // Interpolate a new position which represents what our current offset from our target is
-        m_targetPositionError.update ();
+        // Needs to be calced
+        float fTimeSlice = 1/30.f;
 
-        // Adjust our position to match the new offset
-        vecPosition -= ( m_targetPositionError.current - m_targetPositionError.previous );
+        CVector vecOffset = m_vecTargetPosition - vecPosition;
+        float fDistanceToTarget = vecOffset.Length ();
+        // fDistanceToTarget 0.20f to 0.00f     then fSpeed = 3.0f to 15.0f
+        float fSpeedAlpha = UnlerpClamped ( 0, fDistanceToTarget, 0.20f );
+        float fSpeed = Lerp < const float > ( 15.f, fSpeedAlpha, 3.f );
+        CVector vecScale;
+        vecScale.fX = 1.5f * fTimeSlice * fSpeed;
+        vecScale.fY = 1.5f * fTimeSlice * fSpeed;
+        vecScale.fZ = 6.0f * fTimeSlice;
+        // Make sure not to overshoot
+        vecScale.fX = Min ( vecScale.fX, 1.f );
+        vecScale.fY = Min ( vecScale.fY, 1.f );
+        vecScale.fZ = Min ( vecScale.fZ, 1.f );
+        vecOffset *= vecScale;
+        // Apply offset ignoring X and Y m_bTargetDirections
+        //if ( ( vecOffset.fX > 0.0f ) == m_bTargetDirections [ 0 ] )
+            vecPosition.fX += vecOffset.fX;
+        //if ( ( vecOffset.fY > 0.0f ) == m_bTargetDirections [ 1 ] )
+            vecPosition.fY += vecOffset.fY;
+        if ( ( vecOffset.fZ > 0.0f ) == m_bTargetDirections [ 2 ] )
+            vecPosition.fZ += vecOffset.fZ;
 
-        // Set our new position
+        // Temp hack to help ensure gravity doesn't suck the ped underground - ( Maybe when level collision is streamed out and ped it not? )
+        if ( CCamera* pCamera = g_pGame->GetCamera () )
+        {
+            CMatrix matCamera;
+            pCamera->GetMatrix ( &matCamera );
+            float fDist = ( matCamera.vPos - ( vecPosition + vecOrigin ) ).Length ();
+            // Fix only required if ped is between 250.f and 300.f units away, possibly
+            if ( fDist > 230.f && fDist < 320.f )
+                vecPosition.fZ = m_vecTargetPosition.fZ;
+        }
+
         vecPosition += vecOrigin;
+
         SetPosition ( vecPosition );
     }
 }

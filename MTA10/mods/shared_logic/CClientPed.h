@@ -141,6 +141,7 @@ public:
                                                               unsigned short usModel,
                                                               unsigned char ucInterior );
 
+    void                        SetTargetPosition           ( unsigned long ulDelay, const CVector& vecPosition );
     void                        ResetInterpolation          ( void );
 
     float                       GetCurrentRotation          ( void );
@@ -325,7 +326,7 @@ public:
     inline bool                 HasTargetPosition       ( void )                                        { return m_bHasTargetPosition; }
     inline CClientEntity *      GetTargetOriginSource   ( void )                                        { return m_pTargetOriginSource; }
     void                        GetTargetPosition       ( CVector & vecPosition );
-    void                        SetTargetPosition       ( CVector& vecPosition, unsigned long ulTime, CClientEntity* pOriginSource = NULL );
+    void                        SetTargetPosition       ( CVector& vecPosition, CClientEntity* pOriginSource = NULL );
     void                        RemoveTargetPosition    ( void );
 	void						UpdateTargetPosition	( void );
 
@@ -465,12 +466,15 @@ public:
     float                       m_fTargetRotationA;
     float                       m_fBeginCameraRotation;
     float                       m_fTargetCameraRotation;
-    CVector                     m_vecBeginSource;
-    CVector                     m_vecTargetSource;
-    CVector                     m_vecBeginTarget;
-    CVector                     m_vecBeginTargetAngle;
+    unsigned long               m_ulBeginPositionTime;
+    unsigned long               m_ulEndPositionTime;
+    CVector                     m_vecBeginPosition;
     unsigned long               m_ulBeginTarget;
     unsigned long               m_ulEndTarget;
+    CVector                     m_vecBeginSource;
+    CVector                     m_vecBeginTarget;
+    CVector                     m_vecBeginTargetAngle;
+    CVector                     m_vecTargetSource;
     CVector                     m_vecTargetTarget;
     CVector                     m_vecTargetTargetAngle;
     CVector                     m_vecTargetInterpolateAngle;
@@ -500,8 +504,8 @@ public:
     std::list < CClientProjectile* > m_Projectiles;
     unsigned char               m_ucAlpha;
     CVector                     m_vecTargetPosition;
-    CInterpolatedVar < CVector > m_targetPositionError;
-    CClientEntity*              m_pTargetOriginSource;    
+    CClientEntity*              m_pTargetOriginSource;
+    bool                        m_bTargetDirections [ 3 ];
     bool                        m_bHasTargetPosition;
     float                       m_fTargetRotation;
     int                         m_iVehicleInOutState;

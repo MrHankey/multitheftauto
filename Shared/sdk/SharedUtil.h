@@ -117,14 +117,14 @@ namespace SharedUtil
     template< class T >
     T LerpRotationRad ( T& from, float fAlpha, T& to )
     {
-        return GetOffsetRadians ( from, to ) * fAlpha + from;
+        return GetOffsetRadians ( float ( from ), float ( to ) ) * fAlpha + from;
     }
 
     // Lerps between two degree values depending on the weight
     template< class T >
     T LerpRotationDeg ( T& from, float fAlpha, T& to )
     {
-        return GetOffsetDegrees ( from, to ) * fAlpha + from;
+        return GetOffsetDegrees ( float ( from ), float ( to ) ) * fAlpha + from;
     }
 
 #endif
