@@ -174,10 +174,22 @@ inline float GetOffsetDegrees ( float a, float b )
         c = ( 360.0f + c );
     return c;
 }
+inline CVector GetOffsetDegrees ( CVector a, CVector b )
+{
+    return CVector ( GetOffsetDegrees ( a.fX, b.fX ),
+                     GetOffsetDegrees ( a.fY, b.fY ),
+                     GetOffsetDegrees ( a.fZ, b.fZ ) );
+}
 inline float GetOffsetRadians ( float a, float b )
 {
     float c = GetOffsetDegrees ( ConvertRadiansToDegrees ( a ), ConvertRadiansToDegrees ( b ) );
     return ConvertDegreesToRadiansNoWrap ( c );
+}
+inline CVector GetOffsetRadians ( CVector a, CVector b )
+{
+    return CVector ( GetOffsetRadians ( a.fX, b.fX ),
+                     GetOffsetRadians ( a.fY, b.fY ),
+                     GetOffsetRadians ( a.fZ, b.fZ ) );
 }
 inline void NormalizeRadian ( float & a )
 {
@@ -237,7 +249,7 @@ template < class T >
 class CInterpolatedVar
 {
 public:
-                    CInterpolatedVar    ( void ) { begin = end = current = beginTime = endTime = 0; }
+                    CInterpolatedVar    ( void ) { begin = end = previous = current = beginTime = endTime = 0; }
     
     T &             operator =          ( T var )               { return current = end = var; }
     T               operator +          ( T var )               { return T ( current + var ); }
@@ -255,6 +267,7 @@ public:
     T &             update              ( void )
     {
         if ( beginTime == 0 && endTime == 0 ) return current;
+        previous = current;
         return current = Lerp < T > ( begin, UnlerpClamped ( beginTime, GetTickCount (), endTime ), end );
     }
     T &             updateRotRad        ( void )
@@ -274,8 +287,14 @@ public:
     {
         return ( GetTickCount () >= endTime && current == end );
     }
+    unsigned long   getTimeLeft         ( void )
+    {
+        unsigned long time = GetTickCount ();
+        if ( endTime > time ) return endTime - time;
+        return 0;
+    }
 
-    T               begin, end, current;
+    T               begin, end, current, previous;
     unsigned long   beginTime, endTime;
 };
 

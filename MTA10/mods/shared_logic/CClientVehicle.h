@@ -321,12 +321,12 @@ public:
 	void						AddVelocity				( CVector& vecVelocity );
 
     inline void                 GetTargetPosition       ( CVector& vecPosition )            { vecPosition = m_vecTargetPosition; }
-    void                        SetTargetPosition       ( CVector& vecPosition );
+    void                        SetTargetPosition       ( CVector& vecPosition, unsigned long ulTime );
     void                        RemoveTargetPosition    ( void );
     inline bool                 HasTargetPosition       ( void )                            { return m_bHasTargetPosition; }
 
     inline void                 GetTargetRotation       ( CVector& vecRotation )            { vecRotation = m_vecTargetRotation; }
-    void                        SetTargetRotation       ( CVector& vecRotation );
+    void                        SetTargetRotation       ( CVector& vecRotation, unsigned long ulTime );
     void                        RemoveTargetRotation    ( void );
     inline bool                 HasTargetRotation       ( void )                            { return m_bHasTargetRotation; }
 
@@ -475,10 +475,12 @@ protected:
     double                      m_dResetInterpolationTime;
 
     CVector                     m_vecTargetPosition;
-    bool                        m_bTargetPositionDirections [ 3 ];
+    CInterpolatedVar < CVector > m_targetPositionError;
     bool                        m_bHasTargetPosition;
     CVector                     m_vecTargetRotation;
+    CInterpolatedVar < CVector > m_targetRotationError;
     bool                        m_bHasTargetRotation;
+    
 
     unsigned long               m_ulIllegalTowBreakTime;
 

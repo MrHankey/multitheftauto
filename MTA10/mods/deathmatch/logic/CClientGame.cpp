@@ -659,7 +659,7 @@ void CClientGame::SendVoiceData ( const unsigned char * pData, int len )
 
 
 void CClientGame::DoPulsePostFrame ( void )
-{      
+{              
     #ifdef DEBUG_KEYSTATES
         // Get the controller state
         CControllerState cs;
@@ -2669,10 +2669,10 @@ void CClientGame::UpdateMimics ( void )
             ucWeaponState = static_cast < unsigned char > ( pPlayerWeapon->GetState () );
             weaponSlot = pPlayerWeapon->GetSlot ();
             ulWeaponAmmoInClip = pPlayerWeapon->GetAmmoInClip ();
-        }
+        }        
 
         // Simulate lag (or not)
-        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 1000 ) // TICK_RATE )
+        if ( !m_bMimicLag || CClientTime::GetTime () >= m_ulLastMimicLag + 100 ) // TICK_RATE )
         {
             m_ulLastMimicLag = CClientTime::GetTime ();
 
@@ -2740,6 +2740,7 @@ void CClientGame::UpdateMimics ( void )
                 vecTarget.fX += 4.0f;
 
                 CClientPlayer* pMimic = *iterMimics;
+                pMimic->UpdateSyncTimes ();
 
                 pMimic->SetHealth ( fHealth );
                 pMimic->LockHealth ( fHealth );
@@ -2756,7 +2757,7 @@ void CClientGame::UpdateMimics ( void )
 
                 if ( m_bMimicLag )
                 {
-                    pMimic->SetTargetPosition ( vecPosition );
+                    pMimic->SetTargetPosition ( vecPosition, pMimic->m_ulSyncFrequency );
                     pMimic->SetMoveSpeed ( vecMoveSpeed );
                     pMimic->SetControllerState ( Controller );
                     pMimic->SetTargetRotation ( fRotation );
@@ -2846,6 +2847,7 @@ void CClientGame::UpdateMimics ( void )
                     {
                         pMimicVehicle = new CDeathmatchVehicle ( m_pManager, m_pUnoccupiedVehicleSync, INVALID_ELEMENT_ID, uiModel );
                         pMimicVehicle->SetPosition ( vecPosition );
+                        pMimicVehicle->SetCollisionEnabled ( false );
 
                         unsigned short * usUpgrades = pVehicle->GetUpgrades ()->GetSlotStates ();
                         for ( unsigned char uc = 0 ; uc < VEHICLE_UPGRADE_SLOTS ; uc++ )
@@ -2862,8 +2864,8 @@ void CClientGame::UpdateMimics ( void )
                     static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->UpdateSyncTimes ();
                     if ( m_bMimicLag )
                     {
-                        pMimicVehicle->SetTargetPosition ( vecPosition );
-                        pMimicVehicle->SetTargetRotation ( vecRotationDegrees );
+                        pMimicVehicle->SetTargetPosition ( vecPosition, static_cast < CDeathmatchVehicle * > ( pVehicle )->m_ulSyncFrequency );
+                        pMimicVehicle->SetTargetRotation ( vecRotationDegrees, static_cast < CDeathmatchVehicle * > ( pMimicVehicle )->m_ulSyncFrequency );
                         pMimicVehicle->SetMoveSpeed ( vecMoveSpeed );
                         pMimicVehicle->SetTurnSpeed ( vecTurnSpeed );                        
                     }

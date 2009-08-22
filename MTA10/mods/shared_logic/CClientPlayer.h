@@ -105,6 +105,7 @@ public:
     void                            GetPretendHealthAndArmor ( float* pfHealth, float* pfArmor );
     float                           GetTotalPretendDamage   ( void );
 
+    void                            UpdateSyncTimes         ( void );
 private:
     bool                            m_bIsLocalPlayer;
     char                            m_szNick [ MAX_PLAYER_NICK_LENGTH + 1 ];
@@ -171,6 +172,8 @@ public:
     float                           m_fPretendHealthSmoothed;
     float                           m_fPretendArmorSmoothed;
 
+    unsigned long                   m_ulSyncFrequency;
+    unsigned long                   m_ulLastSyncTick;
 };
 
 #endif
