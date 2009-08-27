@@ -1589,6 +1589,8 @@ void CClientVehicle::SetFrozen ( bool bFrozen )
     if ( m_bScriptFrozen && bFrozen )
     {
         m_bIsFrozen = bFrozen;
+        SetStatic ( bFrozen );
+        
         CVector vecTemp;
         if ( m_pVehicle )
         {
@@ -1606,6 +1608,7 @@ void CClientVehicle::SetFrozen ( bool bFrozen )
     else if ( !m_bScriptFrozen )
     {
         m_bIsFrozen = bFrozen;
+        SetStatic ( bFrozen );
 
         if ( bFrozen )
         {
@@ -1623,7 +1626,7 @@ void CClientVehicle::SetFrozen ( bool bFrozen )
                 m_vecTurnSpeed = vecTemp;
             }
         }
-    }
+    }    
 }
 
 
@@ -2009,6 +2012,7 @@ void CClientVehicle::Create ( void )
         // Got any settings to restore?
         m_pVehicle->SetMatrix ( &m_Matrix );
         m_matFrozen = m_Matrix;
+        SetStatic ( m_bIsFrozen );
         m_pVehicle->SetMoveSpeed ( &m_vecMoveSpeed );
         m_pVehicle->SetTurnSpeed ( &m_vecTurnSpeed );
         m_pVehicle->SetVisible ( m_bVisible );

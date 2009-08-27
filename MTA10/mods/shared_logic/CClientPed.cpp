@@ -1609,6 +1609,7 @@ void CClientPed::SetFrozen ( bool bFrozen )
     if ( m_bFrozen != bFrozen )
     {
         m_bFrozen = bFrozen;
+        SetStatic ( m_bFrozen );
 
         if ( bFrozen )
         {
@@ -2855,6 +2856,7 @@ void CClientPed::_CreateModel ( void )
         SetHeadless ( m_bHeadless );
         SetOnFire ( m_bIsOnFire );
         SetSpeechEnabled ( m_bSpeechEnabled );
+        SetStatic ( m_bFrozen );
 
         // Rebuild the player if it's CJ. So we get the clothes.
         RebuildModel ();
