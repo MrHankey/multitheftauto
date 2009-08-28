@@ -232,6 +232,7 @@ CClientGame::CClientGame ( bool bLocalPlay )
     g_pMultiplayer->SetAddAnimationHandler ( CClientGame::StaticAddAnimationHandler );
     g_pMultiplayer->SetBlendAnimationHandler ( CClientGame::StaticBlendAnimationHandler );
     g_pMultiplayer->SetPreHudDrawHandler ( CClientGame::StaticPreHudDrawHandler );
+    g_pMultiplayer->SetBlowUpCarHandler ( CClientGame::StaticBlowUpCarHandler );
     m_pProjectileManager->SetInitiateHandler ( CClientGame::StaticProjectileInitiateHandler );
     g_pCore->SetMessageProcessor ( CClientGame::StaticProcessMessage );
     g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( CClientGame::StaticKeyStrokeHandler );
@@ -367,6 +368,7 @@ CClientGame::~CClientGame ( void )
     g_pMultiplayer->SetAddAnimationHandler ( NULL );
     g_pMultiplayer->SetBlendAnimationHandler ( NULL );
     g_pMultiplayer->SetPreHudDrawHandler ( NULL );
+    g_pMultiplayer->SetBlowUpCarHandler ( NULL );
     m_pProjectileManager->SetInitiateHandler ( NULL );
     g_pCore->SetMessageProcessor ( NULL );
     g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( NULL );
@@ -3176,6 +3178,11 @@ void CClientGame::StaticIdleHandler ( void )
     g_pClientGame->IdleHandler ();
 }
 
+void CClientGame::StaticBlowUpCarHandler ( CVehicle * pVehicle )
+{
+    g_pClientGame->BlowUpCarHandler ( pVehicle );
+}
+
 void CClientGame::DrawRadarAreasHandler ( void )
 {
     m_pRadarAreaManager->DoPulse ();
@@ -3303,6 +3310,33 @@ void CClientGame::PreHudDrawHandler ( void )
 {
     // Render our radio just before the HUD
     m_pManager->GetRadio ()->Render ();    
+}
+
+
+void CClientGame::BlowUpCarHandler ( CVehicle * pGameVehicle )
+{
+    // CVehicle::BlowUpCar - Called constantly for all blown CPlane's
+
+    CClientVehicle * pVehicle = m_pManager->GetVehicleManager ()->Get ( pGameVehicle, false );
+    if ( pVehicle )
+    {
+        // Set our vehicle to blown
+        pVehicle->m_bBlown = true;
+
+        // Are we in or getting into this car?
+        if ( m_pLocalPlayer->GetRealOccupiedVehicle () == pVehicle )
+        {
+            // Update our damage vars
+            m_ucDamageWeapon = WEAPONTYPE_EXPLOSION;
+            m_ucDamageBodyPiece = PED_PIECE_TORSO;
+            m_pDamageEntity = NULL; // TODO: Grab the entity that blew the vehicle
+            m_ulDamageTime = CClientTime::GetTime ();
+            m_DamagerID = INVALID_ELEMENT_ID;
+            //if ( pInflictingEntity ) m_DamagerID = pInflictingEntity->GetID ();            
+        }
+        
+        //g_pCore->GetConsole ()->Printf ( "* BlowUp: %s", CVehicleNames::GetVehicleName ( pVehicle->GetModel () ) );
+    }
 }
 
 

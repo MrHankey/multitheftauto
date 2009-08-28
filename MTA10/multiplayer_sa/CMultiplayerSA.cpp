@@ -165,6 +165,19 @@ DWORD RETURN_CPed_AddGogglesModel =                         0x5E3AD4;
 unsigned int* VAR_NumTags                                   = (unsigned int *)0xA9AD70;
 DWORD** VAR_TagInfoArray                                    = (DWORD **)0xA9A8C0;
 
+// Hooks for the BlowUpCar function (CVehicle/CBmx do nothing)
+#define HOOKPOS_CAutomobile_BlowUpCar                       0x6b3780
+DWORD RETURN_CAutomobile_BlowUpCar =                        0x6B3786;
+#define HOOKPOS_CBike_BlowUpCar                             0x6BEA10
+DWORD RETURN_CBike_BlowUpCar =                              0x6BEA1A;
+#define HOOKPOS_CHeli_BlowUpCar                             0x6C6D30
+DWORD RETURN_CHeli_BlowUpCar =                              0x6C6D3B;
+#define HOOKPOS_CPlane_BlowUpCar                            0x6CCCF0
+DWORD RETURN_CPlane_BlowUpCar =                             0x6CCCFC;
+#define HOOKPOS_CBoat_BlowUpCar                             0x6F21C5
+DWORD RETURN_CBoat_BlowUpCar =                              0x6F21CC;
+
+
 CPed* pContextSwitchedPed = 0;
 CVector vecCenterOfWorld;
 FLOAT fFalseHeading;
@@ -218,6 +231,7 @@ IdleHandler * m_pIdleHandler = NULL;
 AddAnimationHandler* m_pAddAnimationHandler = NULL;
 BlendAnimationHandler* m_pBlendAnimationHandler = NULL;
 PreHudDrawHandler* m_pPreHudDrawHandler = NULL;
+BlowUpCarHandler* m_pBlowUpCarHandler = NULL;
 
 CEntitySAInterface * dwSavedPlayerPointer = 0;
 CEntitySAInterface * activeEntityForStreaming = 0; // the entity that the streaming system considers active
@@ -278,6 +292,11 @@ void HOOK_CAnimManager_BlendAnimation ();
 void HOOK_CPed_GetWeaponSkill ();
 void HOOK_CTaskSimplePlayerOnFoot_MakeAbortable ();
 void HOOK_CPed_AddGogglesModel ();
+void HOOK_CAutomobile_BlowUpCar ();
+void HOOK_CBike_BlowUpCar ();
+void HOOK_CHeli_BlowUpCar ();
+void HOOK_CPlane_BlowUpCar ();
+void HOOK_CBoat_BlowUpCar ();
 
 void vehicle_lights_init ();
 
@@ -391,6 +410,11 @@ void CMultiplayerSA::InitHooks()
     HookInstall(HOOKPOS_CPed_GetWeaponSkill, (DWORD)HOOK_CPed_GetWeaponSkill, 8 );
     HookInstall(HOOKPOS_CTaskSimplePlayerOnFoot_MakeAbortable, (DWORD)HOOK_CTaskSimplePlayerOnFoot_MakeAbortable, 11 );
     HookInstall(HOOKPOS_CPed_AddGogglesModel, (DWORD)HOOK_CPed_AddGogglesModel, 6);
+    HookInstall(HOOKPOS_CAutomobile_BlowUpCar, (DWORD)HOOK_CAutomobile_BlowUpCar, 6 );
+    HookInstall(HOOKPOS_CBike_BlowUpCar, (DWORD)HOOK_CBike_BlowUpCar, 10 );
+    HookInstall(HOOKPOS_CHeli_BlowUpCar, (DWORD)HOOK_CHeli_BlowUpCar, 11 );
+    HookInstall(HOOKPOS_CPlane_BlowUpCar, (DWORD)HOOK_CPlane_BlowUpCar, 12 );
+    HookInstall(HOOKPOS_CBoat_BlowUpCar, (DWORD)HOOK_CBoat_BlowUpCar, 7 );
     
     HookInstallCall ( CALL_CBike_ProcessRiderAnims, (DWORD)HOOK_CBike_ProcessRiderAnims );
     HookInstallCall ( CALL_Render3DStuff, (DWORD)HOOK_Render3DStuff );
@@ -1281,6 +1305,11 @@ void CMultiplayerSA::SetBlendAnimationHandler ( BlendAnimationHandler * pHandler
 void CMultiplayerSA::SetPreHudDrawHandler ( PreHudDrawHandler * pHandler )
 {
     m_pPreHudDrawHandler = pHandler;
+}
+
+void CMultiplayerSA::SetBlowUpCarHandler ( BlowUpCarHandler * pHandler )
+{
+    m_pBlowUpCarHandler = pHandler;
 }
 
 void CMultiplayerSA::HideRadar ( bool bHide )
@@ -4246,5 +4275,121 @@ void CMultiplayerSA::DeleteAndDisableGangTags ()
         memset ( (void *)0x49CE5E, 0x90, 11 );
         *(unsigned short *)0x49CE5E = 0xC033;
         *(unsigned short *)0x49CE60 = 0xFF33;
+    }
+}
+
+
+CEntitySAInterface * pBlowUpCarEntity;
+void BlowUpCar ()
+{
+    CVehicle * pVehicle = pGameInterface->GetPools ()->GetVehicle ( ( DWORD * ) pBlowUpCarEntity );
+    if ( pVehicle )
+    {
+        if ( m_pBlowUpCarHandler ) m_pBlowUpCarHandler ( pVehicle );
+    }
+}
+
+void _declspec(naked) HOOK_CAutomobile_BlowUpCar ()
+{
+    _asm
+    {
+        mov     pBlowUpCarEntity, ecx
+        pushad
+    }
+    
+    BlowUpCar ();
+    
+    _asm
+    {
+        popad
+        sub     esp, 24h
+        push    ebx
+        push    ebp
+        push    esi
+        jmp     RETURN_CAutomobile_BlowUpCar
+    }
+}
+
+void _declspec(naked) HOOK_CBike_BlowUpCar ()
+{
+    _asm
+    {
+        mov     pBlowUpCarEntity, ecx
+        pushad
+    }
+    
+    BlowUpCar ();
+    
+    _asm
+    {
+        popad
+        push    esi
+        mov     esi, ecx
+        test    byte ptr [esi+42Ah], 20h
+        jmp     RETURN_CBike_BlowUpCar
+    }
+}
+
+void _declspec(naked) HOOK_CHeli_BlowUpCar ()
+{
+    _asm
+    {
+        mov     pBlowUpCarEntity, ecx
+        pushad
+    }
+    
+    BlowUpCar ();
+    
+    _asm
+    {
+        popad
+        push    ebx
+        push    esi
+        mov     esi, ecx
+        test    byte ptr [esi+42Ah], 20h
+        jmp     RETURN_CHeli_BlowUpCar
+    }
+}
+
+void _declspec(naked) HOOK_CPlane_BlowUpCar ()
+{
+    _asm
+    {
+        mov     pBlowUpCarEntity, ecx
+        pushad
+    }
+    
+    BlowUpCar ();
+    
+    _asm
+    {
+        popad
+        push    ebx
+        push    ebp
+        push    esi
+        mov     esi, ecx
+        test    byte ptr [esi+42Ah], 20
+        jmp     RETURN_CPlane_BlowUpCar
+    }
+}
+
+void _declspec(naked) HOOK_CBoat_BlowUpCar ()
+{
+    _asm
+    {
+        mov     pBlowUpCarEntity, ecx
+        pushad
+    }
+    
+    BlowUpCar ();
+    
+    _asm
+    {
+        popad
+        sub     esp, 18h
+        push    ebx
+        push    ebp
+        mov     ebx, ecx
+        jmp     RETURN_CBoat_BlowUpCar
     }
 }

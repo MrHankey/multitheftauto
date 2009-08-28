@@ -3665,7 +3665,7 @@ void CPacketHandler::Packet_ExplosionSync ( NetBitStreamInterface& bitStream )
             {
                 // Make sure the vehicle's blown
                 CClientVehicle * pExplodingVehicle = static_cast < CClientVehicle * > ( pOrigin );
-                pExplodingVehicle->Blow ( false );
+                if ( !pExplodingVehicle->IsBlown () ) pExplodingVehicle->Blow ( false );
                 if ( !bCancelExplosion )
 			        g_pClientGame->m_pManager->GetExplosionManager ()->Create ( EXP_TYPE_GRENADE, position.data.vecPosition, pCreator, true, -1.0f, false, WEAPONTYPE_EXPLOSION );
                 break;

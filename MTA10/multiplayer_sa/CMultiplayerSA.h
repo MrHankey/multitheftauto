@@ -68,6 +68,7 @@ public:
     void                        SetAddAnimationHandler      ( AddAnimationHandler * pHandler );
     void                        SetBlendAnimationHandler    ( BlendAnimationHandler * pHandler );
     void                        SetPreHudDrawHandler        ( PreHudDrawHandler * pHandler );
+    void                        SetBlowUpCarHandler         ( BlowUpCarHandler * pHandler );
 
     void                        AllowMouseMovement          ( bool bAllow );
     void                        DoSoundHacksOnLostFocus     ( bool bLostFocus );
