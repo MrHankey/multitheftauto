@@ -2951,6 +2951,25 @@ void CClientVehicle::UpdateTargetRotation ( void )
 
         SetRotationDegrees ( vecRotation );
 
+        CVector vecPosition;
+        GetPosition ( vecPosition );
+        
+        // Update our contact players
+        CVector vecPlayerPosition, vecPlayerOffset, vecOffsetRadians = vecOffset;
+        ConvertDegreesToRadians ( vecOffsetRadians );
+        CClientPed * pPed;
+        list < CClientPed * > ::iterator iter = m_Contacts.begin ();
+        for ( ; iter != m_Contacts.end () ; iter++ )
+        {
+            pPed = *iter;
+            pPed->GetPosition ( vecPlayerPosition );                
+            
+            vecPlayerOffset = vecPlayerPosition - vecPosition;
+            RotateVector ( vecPlayerOffset, -vecOffsetRadians );
+            vecPlayerPosition = vecPosition + vecPlayerOffset;
+            pPed->SetPosition ( vecPlayerPosition );
+        }        
+
         // SetRotationDegrees clears m_bHasTargetRotation, and we don't want that
         m_bHasTargetRotation = true;
     }
