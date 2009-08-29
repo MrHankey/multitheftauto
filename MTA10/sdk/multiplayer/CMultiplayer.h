@@ -42,7 +42,7 @@ typedef void ( IdleHandler ) ( void );
 typedef void ( AddAnimationHandler ) ( RpClump * pClump, AssocGroupId animGroup, AnimationId animID );
 typedef void ( BlendAnimationHandler ) ( RpClump * pClump, AssocGroupId animGroup, AnimationId animID, float fBlendDelta );
 typedef void ( PreHudDrawHandler ) ( void );
-typedef void ( BlowUpCarHandler ) ( class CVehicle * pVehicle );
+typedef void ( BlowUpCarHandler ) ( class CVehicle * pVehicle, class CEntity * pResponsible );
 
 /**
  * This class contains information used for shot syncing, one exists per player.

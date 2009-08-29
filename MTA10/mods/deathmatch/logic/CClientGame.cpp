@@ -3178,9 +3178,9 @@ void CClientGame::StaticIdleHandler ( void )
     g_pClientGame->IdleHandler ();
 }
 
-void CClientGame::StaticBlowUpCarHandler ( CVehicle * pVehicle )
+void CClientGame::StaticBlowUpCarHandler ( CVehicle * pVehicle, CEntity * pResponsible )
 {
-    g_pClientGame->BlowUpCarHandler ( pVehicle );
+    g_pClientGame->BlowUpCarHandler ( pVehicle, pResponsible );
 }
 
 void CClientGame::DrawRadarAreasHandler ( void )
@@ -3313,13 +3313,15 @@ void CClientGame::PreHudDrawHandler ( void )
 }
 
 
-void CClientGame::BlowUpCarHandler ( CVehicle * pGameVehicle )
+void CClientGame::BlowUpCarHandler ( CVehicle * pGameVehicle, CEntity * pGameResponsible )
 {
     // CVehicle::BlowUpCar - Called constantly for all blown CPlane's
 
     CClientVehicle * pVehicle = m_pManager->GetVehicleManager ()->Get ( pGameVehicle, false );
     if ( pVehicle )
     {
+        CClientEntity * pResponsible = m_pManager->FindEntity ( pGameResponsible );
+
         // Set our vehicle to blown
         pVehicle->m_bBlown = true;
 
@@ -3329,13 +3331,10 @@ void CClientGame::BlowUpCarHandler ( CVehicle * pGameVehicle )
             // Update our damage vars
             m_ucDamageWeapon = WEAPONTYPE_EXPLOSION;
             m_ucDamageBodyPiece = PED_PIECE_TORSO;
-            m_pDamageEntity = NULL; // TODO: Grab the entity that blew the vehicle
+            m_pDamageEntity = pResponsible;
             m_ulDamageTime = CClientTime::GetTime ();
-            m_DamagerID = INVALID_ELEMENT_ID;
-            //if ( pInflictingEntity ) m_DamagerID = pInflictingEntity->GetID ();            
+            m_DamagerID = ( pResponsible ) ? pResponsible->GetID () : INVALID_ELEMENT_ID;       
         }
-        
-        //g_pCore->GetConsole ()->Printf ( "* BlowUp: %s", CVehicleNames::GetVehicleName ( pVehicle->GetModel () ) );
     }
 }
 

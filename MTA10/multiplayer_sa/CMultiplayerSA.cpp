@@ -4279,13 +4279,15 @@ void CMultiplayerSA::DeleteAndDisableGangTags ()
 }
 
 
-CEntitySAInterface * pBlowUpCarEntity;
+CVehicleSAInterface * pBlowUpCarVehicle;
+CEntitySAInterface * pBlowUpCarResponsible;
 void BlowUpCar ()
 {
-    CVehicle * pVehicle = pGameInterface->GetPools ()->GetVehicle ( ( DWORD * ) pBlowUpCarEntity );
+    CVehicle * pVehicle = pGameInterface->GetPools ()->GetVehicle ( ( DWORD * ) pBlowUpCarVehicle );
     if ( pVehicle )
     {
-        if ( m_pBlowUpCarHandler ) m_pBlowUpCarHandler ( pVehicle );
+        CEntity * pEntity = pGameInterface->GetPools ()->GetEntity ( ( DWORD * ) pBlowUpCarResponsible );
+        if ( m_pBlowUpCarHandler ) m_pBlowUpCarHandler ( pVehicle, pEntity );
     }
 }
 
@@ -4293,7 +4295,9 @@ void _declspec(naked) HOOK_CAutomobile_BlowUpCar ()
 {
     _asm
     {
-        mov     pBlowUpCarEntity, ecx
+        mov     pBlowUpCarVehicle, ecx
+        mov     eax, [esp+4]
+        mov     pBlowUpCarResponsible, eax
         pushad
     }
     
@@ -4314,7 +4318,9 @@ void _declspec(naked) HOOK_CBike_BlowUpCar ()
 {
     _asm
     {
-        mov     pBlowUpCarEntity, ecx
+        mov     pBlowUpCarVehicle, ecx
+        mov     eax, [esp+4]
+        mov     pBlowUpCarResponsible, eax
         pushad
     }
     
@@ -4334,7 +4340,9 @@ void _declspec(naked) HOOK_CHeli_BlowUpCar ()
 {
     _asm
     {
-        mov     pBlowUpCarEntity, ecx
+        mov     pBlowUpCarVehicle, ecx
+        mov     eax, [esp+4]
+        mov     pBlowUpCarResponsible, eax
         pushad
     }
     
@@ -4355,7 +4363,9 @@ void _declspec(naked) HOOK_CPlane_BlowUpCar ()
 {
     _asm
     {
-        mov     pBlowUpCarEntity, ecx
+        mov     pBlowUpCarVehicle, ecx
+        mov     eax, [esp+4]
+        mov     pBlowUpCarResponsible, eax
         pushad
     }
     
@@ -4377,7 +4387,9 @@ void _declspec(naked) HOOK_CBoat_BlowUpCar ()
 {
     _asm
     {
-        mov     pBlowUpCarEntity, ecx
+        mov     pBlowUpCarVehicle, ecx
+        mov     eax, [esp+16]
+        mov     pBlowUpCarResponsible, eax
         pushad
     }
     
