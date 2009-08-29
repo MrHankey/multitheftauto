@@ -122,6 +122,13 @@ CElement::~CElement ( void )
 }
 
 
+const CVector & CElement::GetPosition ( void )
+{
+    if ( m_pAttachedTo ) GetAttachedPosition ( m_vecPosition );
+    return m_vecPosition;
+}
+
+
 void CElement::SetTypeName ( std::string strTypeName )
 {
     CElement::RemoveEntityFromRoot ( m_uiTypeHash, this );
@@ -1063,6 +1070,7 @@ bool CElement::IsAttachable ( void )
         case CElement::OBJECT:
         case CElement::MARKER:
         case CElement::PICKUP:
+        case CElement::COLSHAPE:
         {
             return true;
             break;
@@ -1084,6 +1092,7 @@ bool CElement::IsAttachToable ( void )
         case CElement::OBJECT:
         case CElement::MARKER:
         case CElement::PICKUP:
+        case CElement::COLSHAPE:
         {
             return true;
             break;
@@ -1091,6 +1100,31 @@ bool CElement::IsAttachToable ( void )
         default: break;
     }
 	return false;
+}
+
+
+void CElement::GetAttachedPosition ( CVector & vecPosition )
+{
+    if ( m_pAttachedTo )
+    {
+        CVector vecRotation;
+        vecPosition = m_pAttachedTo->GetPosition ();
+        m_pAttachedTo->GetRotation ( vecRotation );
+        
+        CVector vecPositionOffset = m_vecAttachedPosition;
+        RotateVector ( vecPositionOffset, vecRotation );
+        vecPosition += vecPositionOffset;
+    }
+}
+
+
+void CElement::GetAttachedRotation ( CVector & vecRotation )
+{
+    if ( m_pAttachedTo )
+    {
+        m_pAttachedTo->GetRotation ( vecRotation );
+        vecRotation += m_vecAttachedRotation;
+    }
 }
 
 
