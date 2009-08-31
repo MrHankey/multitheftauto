@@ -17,6 +17,8 @@
 #include "Common.h"
 #include "CEntity.h"
 
+class CExplosionSAInterface;
+
 class CExplosionManager
 {
 public:
@@ -24,6 +26,7 @@ public:
 	virtual VOID			    RemoveAllExplosionsInArea   ( CVector * vecPosition, FLOAT fRadius ) = 0;
 	virtual VOID			    RemoveAllExplosions         ( void ) = 0;
 	virtual CExplosion *        GetExplosion                ( DWORD ID ) = 0;
+    virtual CExplosion *        GetExplosion                ( CExplosionSAInterface * explosion ) = 0;
 	virtual CExplosion *        FindFreeExplosion           ( void ) = 0;
 };
 

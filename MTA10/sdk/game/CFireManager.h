@@ -16,6 +16,7 @@
 #include "CFire.h"
 #include "CEntity.h"
 
+class CFireSAInterface;
 
 class CFireManager
 {
@@ -26,6 +27,7 @@ public:
 	virtual CFire					* StartFire ( CVector & vecPosition, float fSize )=0;
 	virtual VOID					ExtinguishAllFires (  )=0;
 	virtual CFire					* GetFire ( DWORD ID )=0;
+    virtual CFire                   * GetFire ( CFireSAInterface * fire ) = 0;
 };
 
 #endif

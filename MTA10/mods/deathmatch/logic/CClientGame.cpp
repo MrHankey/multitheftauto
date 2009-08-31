@@ -233,6 +233,7 @@ CClientGame::CClientGame ( bool bLocalPlay )
     g_pMultiplayer->SetBlendAnimationHandler ( CClientGame::StaticBlendAnimationHandler );
     g_pMultiplayer->SetPreHudDrawHandler ( CClientGame::StaticPreHudDrawHandler );
     g_pMultiplayer->SetBlowUpCarHandler ( CClientGame::StaticBlowUpCarHandler );
+    g_pMultiplayer->SetPedOnFireHandler ( CClientGame::StaticPedOnFireHandler );
     m_pProjectileManager->SetInitiateHandler ( CClientGame::StaticProjectileInitiateHandler );
     g_pCore->SetMessageProcessor ( CClientGame::StaticProcessMessage );
     g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( CClientGame::StaticKeyStrokeHandler );
@@ -369,6 +370,7 @@ CClientGame::~CClientGame ( void )
     g_pMultiplayer->SetBlendAnimationHandler ( NULL );
     g_pMultiplayer->SetPreHudDrawHandler ( NULL );
     g_pMultiplayer->SetBlowUpCarHandler ( NULL );
+    g_pMultiplayer->SetPedOnFireHandler ( NULL );
     m_pProjectileManager->SetInitiateHandler ( NULL );
     g_pCore->SetMessageProcessor ( NULL );
     g_pCore->GetKeyBinds ()->SetKeyStrokeHandler ( NULL );
@@ -3183,6 +3185,11 @@ void CClientGame::StaticBlowUpCarHandler ( CVehicle * pVehicle, CEntity * pRespo
     g_pClientGame->BlowUpCarHandler ( pVehicle, pResponsible );
 }
 
+bool CClientGame::StaticPedOnFireHandler ( CPed * pGamePed, CFire * pFire, CExplosion * pExplosion )
+{
+    return g_pClientGame->PedOnFireHandler ( pGamePed, pFire, pExplosion );
+}
+
 void CClientGame::DrawRadarAreasHandler ( void )
 {
     m_pRadarAreaManager->DoPulse ();
@@ -3336,6 +3343,43 @@ void CClientGame::BlowUpCarHandler ( CVehicle * pGameVehicle, CEntity * pGameRes
             m_DamagerID = ( pResponsible ) ? pResponsible->GetID () : INVALID_ELEMENT_ID;       
         }
     }
+}
+
+
+bool CClientGame::PedOnFireHandler ( CPed * pGamePed, CFire * pFire, CExplosion * pExplosion )
+{
+    // Called when a fire or explosion sets a ped on fire (NOTE: one or the other will be NULL)
+    // Returning false will cancel the new fire on the ped and a call to CPlayerPed::DoStuffToGoOnFire
+    
+    CClientPlayer * pPlayer = m_pManager->GetPlayerManager ()->Get ( dynamic_cast < CPlayerPed* > ( pGamePed ), false );
+    
+    // Grab the creating entity
+    CEntity * pGameCreator = NULL;
+    if ( pFire ) pGameCreator = pFire->GetCreator ();
+    else if ( pExplosion ) pGameCreator = pExplosion->GetExplosionCreator ();
+
+    CClientEntity * pCreator = NULL;
+    if ( pGameCreator ) pCreator = m_pManager->FindEntity ( pGameCreator );
+
+    CClientPlayer * pCreatorPlayer = NULL;
+    if ( pCreator->GetType () == CCLIENTPLAYER ) pCreatorPlayer = static_cast < CClientPlayer * > ( pCreator );
+    
+    // Did another player cause this?
+    if ( pPlayer && pCreatorPlayer && pPlayer != pCreatorPlayer )
+    {      
+        // Are we on a team?
+        CClientTeam * pTeam = pPlayer->GetTeam ();
+        if ( pTeam )
+        {
+            // Is this friendly-fire from a team-mate?
+            if ( pPlayer->IsOnMyTeam ( pCreatorPlayer ) && !pTeam->GetFriendlyFire () )
+            {
+                // Dont let us burn!
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 

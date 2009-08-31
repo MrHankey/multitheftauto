@@ -422,6 +422,7 @@ private:
     static void                         StaticBlendAnimationHandler     ( RpClump * pClump, AssocGroupId animGroup, AnimationId animID, float fBlendDelta );
     static void                         StaticPreHudDrawHandler         ( void );
     static void                         StaticBlowUpCarHandler          ( CVehicle * pGameVehicle, CEntity * pResponsible );
+    static bool                         StaticPedOnFireHandler          ( CPed * pGamePed, CFire * pFire, CExplosion * pExplosion );
 
     bool                                DamageHandler                   ( CPed* pDamagePed, CEventDamage * pEvent );
     void                                FireHandler                     ( CFire* pFire );
@@ -436,6 +437,7 @@ private:
     void                                BlendAnimationHandler           ( RpClump * pClump, AssocGroupId animGroup, AnimationId animID, float fBlendDelta );
     void                                PreHudDrawHandler               ( void );
     void                                BlowUpCarHandler                ( CVehicle * pVehicle, CEntity * pGameResponsible );
+    bool                                PedOnFireHandler                ( CPed * pGamePed, CFire * pFire, CExplosion * pExplosion );
 
     static bool                         StaticProcessMessage            ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
     bool                                ProcessMessage                  ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

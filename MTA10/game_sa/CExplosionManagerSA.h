@@ -34,6 +34,7 @@ public:
 	VOID			    RemoveAllExplosionsInArea   ( CVector * vecPosition, FLOAT fRadius );
 	VOID			    RemoveAllExplosions         ( void );
 	CExplosion *        GetExplosion                ( DWORD ID );
+    CExplosion *        GetExplosion                ( CExplosionSAInterface * explosion );
 	CExplosion *        FindFreeExplosion           ( void );
 
 private:

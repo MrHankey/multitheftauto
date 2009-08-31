@@ -132,8 +132,8 @@ DWORD RETURN_CWorld_SetWorldOnFire =                        0x56B989;
 DWORD RETURN_CTaskSimplePlayerOnFire_ProcessPed =           0x6336E0;
 #define HOOKPOS_CFire_ProcessFire                           0x53AC1A
 DWORD RETURN_CFire_ProcessFire =                            0x53AC1F;
-#define HOOKPOS_CExplosion_Update                           0x7377D3
-DWORD RETURN_CExplosion_Update =                            0x7377D8;
+#define HOOKPOS_CExplosion_Update_TryToStartFire            0x7377D3
+DWORD RETURN_CExplosion_Update_TryToStartFire =             0x7377D8;
 #define HOOKPOS_CWeapon_FireAreaEffect                      0x73EBFE
 DWORD RETURN_CWeapon_FireAreaEffect =                       0x73EC03;
 
@@ -177,6 +177,16 @@ DWORD RETURN_CPlane_BlowUpCar =                             0x6CCCFC;
 #define HOOKPOS_CBoat_BlowUpCar                             0x6F21C5
 DWORD RETURN_CBoat_BlowUpCar =                              0x6F21CC;
 
+#define HOOKPOS_CFire_ProcessFire_BurnPed                   0x53A897
+DWORD RETURN_CFire_ProcessFire_BurnPed =                    0x53A89E;
+DWORD RETURN_CANCEL_CFire_ProcessFire_BurnPed =             0x53A8C5;
+
+#define HOOKPOS_CExplosion_Update_SetPedsOnFire             0x73794B
+DWORD RETURN_CExplosion_Update_SetPedsOnFire =              0x737951;
+
+#define HOOKPOS_CWorld_SetPedsOnFire                        0x5657C9
+DWORD RETURN_CWorld_SetPedsOnFire =                         0x5657D0;
+DWORD RETURN_CANCEL_CWorld_SetPedsOnFire =                  0x5657E3;
 
 CPed* pContextSwitchedPed = 0;
 CVector vecCenterOfWorld;
@@ -232,6 +242,7 @@ AddAnimationHandler* m_pAddAnimationHandler = NULL;
 BlendAnimationHandler* m_pBlendAnimationHandler = NULL;
 PreHudDrawHandler* m_pPreHudDrawHandler = NULL;
 BlowUpCarHandler* m_pBlowUpCarHandler = NULL;
+PedOnFireHandler* m_pPedOnFireHandler = NULL;
 
 CEntitySAInterface * dwSavedPlayerPointer = 0;
 CEntitySAInterface * activeEntityForStreaming = 0; // the entity that the streaming system considers active
@@ -279,7 +290,7 @@ void HOOK_ApplyCarBlowHop ();
 void HOOK_CWorld_SetWorldOnFire ();
 void HOOK_CTaskSimplePlayerOnFire_ProcessPed ();
 void HOOK_CFire_ProcessFire ();
-void HOOK_CExplosion_Update ();
+void HOOK_CExplosion_Update_TryToStartFire ();
 void HOOK_CWeapon_FireAreaEffect ();
 void HOOK_CGame_Process ();
 void HOOK_Idle ();
@@ -297,6 +308,9 @@ void HOOK_CBike_BlowUpCar ();
 void HOOK_CHeli_BlowUpCar ();
 void HOOK_CPlane_BlowUpCar ();
 void HOOK_CBoat_BlowUpCar ();
+void HOOK_CFire_ProcessFire_BurnPed ();
+void HOOK_CExplosion_Update_SetPedsOnFire ();
+void HOOK_CWorld_SetPedsOnFire ();
 
 void vehicle_lights_init ();
 
@@ -398,7 +412,7 @@ void CMultiplayerSA::InitHooks()
     HookInstall(HOOKPOS_CWorld_SetWorldOnFire, (DWORD)HOOK_CWorld_SetWorldOnFire, 5);
     HookInstall(HOOKPOS_CTaskSimplePlayerOnFire_ProcessPed, (DWORD)HOOK_CTaskSimplePlayerOnFire_ProcessPed, 5);
     HookInstall(HOOKPOS_CFire_ProcessFire, (DWORD)HOOK_CFire_ProcessFire, 5);
-    HookInstall(HOOKPOS_CExplosion_Update, (DWORD)HOOK_CExplosion_Update, 5);
+    HookInstall(HOOKPOS_CExplosion_Update_TryToStartFire, (DWORD)HOOK_CExplosion_Update_TryToStartFire, 5);
     HookInstall(HOOKPOS_CWeapon_FireAreaEffect, (DWORD)HOOK_CWeapon_FireAreaEffect, 5);
     HookInstall(HOOKPOS_CGame_Process, (DWORD)HOOK_CGame_Process, 10 );
     HookInstall(HOOKPOS_Idle, (DWORD)HOOK_Idle, 10 );
@@ -415,6 +429,9 @@ void CMultiplayerSA::InitHooks()
     HookInstall(HOOKPOS_CHeli_BlowUpCar, (DWORD)HOOK_CHeli_BlowUpCar, 11 );
     HookInstall(HOOKPOS_CPlane_BlowUpCar, (DWORD)HOOK_CPlane_BlowUpCar, 12 );
     HookInstall(HOOKPOS_CBoat_BlowUpCar, (DWORD)HOOK_CBoat_BlowUpCar, 7 );
+    HookInstall(HOOKPOS_CFire_ProcessFire_BurnPed, (DWORD)HOOK_CFire_ProcessFire_BurnPed, 7 );
+    HookInstall(HOOKPOS_CExplosion_Update_SetPedsOnFire, (DWORD)HOOK_CExplosion_Update_SetPedsOnFire, 6 );
+    HookInstall(HOOKPOS_CWorld_SetPedsOnFire, (DWORD)HOOK_CWorld_SetPedsOnFire, 7 );
     
     HookInstallCall ( CALL_CBike_ProcessRiderAnims, (DWORD)HOOK_CBike_ProcessRiderAnims );
     HookInstallCall ( CALL_Render3DStuff, (DWORD)HOOK_Render3DStuff );
@@ -1310,6 +1327,11 @@ void CMultiplayerSA::SetPreHudDrawHandler ( PreHudDrawHandler * pHandler )
 void CMultiplayerSA::SetBlowUpCarHandler ( BlowUpCarHandler * pHandler )
 {
     m_pBlowUpCarHandler = pHandler;
+}
+
+void CMultiplayerSA::SetPedOnFireHandler ( PedOnFireHandler * pHandler )
+{
+    m_pPedOnFireHandler = pHandler;
 }
 
 void CMultiplayerSA::HideRadar ( bool bHide )
@@ -3858,7 +3880,7 @@ fail:
     }
 }
 
-void _declspec(naked) HOOK_CExplosion_Update ()
+void _declspec(naked) HOOK_CExplosion_Update_TryToStartFire ()
 {
     // Set the new fire's creator to the explosion's creator
     _asm
@@ -3870,7 +3892,7 @@ void _declspec(naked) HOOK_CExplosion_Update ()
         mov ecx, [esi-0x18]
         mov [eax+0x14], ecx
 fail:
-        jmp RETURN_CExplosion_Update
+        jmp RETURN_CExplosion_Update_TryToStartFire
     }
 }
 
@@ -4403,5 +4425,123 @@ void _declspec(naked) HOOK_CBoat_BlowUpCar ()
         push    ebp
         mov     ebx, ecx
         jmp     RETURN_CBoat_BlowUpCar
+    }
+}
+
+CFireSAInterface * pOnFireFire;
+CPedSAInterface * pOnFirePed;
+bool CFire_ProcessFire_BurnPed ()
+{
+    // Grab the burning ped
+    CPed * pPed = pGameInterface->GetPools ()->GetPed ( ( DWORD * ) pOnFirePed );
+    if ( pPed )
+    {
+        // Got a fire?
+        CFire * pFire = pGameInterface->GetFireManager ()->GetFire ( pOnFireFire );
+        if ( pFire )
+        {
+            // Call the handler
+            if ( m_pPedOnFireHandler ) return m_pPedOnFireHandler ( pPed, pFire, NULL );
+        }
+    }
+    // Continue
+    return true;
+}
+DWORD FUNC_CPlayerPed_DoStuffToGoOnFire = 0x60A020;
+void _declspec(naked) HOOK_CFire_ProcessFire_BurnPed ()
+{
+    // Store the ped and fire vars
+    _asm
+    {        
+        mov     pOnFireFire, esi
+        mov     pOnFirePed, eax
+        pushad
+    }
+
+    // Should we continue and let the ped burn?
+    if ( CFire_ProcessFire_BurnPed () )
+    {
+        _asm
+        {
+            popad
+            mov     ecx, eax
+            call    FUNC_CPlayerPed_DoStuffToGoOnFire
+            jmp     RETURN_CFire_ProcessFire_BurnPed
+        }
+    }
+    else
+    {
+        // Skip burning
+        _asm
+        {
+            popad
+            jmp     RETURN_CANCEL_CFire_ProcessFire_BurnPed
+        }
+    }
+
+}
+
+DWORD FUNC_CWorld_SetPedsOnFire = 0x565610;
+CExplosionSAInterface * pUpdatingExplosion = NULL;
+void _declspec(naked) HOOK_CExplosion_Update_SetPedsOnFire ()
+{
+    // Save the CExplosion from CExplosion::Update
+    _asm
+    {
+        mov     pUpdatingExplosion, esi
+        sub     pUpdatingExplosion, 48
+        
+        push    edi
+        call    FUNC_CWorld_SetPedsOnFire
+        jmp     RETURN_CExplosion_Update_SetPedsOnFire
+    }
+}
+
+CPedSAInterface * pSetPedsOnFirePed;
+bool CWorld_SetPedsOnFire ()
+{
+    // Grab the ped
+    CPed * pPed = pGameInterface->GetPools ()->GetPed ( ( DWORD * ) pSetPedsOnFirePed );
+    if ( pPed )
+    {
+        // Got an explosion?
+        CExplosion * pExplosion = pGameInterface->GetExplosionManager ()->GetExplosion ( pUpdatingExplosion );
+        if ( pExplosion )
+        {
+            // Call the handler
+            if ( m_pPedOnFireHandler ) return m_pPedOnFireHandler ( pPed, NULL, pExplosion );
+        }
+    }
+    // Continue
+    return true;
+}
+void _declspec(naked) HOOK_CWorld_SetPedsOnFire ()
+{
+    // Store the burning ped
+    _asm
+    {
+        mov     pSetPedsOnFirePed, edi
+        pushad
+    }
+
+    // Continue and let him burn?
+    if ( CWorld_SetPedsOnFire () )
+    {
+        _asm
+        {
+            popad
+            push    2
+            push    1B58h
+            jmp     RETURN_CWorld_SetPedsOnFire
+        }
+    }
+    else
+    {
+        // Skip it
+        _asm
+        {
+            popad
+            jmp     RETURN_CANCEL_CWorld_SetPedsOnFire
+        }
     }
 }

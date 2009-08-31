@@ -43,6 +43,7 @@ typedef void ( AddAnimationHandler ) ( RpClump * pClump, AssocGroupId animGroup,
 typedef void ( BlendAnimationHandler ) ( RpClump * pClump, AssocGroupId animGroup, AnimationId animID, float fBlendDelta );
 typedef void ( PreHudDrawHandler ) ( void );
 typedef void ( BlowUpCarHandler ) ( class CVehicle * pVehicle, class CEntity * pResponsible );
+typedef bool ( PedOnFireHandler ) ( class CPed * pPed, class CFire * pFire, class CExplosion * pExplosion );
 
 /**
  * This class contains information used for shot syncing, one exists per player.
@@ -126,6 +127,7 @@ public:
     virtual void                        SetBlendAnimationHandler    ( BlendAnimationHandler * pHandler ) = 0;
     virtual void                        SetPreHudDrawHandler        ( PreHudDrawHandler * pHandler ) = 0;
     virtual void                        SetBlowUpCarHandler         ( BlowUpCarHandler * pHandler ) = 0;
+    virtual void                        SetPedOnFireHandler         ( PedOnFireHandler * pHandler ) = 0;
 
     virtual void                        AllowMouseMovement          ( bool bAllow ) = 0;
     virtual void                        DoSoundHacksOnLostFocus     ( bool bLostFocus ) = 0;

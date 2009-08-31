@@ -113,6 +113,16 @@ CExplosion * CExplosionManagerSA::GetExplosion ( DWORD ID )
 	return Explosions[ID];
 }
 
+CExplosion * CExplosionManagerSA::GetExplosion ( CExplosionSAInterface * explosion )
+{
+    DEBUG_TRACE("CExplosion * CExplosionManagerSA::GetExplosion ( CExplosionSAInterface * explosion )");
+	for(int i = 0; i < MAX_EXPLOSIONS; i++)
+    {
+        if ( Explosions[i]->GetInterface () == explosion ) return Explosions[i];
+    }
+    return NULL;
+}
+
 CExplosion * CExplosionManagerSA::FindFreeExplosion (  )
 {
 	DEBUG_TRACE("CExplosion * CExplosionManagerSA::FindFreeExplosion (  )");
