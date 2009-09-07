@@ -142,10 +142,9 @@ public:
     inline void                                 SetCamFadedIn               ( bool bCamFadedIn )            { m_bCamFadedIn = bCamFadedIn; };
 
     void                                        SetDamageInfo               ( ElementID ElementID, unsigned char ucWeapon, unsigned char ucBodyPart );
-    void                                        ValidateDamageInfo          ( void );
-    ElementID                                   GetPlayerAttacker           ( void );
-    unsigned char                               GetAttackWeapon             ( void );
-    unsigned char                               GetAttackBodyPart           ( void );
+    ElementID                                   GetPlayerAttacker           ( void )                        { return m_PlayerAttackerID; }
+    unsigned char                               GetAttackWeapon             ( void )                        { return m_ucAttackWeapon; }
+    unsigned char                               GetAttackBodyPart           ( void )                        { return m_ucAttackBodyPart; }
 
     inline CTeam*                               GetTeam                     ( void )                        { return m_pTeam; }
     void                                        SetTeam                     ( CTeam* pTeam, bool bChangeTeam = false );
@@ -251,7 +250,6 @@ private:
     ElementID                                   m_PlayerAttackerID;
     unsigned char                               m_ucAttackWeapon;
     unsigned char                               m_ucAttackBodyPart;
-    long long                                   m_llSetDamageInfoTime;
 
     CTeam*                                      m_pTeam;
     CPad*                                       m_pPad;

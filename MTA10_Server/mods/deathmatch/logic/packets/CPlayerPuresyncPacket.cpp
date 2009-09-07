@@ -185,8 +185,9 @@ bool CPlayerPuresyncPacket::Read ( NetBitStreamInterface& BitStream )
         }
 
         // Read out damage info if changed
-        if ( BitStream.ReadBit () == true )
-        {
+        bool bDamageInfo = BitStream.ReadBit ();
+        if ( bDamageInfo )
+        {            
             ElementID DamagerID;
             if ( !BitStream.ReadCompressed ( DamagerID ) )
                 return false;
@@ -200,6 +201,7 @@ bool CPlayerPuresyncPacket::Read ( NetBitStreamInterface& BitStream )
                 return false;
 
             pSourcePlayer->SetDamageInfo ( DamagerID, weaponType.data.ucWeaponType, bodyPart.data.uiBodypart );
+            bDamageInfo = true;
         }
 
         // If we know the player's dead, make sure the health we send on is 0
@@ -211,19 +213,30 @@ bool CPlayerPuresyncPacket::Read ( NetBitStreamInterface& BitStream )
         pSourcePlayer->SetHealth ( fHealth );
 
         // Less than last packet's frame?
-        if ( fHealthLoss > 0 || fArmorLoss > 0 )
+        if ( fHealthLoss > FLOAT_EPSILON || fArmorLoss > FLOAT_EPSILON )
         {
             float fDamage = 0.0f;
             if ( fHealthLoss > 0 ) fDamage += fHealthLoss;
             if ( fArmorLoss > 0 ) fDamage += fArmorLoss;
 
+            CElement * pKillerElement = NULL;
+            unsigned char ucWeapon = 0xFF;
+            unsigned char ucBodyPart = 0xFF;
+            if ( bDamageInfo )
+            {
+                pKillerElement = CElementIDs::GetElement ( pSourcePlayer->GetPlayerAttacker () );
+                ucWeapon = pSourcePlayer->GetAttackWeapon ();
+                ucBodyPart = pSourcePlayer->GetAttackBodyPart ();
+            }
+
             // Call the onPlayerDamage event
-            CLuaArguments Arguments;
-            CElement* pKillerElement = CElementIDs::GetElement ( pSourcePlayer->GetPlayerAttacker () );
+            CLuaArguments Arguments;            
             if ( pKillerElement ) Arguments.PushElement ( pKillerElement );
             else Arguments.PushNil ();
-            Arguments.PushNumber ( pSourcePlayer->GetAttackWeapon () );
-            Arguments.PushNumber ( pSourcePlayer->GetAttackBodyPart () );
+            if ( ucWeapon != 0xFF ) Arguments.PushNumber ( ucWeapon );
+            else Arguments.PushBoolean ( false );
+            if ( ucBodyPart != 0xFF ) Arguments.PushNumber ( ucBodyPart );
+            else Arguments.PushBoolean ( false );
             Arguments.PushNumber ( fDamage );
 
             pSourcePlayer->CallEvent ( "onPlayerDamage", Arguments );
