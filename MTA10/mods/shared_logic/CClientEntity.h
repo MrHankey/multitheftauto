@@ -224,6 +224,9 @@ public:
     virtual CEntity*                            GetGameEntity               ( void )                  { return NULL; }
     virtual const CEntity*                      GetGameEntity               ( void ) const            { return NULL; }
 
+    bool                                        IsCollidableWith            ( CClientEntity * pEntity );
+    void                                        SetCollidableWith           ( CClientEntity * pEntity, bool bCanCollide );
+
     // Game layer functions for CEntity/CPhysical
     virtual void                                InternalAttachTo            ( CClientEntity * pEntity );
     bool                                        IsStatic                    ( void );
@@ -265,10 +268,10 @@ protected:
     CModelInfo*                                 m_pModelInfo;
     std::list < class CClientColShape* >        m_Collisions;
     CElementGroup*                              m_pElementGroup;
-    bool                                        m_bIsLocal;
     std::list < CClientPed * >                  m_OriginSourceUsers;
     std::list < CClientPed * >                  m_Contacts;
     unsigned char                               m_ucInterior;
+    std::map < CClientEntity *, bool >          m_DisabledCollisions;
 
 private:
     static int                                  iCount;

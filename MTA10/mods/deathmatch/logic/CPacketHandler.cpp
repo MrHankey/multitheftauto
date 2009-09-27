@@ -921,7 +921,10 @@ void CPacketHandler::Packet_PlayerWasted ( NetBitStreamInterface& bitStream )
 
             // Silently remove his satchels
             pPed->DestroySatchelCharges ( false, true );
-			
+
+            // Stop pressing buttons
+            pPed->SetControllerState ( CControllerState () );
+
             // Call the onClientPlayerWasted event
             CLuaArguments Arguments;
             if ( pKiller ) Arguments.PushElement ( pKiller );
@@ -1929,9 +1932,10 @@ void CPacketHandler::Packet_MapInfo ( NetBitStreamInterface& bitStream )
     SFunBugsStateSync funBugs;
     if ( !bitStream.Read ( &funBugs ) )
         return;
-    g_pClientGame->m_Glitches [ CClientGame::GLITCH_QUICKRELOAD ] = funBugs.data.bQuickReload;
-    g_pClientGame->m_Glitches [ CClientGame::GLITCH_FASTFIRE ]    = funBugs.data.bFastFire;
-    g_pClientGame->m_Glitches [ CClientGame::GLITCH_FASTMOVE ]    = funBugs.data.bFastMove;
+
+    g_pClientGame->SetGlitchEnabled ( CClientGame::GLITCH_QUICKRELOAD, funBugs.data.bQuickReload );
+    g_pClientGame->SetGlitchEnabled ( CClientGame::GLITCH_FASTFIRE, funBugs.data.bFastFire );
+    g_pClientGame->SetGlitchEnabled ( CClientGame::GLITCH_FASTMOVE, funBugs.data.bFastMove );
 }
 
 

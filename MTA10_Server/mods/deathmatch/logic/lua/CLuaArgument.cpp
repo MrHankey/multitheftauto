@@ -340,7 +340,7 @@ void CLuaArgument::Push ( lua_State* luaVM, std::map < CLuaArguments*, int > * p
     if ( m_iType != LUA_TNONE )
     {
         // Make sure the stack has enough room
-        lua_checkstack(luaVM, 1);
+        LUA_CHECKSTACK ( luaVM, 1 );
 
         // Push it depending on the type
         switch ( m_iType )
