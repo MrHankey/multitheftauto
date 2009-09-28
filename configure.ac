@@ -10,6 +10,10 @@ if test x$prefix = xNONE; then
         prefix=/usr/local
 fi
 
+# Output directory
+outputdir=`pwd`/MTA10_Server/output
+
+AC_SUBST(outputdir)
 AC_SUBST(prefix)
 
 AC_SUBST(INCLUDES)
@@ -59,7 +63,7 @@ AX_LIB_SQLITE3()
 # curl
 AC_CHECK_CURL(7)
 
-# Checking for a 64bit system
+# Checking for a 64-bit system
 AC_MSG_CHECKING([uname -m for detecting host operating system architecture])
 ARCH=`uname -m`
 case "$ARCH" in
@@ -72,7 +76,7 @@ case "$ARCH" in
 	x86_64*)
 		dnl yay 21st century hardware
 		AC_MSG_RESULT(x64 feel teh power)
-    AC_DEFINE(X64)
+		AC_DEFINE(X64)
 		AC_SUBST(ARCH,x64)
 	;;
 	*)
@@ -82,17 +86,35 @@ case "$ARCH" in
 	;;
 esac
 
+# Platform specific rules
+AC_MSG_CHECKING([operating system])
+case $host in
+	*-linux*)
+		AC_MSG_RESULT(linux)
+		AC_CHECK_LIB(rt, clock_gettime)
+	;;
+	*-darwin*)
+		AC_MSG_RESULT(darwin)
+	;;
+	*-bsd*)
+		AC_MSG_RESULT(bsd)
+	;;
+	*)
+		AC_MSG_ERROR(unsupported)
+	;;
+esac
+
 # Check for BigEndian
 AC_C_BIGENDIAN([AC_DEFINE(USING_BIG_ENDIAN)],[AC_DEFINE(USING_LITTLE_ENDIAN)],[])
 
 # Check for zlib
-AC_CHECK_LIB(z, deflate,, AC_MSG_ERROR([can't find zlib]))
+AX_CHECK_ZLIB()
 
 # Check for curses
 AC_CHECK_LIB(curses, stdscr,, AC_MSG_ERROR([can't find curses]))
 
 # Define compile/library flags.
-AC_SUBST(AM_CXXFLAGS, "$AM_CXXFLAGS $INCLUDES -DLINUX $PCRE_CFLAGS -Wall -DTIXML_USE_STL")
+AC_SUBST(AM_CXXFLAGS, "$AM_CXXFLAGS $INCLUDES $PCRE_CFLAGS -Wall -DTIXML_USE_STL")
 AC_SUBST(AM_LDFLAGS, "$AM_LDFLAGS -lstdc++")
 
 # Checks for header files.
@@ -126,13 +148,19 @@ else
 	AC_SUBST(MTA_REVISION)
 fi
 
+# Configure subdirectories where necessary
+AC_CONFIG_SUBDIRS([
+	vendor/lua
+	vendor/json-c
+	])
+
+# Generate makefiles
 AC_CONFIG_FILES([
 	Makefile
 	vendor/Makefile
 	vendor/tinyxml/Makefile
 	vendor/pme/Makefile
 	vendor/ehs/Makefile
-	vendor/json-c/Makefile
 	Shared/Makefile
 	Shared/XML/Makefile
 	MTA10_Server/Makefile

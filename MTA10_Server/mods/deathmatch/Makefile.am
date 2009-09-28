@@ -23,33 +23,26 @@ clean-local:
 	-rm -f StdInc.h.gch
 endif
 
-lib_LTLIBRARIES = \
-	libdeathmatch.la
-
-libdeathmatch_la_SOURCES = \
+libdir = $(outputdir)/mods/deathmatch
+lib_LTLIBRARIES = deathmatch.la
+deathmatch_la_LIBTOOLFLAGS = --tag=disable-static
+deathmatch_la_SOURCES = \
 	Server.cpp \
 	CServer.cpp \
 	$(UTILS) \
 	$(LOGIC) \
 	StdInc.cpp
 
-libdeathmatch_la_LIBADD = \
+deathmatch_la_LIBADD = \
 	@PCRE_LIBS@ \
-	-lehs \
-	-lpme \
 	-lplatform \
-	-lsqlite3 \
-	-llua \
-	-ljson \
-	-lrt
+	-lsqlite3
 
-libdeathmatch_la_LDFLAGS = \
-	-Wl,-export-dynamic \
+deathmatch_la_LDFLAGS = \
+	-module -avoid-version \
 	-L../../sdk/ \
-	-L../../../vendor/json-c/ \
-	-L../../../vendor/ehs/ \
-	-L../../../vendor/pme/ \
-	-L../../../libs/ \
-	-L../../../libs/lua \
-	-L/usr/lib
+	$(top_builddir)/vendor/ehs/.libs/libehs.a \
+	$(top_builddir)/vendor/pme/.libs/libpme.a \
+	$(top_builddir)/vendor/lua/src/.libs/liblua.a \
+	$(top_builddir)/vendor/json-c/.libs/libjson.a
 
