@@ -5510,7 +5510,7 @@ bool CStaticFunctionDefinitions::IsInsideRadarArea ( CRadarArea* pRadarArea, con
     CVector vecTemp = pRadarArea->GetPosition ();
     CVector2D vecSize = pRadarArea->GetSize ();
     // Remove this line if the position of radar areas isnt in the center
-    vecTemp -= ( CVector ( vecSize.fX, vecSize.fY, 0.0f ) * CVector ( 0.5f, 0.5f, 0.5f ) );
+    //vecTemp -= ( CVector ( vecSize.fX, vecSize.fY, 0.0f ) * CVector ( 0.5f, 0.5f, 0.5f ) );
     bInside = false;
     // Do the calc from the bottom left
     if ( vecPosition.fX >= vecTemp.fX && vecPosition.fX <= ( vecTemp.fX + vecSize.fX ) )
@@ -6632,6 +6632,14 @@ CColTube* CStaticFunctionDefinitions::CreateColTube ( CResource* pResource, cons
 	}
 
     return pColShape;
+}
+
+
+// Make sure all colliders for a colshape are up to date
+void CStaticFunctionDefinitions::RefreshColShapeColliders ( CColShape * pColShape )
+{
+    CElement* pRoot = m_pMapManager->GetRootElement ();
+    m_pColManager->DoHitDetection ( pRoot->GetLastPosition (), pRoot->GetPosition (), 0.0f, pRoot, pColShape, true );
 }
 
 

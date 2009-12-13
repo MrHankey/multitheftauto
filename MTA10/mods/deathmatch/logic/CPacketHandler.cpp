@@ -333,6 +333,12 @@ void CPacketHandler::Packet_ServerJoined ( NetBitStreamInterface& bitStream )
     }
     g_pClientGame->m_pRootEntity->SetID ( RootElementID );
 
+    // Limit number of http request if required by the server
+    int iHTTPConnectionsPerClient = 32;
+    if ( bitStream.Version () >= 0x04 )
+        bitStream.Read ( iHTTPConnectionsPerClient );
+    g_pCore->GetNetwork ()->GetHTTPDownloadManager ()->SetMaxConnections( iHTTPConnectionsPerClient );
+
     // HTTP Download Type
     unsigned char ucHTTPDownloadType;
     bitStream.Read ( ucHTTPDownloadType );
@@ -1024,7 +1030,11 @@ void CPacketHandler::Packet_PlayerChangeNick ( NetBitStreamInterface& bitStream 
      */
     if ( pPlayer->IsLocalPlayer () )
     {
-        g_pCore->GetCVars ()->Set ( "nick", std::string ( szNewNick ) );
+        // Only allow server to change the nick setting if it has not been changed from the default
+        std::string strNick;
+        g_pCore->GetCVars ()->Get ( "nick", strNick );
+        if ( strNick == "Player" )
+            g_pCore->GetCVars ()->Set ( "nick", std::string ( szNewNick ) );
     }
 
     /*
@@ -1702,8 +1712,9 @@ void CPacketHandler::Packet_Vehicle_InOut ( NetBitStreamInterface& bitStream )
                                 pVehicle->SetPosition ( vecPosition );
                             }
                         }
+#if MTA_DEBUG
                         g_pCore->GetConsole ()->Printf ( "Failed to enter/exit vehicle - id: %u", ucReason );
-
+#endif
                         break;
                     }
 

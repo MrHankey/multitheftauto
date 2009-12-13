@@ -28,6 +28,7 @@ char szXMLLibName[]	= "xmll" MTA_LIB_SUFFIX MTA_LIB_EXTENSION;
 using namespace std;
 
 bool g_bSilent = false;
+bool g_bNoTopBar = false;
 
 #ifdef WIN32
 CServerImpl::CServerImpl ( CThreadCommandQueue* pThreadCommandQueue )
@@ -48,8 +49,6 @@ CServerImpl::CServerImpl ( void )
     CCrashHandler::Init ();
 
     // Init
-    m_szServerPath [0] = 0;
-    m_szServerPath [MAX_PATH - 1] = 0;
     m_pNetwork = NULL;
     m_bRequestedQuit = false;
     m_bRequestedReset = false;
@@ -104,7 +103,7 @@ CXML* CServerImpl::GetXML ( void )
 const char* CServerImpl::GetAbsolutePath ( const char* szRelative, char* szBuffer, unsigned int uiBufferSize )
 {
     szBuffer [uiBufferSize-1] = 0;
-    _snprintf ( szBuffer, uiBufferSize - 1, "%s/%s", m_szServerPath, szRelative );
+    _snprintf ( szBuffer, uiBufferSize - 1, "%s/%s", m_strServerPath.c_str (), szRelative );
     return szBuffer;
 }
 
@@ -161,7 +160,8 @@ int CServerImpl::Run ( int iArgumentCount, char* szArguments [] )
 		GetConsoleScreenBufferInfo( m_hConsole, &ScrnBufferInfo );
 
 		// Adjust the console's screenbuffer so we can disable a bar at the top
-		ScrnBufferInfo.dwSize.Y = ScrnBufferInfo.srWindow.Bottom + 1;
+        if ( !g_bNoTopBar )
+            ScrnBufferInfo.dwSize.Y = ScrnBufferInfo.srWindow.Bottom + 1;
 
 		SetConsoleWindowInfo ( m_hConsole, TRUE, &ScrnBufferInfo.srWindow );
 		SetConsoleScreenBufferSize( m_hConsole, ScrnBufferInfo.dwSize );
@@ -174,7 +174,10 @@ int CServerImpl::Run ( int iArgumentCount, char* szArguments [] )
 		noecho ( );
 		idlok ( stdscr, FALSE );
 		scrollok ( stdscr, TRUE );
-		setscrreg ( 1, LINES - 1 );
+        if ( !g_bNoTopBar )
+            setscrreg ( 1, LINES - 1 );
+        else
+            setscrreg ( 0, LINES - 1 );
 
 		// Initialize the colors
 	    if ( has_colors ( ) )
@@ -193,11 +196,17 @@ int CServerImpl::Run ( int iArgumentCount, char* szArguments [] )
 		wbkgd ( m_wndInput, COLOR_PAIR ( 2 ) );
 
 		// Create the menu window
-		m_wndMenu = subwin ( stdscr, 1, COLS, 0, 0 );
-		wbkgd ( m_wndMenu, COLOR_PAIR ( 1 ) );
+        if ( !g_bNoTopBar )
+        {
+            m_wndMenu = subwin ( stdscr, 1, COLS, 0, 0 );
+            wbkgd ( m_wndMenu, COLOR_PAIR ( 1 ) );
+        }
 
 		// Position the cursor and refresh the physical screen
-		move ( 1, 0 );
+        if ( !g_bNoTopBar )
+            move ( 1, 0 );
+        else
+            move ( 0, 0 );
 		refresh ( );
 
 		// Set our STDIN to non-blocking, if we're on POSIX
@@ -208,31 +217,25 @@ int CServerImpl::Run ( int iArgumentCount, char* szArguments [] )
 #endif
     }
 
-
     // Did we find the path? If not, assume our current
-    if ( m_szServerPath [0] == 0 )
+    if ( m_strServerPath == "" )
     {
-        getcwd ( m_szServerPath, MAX_PATH - 1 );
-    }
-
-    // Make sure it has no trailing slash
-    size_t sizeServerPath = strlen ( m_szServerPath );
-    if ( m_szServerPath [sizeServerPath - 1] == '/' ||
-         m_szServerPath [sizeServerPath - 1] == '\\' )
-    {
-        m_szServerPath [sizeServerPath - 1] = 0;
+        char szBuffer[ MAX_PATH ];
+        getcwd ( szBuffer, MAX_PATH - 1 );
+        m_strServerPath = szBuffer;
     }
 
     // Convert all backslashes to forward slashes
-    size_t i = 0;
-    for ( ; i < sizeServerPath; i++ )
-    {
-        if ( m_szServerPath [i] == '\\' )
-            m_szServerPath [i] = '/';
-    }
+    m_strServerPath = m_strServerPath.Replace ( "\\", "/" );
+
+    // Make sure it has no trailing slash
+    m_strServerPath = m_strServerPath.TrimEnd ( "/" );
+
+    // Set the mod path
+    m_strServerModPath = m_strServerPath + "/mods/deathmatch";
 
     // Tell the mod manager the server path
-    m_pModManager->SetServerPath ( m_szServerPath );
+    m_pModManager->SetServerPath ( m_strServerPath );
 
 	// Welcome text
     if ( !g_bSilent )
@@ -347,18 +350,19 @@ void CServerImpl::MainLoop ( void )
         if ( !g_bSilent )
         {
 		    // Update all the windows, and the physical screen in one burst
-		    wnoutrefresh ( m_wndMenu );
+            if ( m_wndMenu )
+                wnoutrefresh ( m_wndMenu );
 		    wnoutrefresh ( m_wndInput );
 		    doupdate ( );
 		    wbkgd ( m_wndInput, COLOR_PAIR ( 2 ) );
         }
 #endif
-        if ( !g_bSilent )
+        if ( !g_bSilent && !g_bNoTopBar )
         {
-		    // Show the info tag, 80 is a fixed length
-		    char szInfoTag[80] = { '\0' };
-		    m_pModManager->GetTag ( &szInfoTag[0], 80 );
-		    ShowInfoTag ( szInfoTag );
+            // Show the info tag, 80 is a fixed length
+            char szInfoTag[80] = { '\0' };
+            m_pModManager->GetTag ( &szInfoTag[0], 80 );
+            ShowInfoTag ( szInfoTag );
         }
 
 		// Handle the interpreter input
@@ -399,7 +403,7 @@ void CServerImpl::MainLoop ( void )
 /*************************/
 void CServerImpl::ShowInfoTag ( char* szTag )
 {
-    if ( g_bSilent )
+    if ( g_bSilent || g_bNoTopBar )
         return;
 #ifdef WIN32
 	// Windows console code
@@ -671,7 +675,7 @@ bool CServerImpl::ParseArguments ( int iArgumentCount, char* szArguments [] )
             case 'D':
             {
                 // Set it as our current path.
-                strncpy ( m_szServerPath, szArguments [i], MAX_PATH - 1 );
+                m_strServerPath = szArguments [i];
                 ucNext = 0;
                 break;
             }
@@ -697,6 +701,10 @@ bool CServerImpl::ParseArguments ( int iArgumentCount, char* szArguments [] )
                 else if ( strcmp ( szArguments [i], "-s" ) == 0 )
                 {
                     g_bSilent = true;
+                }
+                else if ( strcmp ( szArguments [i], "-t" ) == 0 )
+                {
+                    g_bNoTopBar = true;
                 }
 
                 #ifdef WIN32
@@ -736,7 +744,8 @@ void CServerImpl::DestroyWindow ( void )
 #ifndef WIN32
     if ( !g_bSilent )
     {
-	    delwin ( m_wndMenu );
+        if ( m_wndMenu )
+            delwin ( m_wndMenu );
 	    delwin ( m_wndInput );
         endwin ( );
     }

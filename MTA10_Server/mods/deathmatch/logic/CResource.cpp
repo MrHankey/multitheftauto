@@ -130,19 +130,15 @@ bool CResource::Load ( void )
 	    this->RegisterEHS ( this, "call" );
 
         // Store the actual directory and zip paths for fast access
-        const char* szCurrentDirectory = g_pServerInterface->GetServerPath ();
+        const char* szServerModPath = g_pServerInterface->GetServerModPath ();
 
         char szBuffer[MAX_PATH];
-        _snprintf ( szBuffer, MAX_PATH - 1, "%s/mods/deathmatch/resources/%s/", szCurrentDirectory, m_strResourceName.c_str () );
+        _snprintf ( szBuffer, MAX_PATH - 1, "%s/resources/%s/", szServerModPath, m_strResourceName.c_str () );
         m_strResourceDirectoryPath = szBuffer;
-        _snprintf ( szBuffer, MAX_PATH - 1, "%s/mods/deathmatch/resourcecache/%s/", szCurrentDirectory, m_strResourceName.c_str () );
+        _snprintf ( szBuffer, MAX_PATH - 1, "%s/resource-cache/unzipped/%s/", szServerModPath, m_strResourceName.c_str () );
         m_strResourceCachePath = szBuffer;
-        _snprintf ( szBuffer, MAX_PATH - 1, "%s/mods/deathmatch/resources/%s.zip", szCurrentDirectory, m_strResourceName.c_str () );
+        _snprintf ( szBuffer, MAX_PATH - 1, "%s/resources/%s.zip", szServerModPath, m_strResourceName.c_str () );
         m_strResourceZip = szBuffer;
-
-        // Make sure the resourcecache directory exists
-        _snprintf ( szBuffer, MAX_PATH - 1, "%s/mods/deathmatch/resourcecache", szCurrentDirectory );
-        mymkdir ( szBuffer );
 
         // Open our zip file
         m_zipfile = unzOpen ( m_strResourceZip.c_str () );
@@ -335,6 +331,39 @@ bool CResource::Load ( void )
 
 	    // Generate a CRC for this resource
         m_ulCRC = GenerateCRC();
+
+        // copy client files to http holding directory if external web server is being used
+        if ( g_pGame->GetConfig ()->GetHTTPDownloadType () == HTTP_DOWNLOAD_ENABLED_URL && g_pGame->GetConfig ()->GetHTTPAutoClientFiles () )
+        {
+            list < CResourceFile* > ::const_iterator iter = this->IterBegin ();
+            for ( ; iter != this->IterEnd () ; iter++ )
+            {
+                CResourceFile* pResourceFile = *iter;
+                switch ( pResourceFile->GetType () )
+                {
+                    case CResourceFile::RESOURCE_FILE_TYPE_CLIENT_SCRIPT:
+                    case CResourceFile::RESOURCE_FILE_TYPE_CLIENT_CONFIG:
+                    case CResourceFile::RESOURCE_FILE_TYPE_CLIENT_FILE:
+                    {
+                        string clientFileShortPath = pResourceFile->GetName();
+                        string strDstFilePath = string ( g_pServerInterface->GetServerModPath () ) + "/resource-cache/http-client-files/" + this->GetName() + "/" + clientFileShortPath;
+                        string strSrcFilePath;
+                        if ( GetFilePath ( clientFileShortPath.c_str (), strSrcFilePath ) )
+                        {
+                            MakeSureDirExists( strDstFilePath.c_str () );
+                            if ( !FileCopy ( strSrcFilePath.c_str (), strDstFilePath.c_str () ) )
+                            {
+                                CLogger::LogPrintf ( "Could not copy Copy '%s' to '%s'\n", strSrcFilePath.c_str (), strDstFilePath.c_str () );
+                            }
+                        }
+                    }
+                    break;
+
+                    default:
+                        break;
+               }
+            }
+        }
 
        // if  ( stricmp ( this->GetName(), "updtest" ) == 0 )
       //      printf ( "0x%X\n", m_ulCRC );
@@ -2371,6 +2400,41 @@ ResponseCode CResource::HandleRequestCall ( HttpRequest * ipoHttpRequest, HttpRe
     static int bAlreadyCalling = false; // a mini-mutex flag, seems to work :)
     // This code runs multithreaded, we need to make sure multiple server requests don't overlap each other... (slows the server down quite a bit)
 
+    // See if the current account is on this functions access list
+    bool bUserOnFunctionAccessList = false;
+    {
+        const char * szQueryString = ipoHttpRequest->sUri.c_str();
+        if ( *szQueryString )
+        {
+            std::string strFuncName;
+            std::vector < std::string > arguments;
+            const char* pQueryArg = strchr ( szQueryString, '?' );
+            if ( !pQueryArg )
+            {
+                strFuncName = szQueryString;
+            }
+            else
+            {
+                strFuncName.assign ( szQueryString, pQueryArg - szQueryString );
+            }
+
+            list < CExportedFunction* > ::iterator iter =  m_exportedFunctions.begin ();
+            for ( ; iter != m_exportedFunctions.end (); iter++ )
+            {
+                if ( strFuncName == (*iter)->GetFunctionName () )
+                {
+                    if ( (*iter)->IsHTTPAccessible() )
+                    {
+                        if ( (*iter)->IsOnAccessList( (char*)account->GetName().c_str () ) )
+                        {
+                            bUserOnFunctionAccessList = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Check for http general and if we have access to this resource
     // if we're trying to return a http file. Otherwize it's the MTA
     // client trying to download files.
@@ -2380,11 +2444,13 @@ ResponseCode CResource::HandleRequestCall ( HttpRequest * ipoHttpRequest, HttpRe
 											m_strResourceName.c_str (),
 											CAccessControlListRight::RIGHT_TYPE_RESOURCE,
 											true ) ||
-         !aclManager->CanObjectUseRight ( account->GetName().c_str (),
+         ( !aclManager->CanObjectUseRight ( account->GetName().c_str (),
 			                                CAccessControlListGroupObject::OBJECT_TYPE_USER,
                                             "http",
 											CAccessControlListRight::RIGHT_TYPE_GENERAL,
 											true ) )
+        &&
+        !bUserOnFunctionAccessList )
     {
         bAlreadyCalling = false;
         return g_pGame->GetHTTPD()->RequestLogin ( ipoHttpResponse );;

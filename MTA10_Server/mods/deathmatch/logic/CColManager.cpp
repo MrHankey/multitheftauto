@@ -53,7 +53,7 @@ void CColManager::DoHitDetection ( const CVector& vecLastPosition, const CVector
     {
         m_bIteratingList = true;
         // Call the hit detection event on all our shapes
-        list < CColShape* > ::const_iterator iter = m_List.begin ();
+        vector < CColShape* > ::const_iterator iter = m_List.begin ();
         for ( ; iter != m_List.end (); iter++ )
         {
             CColShape* pShape = *iter;
@@ -189,7 +189,7 @@ void CColManager::DoHitDetection ( const CVector& vecLastPosition, const CVector
 bool CColManager::Exists ( CColShape* pShape )
 {
     // Return true if it exists
-    list < CColShape* > ::const_iterator iter = m_List.begin ();
+    vector < CColShape* > ::const_iterator iter = m_List.begin ();
     for ( ; iter != m_List.end (); iter++ )
     {
         if ( *iter == pShape )
@@ -206,7 +206,7 @@ void CColManager::DeleteAll ( void )
 {
     // Delete all of them
     m_bCanRemoveFromList = false;
-    list < CColShape* > ::const_iterator iter = m_List.begin ();
+    vector < CColShape* > ::const_iterator iter = m_List.begin ();
     for ( ; iter != m_List.end (); iter++ )
     {
         delete *iter;
@@ -215,6 +215,20 @@ void CColManager::DeleteAll ( void )
     // Clear the list
     m_bCanRemoveFromList = true;
     m_List.clear ();
+}
+
+
+// Linux compiler work around. (Don't know)
+template < class T >
+void ListRemove ( std::vector < T >& itemList, const T& item )
+{
+    std::vector < CColShape* > ::iterator it = itemList.begin ();
+    for ( ; it != itemList.end () ; it++ )
+        if ( item == *it )
+        {
+            itemList.erase ( it );
+            break;
+        }
 }
 
 
@@ -229,7 +243,7 @@ void CColManager::RemoveFromList ( CColShape* pShape )
         }
         else
         {
-            if ( !m_List.empty() ) m_List.remove ( pShape );
+            ListRemove ( m_List, pShape );
         }
     }
 }
@@ -237,10 +251,10 @@ void CColManager::RemoveFromList ( CColShape* pShape )
 
 void CColManager::TakeOutTheTrash ( void )
 {
-    list < CColShape* > ::const_iterator iter = m_TrashCan.begin ();
+    vector < CColShape* > ::const_iterator iter = m_TrashCan.begin ();
     for ( ; iter != m_TrashCan.end (); iter++ )
     {
-        if ( !m_List.empty() ) m_List.remove ( *iter );
+        ListRemove ( m_List, *iter );
     }
 
     m_TrashCan.clear ();

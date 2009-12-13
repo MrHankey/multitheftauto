@@ -188,6 +188,29 @@ void SString::Split ( const SString& strDelim, std::vector < SString >& outResul
 }
 
 
+// Not fully tested
+SString SString::Replace ( const char* szOld, const char* szNew ) const
+{
+    int iOldLength = strlen ( szOld );
+    SString strResult = *this;
+    int idx = 0;
+    while( ( idx = strResult.find_first_of ( szOld, idx ) ) >= 0 )
+        strResult.replace ( idx, iOldLength, szNew );
+    return strResult;
+}
+
+
+// Not fully tested
+SString SString::TrimEnd ( const char* szOld ) const
+{
+    int iOldLength = strlen ( szOld );
+    SString strResult = *this;
+    while ( strResult.substr ( strResult.length () - iOldLength ) == szOld )
+        strResult = strResult.substr ( 0, strResult.length () - iOldLength );
+    return strResult;
+}
+
+
 //
 // Cross-platform GetTickCount() implementations
 //   Returns the number of milliseconds since some fixed point in time.
@@ -288,3 +311,51 @@ unsigned long GetTickCount ( void )
 
 #endif
 #endif
+
+
+// Copied from CChatLine::RemoveColorCode()
+std::string SharedUtil::RemoveColorCode ( const char* szString )
+{
+    std::string strOut;
+    const char* szStart = szString;
+    const char* szEnd = szString;
+
+    while ( true )
+    {
+        if ( *szEnd == '\0' )
+        {
+            strOut.append ( szStart, szEnd - szStart );
+            break;
+        }
+        else
+        {
+            bool bIsColorCode = false;
+            if ( *szEnd == '#' )
+            {
+                bIsColorCode = true;
+                for ( int i = 0; i < 6; i++ )
+                {
+                    char c = szEnd [ 1 + i ];
+                    if ( !isdigit ( (unsigned char)c ) && (c < 'A' || c > 'F') && (c < 'a' || c > 'f') )
+                    {
+                        bIsColorCode = false;
+                        break;
+                    }
+                }
+            }
+
+            if ( bIsColorCode )
+            {
+                strOut.append ( szStart, szEnd - szStart );
+                szStart = szEnd + 7;
+                szEnd = szStart;
+            }
+            else
+            {
+                szEnd++;
+            }
+        }
+    }
+
+    return strOut;
+}
