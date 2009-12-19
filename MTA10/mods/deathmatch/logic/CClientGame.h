@@ -438,6 +438,8 @@ private:
     static void                         PostWeaponFire                  ( void );
     static bool                         StaticProcessPacket             ( unsigned char ucPacketID, NetBitStreamInterface& bitStream );
 
+    bool                                VerifySADataFiles               ( int iEnableClientChecks = 0 );
+
 public:
     void                                SendExplosionSync               ( const CVector& vecPosition, eExplosionType Type, CClientEntity * pOrigin = NULL );
     void                                SendFireSync                    ( CFire* pFire );
