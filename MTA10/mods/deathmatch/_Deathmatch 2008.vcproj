@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Client - Deathmatch"
 	ProjectGUID="{F661CA1A-A296-4505-9583-3BEC58FB79C5}"
 	RootNamespace="Client - Deathmatch"
@@ -718,14 +718,6 @@
 				</File>
 				<File
 					RelativePath="..\shared_logic\CClientGUIManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\shared_logic\CClientHandling.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\shared_logic\CClientHandlingManager.cpp"
 					>
 				</File>
 				<File
@@ -1588,14 +1580,6 @@
 				</File>
 				<File
 					RelativePath="..\shared_logic\CClientGUIManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\shared_logic\CClientHandling.h"
-					>
-				</File>
-				<File
-					RelativePath="..\shared_logic\CClientHandlingManager.h"
 					>
 				</File>
 				<File
