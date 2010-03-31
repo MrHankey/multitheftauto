@@ -13,7 +13,7 @@
 #include "StdInc.h"
 
 #define lua_istype(luavm, number,type) (lua_type(luavm,number) == type)
-
+/*
 void CLuaHandlingDefs::LoadFunctions ( void )
 {
     // Create
@@ -2702,4 +2702,4 @@ int CLuaHandlingDefs::handlingSetAnimGroup ( lua_State* luaVM )
 {
     lua_pushboolean ( luaVM, false );
     return 1;
-}
+}*/

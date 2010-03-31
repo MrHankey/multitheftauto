@@ -6,6 +6,7 @@
 *  PURPOSE:     Vehicle entity class
 *  DEVELOPERS:  Christian Myhre Lundheim <>
 *               Jax <>
+*               Florian Busse <flobu@gmx.net>
 *
 *  Multi Theft Auto is available from http://www.multitheftauto.com/
 *
@@ -21,6 +22,9 @@ CVehicle::CVehicle ( CVehicleManager* pVehicleManager, CElement* pParent, CXMLNo
     m_pVehicleManager = pVehicleManager;
     m_usModel = usModel;
     m_pUpgrades = new CVehicleUpgrades ( this );
+    m_pOriginalHandlingEntry = g_pGame->GetHandlingManager ()->GetOriginalHandlingData ( static_cast < eVehicleTypes > ( usModel ) );
+    m_pHandlingEntry = g_pGame->GetHandlingManager ()->CreateHandlingData ();
+    m_pHandlingEntry->ApplyHandlingData ( (CHandlingEntry*)m_pOriginalHandlingEntry );
 
     m_iType = CElement::VEHICLE;
     SetTypeName ( "vehicle" );
@@ -118,6 +122,7 @@ CVehicle::~CVehicle ( void )
         }
     }
     delete m_pUpgrades;
+    delete m_pHandlingEntry;
 
     // Remove us from the vehicle manager
     Unlink ();
@@ -661,7 +666,7 @@ void CVehicle::GetInitialDoorStates ( unsigned char * pucDoorStates )
         case VT_RCCAM:
         case VT_RCGOBLIN:
         case VT_RCRAIDER:
-        case VT_TIGER:
+        case VT_RCTIGER:
         case VT_TRACTOR:
         case VT_VORTEX:
             memset ( pucDoorStates, DT_DOOR_MISSING, 6 );

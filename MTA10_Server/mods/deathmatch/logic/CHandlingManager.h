@@ -3,96 +3,61 @@
 *  PROJECT:     Multi Theft Auto v1.0
 *  LICENSE:     See LICENSE in the top level directory
 *  FILE:        mods/deathmatch/logic/CHandlingManager.h
-*  PURPOSE:     Vehicle handling manager class
+*  PURPOSE:     Header file for vehicle handling manager class
 *  DEVELOPERS:  Christian Myhre Lundheim <>
+*               Florian Busse <flobu@gmx.net>
 *
 *  Multi Theft Auto is available from http://www.multitheftauto.com/
 *
 *****************************************************************************/
 
+class CHandlingManager;
+
 #ifndef __CHANDLINGMANAGER_H
 #define __CHANDLINGMANAGER_H
 
-#include "CHandling.h"
-#include <list>
+#include "CHandlingEntry.h"
 
 class CHandlingManager
 {
-    friend class CHandling;
-
 public:
-                                CHandlingManager                ( void );
-                                ~CHandlingManager               ( void );
+                                CHandlingManager              ( void );
+                                ~CHandlingManager             ( void );
 
-    CHandling*                  Create                          ( CElement* pParent, CXMLNode* pNode = NULL );
-    CHandling*                  CreateFromXML                   ( CElement* pParent, CXMLNode& Node, CLuaMain* pLuaMain, CEvents* pEvents );
-    void                        DeleteAll                       ( void );
+    void                        LoadDefaultHandlings            ( void );
 
-    inline unsigned int         Count                           ( void )                            { return static_cast < unsigned int > ( m_List.size () ); };
-    bool                        Exists                          ( CHandling* pHandling );
+    CHandlingEntry*             CreateHandlingData              ( void );
+    bool                        ApplyHandlingData               ( enum eVehicleTypes eModel, CHandlingEntry* pEntry );
+    void                        RemoveFromVeh                   ( CVehicle* pVeh );
 
-    inline list < CHandling* > ::const_iterator IterBegin       ( void )                            { return m_List.begin (); };
-    inline list < CHandling* > ::const_iterator IterEnd         ( void )                            { return m_List.end (); };
-
-    void                        AddDefaultHandling              ( unsigned short usID, CHandling* pHandling );
-    void                        GetDefaultHandlings             ( unsigned short usID, std::vector < CHandling* >& List );
-
-    inline CHandling*           GetOriginalHandling             ( unsigned short usID )             { return m_pDefaultHandlings [usID - 400]; };
-
-    // Use the following functions to get the value that will be used in first->last priority
-    float                       GetMass                         ( const std::vector < CHandling* >& List );
-    float                       GetTurnMass                     ( const std::vector < CHandling* >& List );
-    float                       GetDragCoeff                    ( const std::vector < CHandling* >& List );
-    const CVector&              GetCenterOfMass                 ( const std::vector < CHandling* >& List );
-
-    unsigned int                GetPercentSubmerged             ( const std::vector < CHandling* >& List );
-    float                       GetTractionMultiplier           ( const std::vector < CHandling* >& List );
-
-    CHandling::eDriveType       GetDriveType                    ( const std::vector < CHandling* >& List );
-    CHandling::eEngineType      GetEngineType                   ( const std::vector < CHandling* >& List );
-    unsigned char               GetNumberOfGears                ( const std::vector < CHandling* >& List );
-
-    float                       GetEngineAccelleration          ( const std::vector < CHandling* >& List );
-    float                       GetEngineInertia                ( const std::vector < CHandling* >& List );
-    float                       GetMaxVelocity                  ( const std::vector < CHandling* >& List );
-
-    float                       GetBrakeDecelleration           ( const std::vector < CHandling* >& List );
-    float                       GetBrakeBias                    ( const std::vector < CHandling* >& List );
-    bool                        GetABS                          ( const std::vector < CHandling* >& List );
-
-    float                       GetSteeringLock                 ( const std::vector < CHandling* >& List );
-    float                       GetTractionLoss                 ( const std::vector < CHandling* >& List );
-    float                       GetTractionBias                 ( const std::vector < CHandling* >& List );
-
-    float                       GetSuspensionForceLevel         ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionDamping            ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionHighSpeedDamping   ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionUpperLimit         ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionLowerLimit         ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionFrontRearBias      ( const std::vector < CHandling* >& List );
-    float                       GetSuspensionAntidiveMultiplier ( const std::vector < CHandling* >& List );
-
-    float                       GetCollisionDamageMultiplier    ( const std::vector < CHandling* >& List );
-
-    unsigned int                GetHandlingFlags                ( const std::vector < CHandling* >& List );
-    unsigned int                GetModelFlags                   ( const std::vector < CHandling* >& List );
-    float                       GetSeatOffsetDistance           ( const std::vector < CHandling* >& List );
-
-    CHandling::eLightType       GetHeadLight                    ( const std::vector < CHandling* >& List );
-    CHandling::eLightType       GetTailLight                    ( const std::vector < CHandling* >& List );
-    unsigned char               GetAnimGroup                    ( const std::vector < CHandling* >& List );
+    CHandlingEntry*             GetHandlingData                 ( eVehicleTypes eModel );
+    const CHandlingEntry*       GetOriginalHandlingData         ( eVehicleTypes eModel );
+    CHandlingEntry*             GetOriginalHandlingTable        ( eHandlingTypes eHandling );
+    CHandlingEntry*             GetPreviousHandlingTable        ( eHandlingTypes eHandling );
+    float                       GetDragMultiplier               ( void );
+    float                       GetBasicDragCoeff               ( void );
+    eHandlingTypes              GetHandlingID                   ( eVehicleTypes eModel );
 
 private:
-    void                        RestoreHandling                 ( unsigned short usID );
+    void                        InitializeDefaultHandlings      ( void );
 
-    inline void                 AddToList                       ( CHandling* pHandling )            { m_List.push_back ( pHandling ); };
-    void                        RemoveFromList                  ( CHandling* pHandling );
+    static DWORD                m_dwStore_LoadHandlingCfg;
 
-    void                        InitializeOriginalHandlings     ( void );
+    static void                 LoadHandlingCfg                 ( void );
+    static void                 Hook_LoadHandlingCfg            ( void );
 
-    bool                        m_bRemoveFromList;
-    list < CHandling* >         m_List;
-    CHandling*                  m_pDefaultHandlings [212];
+    // Original handling data unaffected by handling.cfg changes
+    static tHandlingData        m_OriginalHandlingData [HT_MAX];
+
+    // Our wrapper classes for the classes GTA use and the original data
+    static CHandlingEntry*      m_pEntries [HT_MAX];
+    static CHandlingEntry*      m_pOriginalEntries [HT_MAX];
+
+    // These are the entries GTA use
+    static tHandlingData        m_RealHandlingData [HT_MAX];
+
+    // Additional entries are saved here
+    std::list < CHandlingEntry* > m_HandlingList;
 };
 
 #endif

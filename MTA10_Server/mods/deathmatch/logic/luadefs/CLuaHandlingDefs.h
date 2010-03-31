@@ -18,8 +18,8 @@
 class CLuaHandlingDefs: public CLuaDefs
 {
 public:
-    static void     LoadFunctions                           ( void );
-
+    static void     LoadFunctions                           ( void ){};
+/*
     // Create/action
     static int      createHandling                          ( lua_State* luaVM );
     static int      addDefaultHandling                      ( lua_State* luaVM );
@@ -108,7 +108,7 @@ public:
 
     static int      handlingSetHeadLightType                ( lua_State* luaVM );
     static int      handlingSetTailLightType                ( lua_State* luaVM );
-    static int      handlingSetAnimGroup                    ( lua_State* luaVM );
+    static int      handlingSetAnimGroup                    ( lua_State* luaVM );*/
 };
 
 #endif
