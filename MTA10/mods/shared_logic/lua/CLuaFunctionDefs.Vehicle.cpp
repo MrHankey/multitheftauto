@@ -2481,7 +2481,7 @@ _etf:
                         {
                             if ( iArgument3 == LUA_TBOOLEAN )
                             {
-                                pEntry->SetABS ( lua_toboolean ( luaVM, 3 ) );
+                                pEntry->SetABS ( lua_toboolean ( luaVM, 3 ) ? true : false );
                                 bSuccess = true;
                             }
                             else if ( iArgument3 == LUA_TNIL )
@@ -2637,7 +2637,7 @@ _etf:
                         {
                             if ( iArgument3 == LUA_TNUMBER )
                             {
-                                pEntry->SetSeatOffsetDistance ( static_cast < unsigned int > ( lua_tonumber ( luaVM, 3 ) ) );
+                                pEntry->SetSeatOffsetDistance ( static_cast < float > ( lua_tonumber ( luaVM, 3 ) ) );
                                 bSuccess = true;
                             }
                             else if ( iArgument3 == LUA_TNIL )
@@ -2881,7 +2881,7 @@ _ttf:
                                 {
                                     if ( iArgument3 == LUA_TBOOLEAN )
                                     {
-                                        pEntry->SetABS ( lua_toboolean ( luaVM, -1 ) );
+                                        pEntry->SetABS ( lua_toboolean ( luaVM, -1 ) ? true : false );
                                     }
                                 }
                                 else if (strcmp(szHandlingData,"steeringLock")==0)
@@ -2965,7 +2965,7 @@ _ttf:
                                 {
                                     if ( iArgument3 == LUA_TNUMBER )
                                     {
-                                        pEntry->SetSeatOffsetDistance ( static_cast < unsigned int > ( lua_tonumber ( luaVM, -1 ) ) );
+                                        pEntry->SetSeatOffsetDistance ( static_cast < float > ( lua_tonumber ( luaVM, -1 ) ) );
                                     }
                                 }
                                 else if (strcmp(szHandlingData,"monetary")==0)
