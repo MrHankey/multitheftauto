@@ -16,7 +16,7 @@
 #include <game/CHandlingManager.h>
 #include "CHandlingEntrySA.h"
 
-class CHandlingManagerSA: public IHandlingManager
+class CHandlingManagerSA: public CHandlingManager
 {
 public:
                                 CHandlingManagerSA              ( void );

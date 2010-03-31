@@ -9,12 +9,12 @@
 *
 *****************************************************************************/
 
-#ifndef __CGAME_IHANDLINGMANAGER
-#define __CGAME_IHANDLINGMANAGER
+#ifndef __CGAME_CHandlingManager
+#define __CGAME_CHandlingManager
 
 #include "CHandlingEntry.h"
 
-class IHandlingManager
+class CHandlingManager
 {
 public:
     virtual void                    LoadDefaultHandlings    ( void ) = 0;
