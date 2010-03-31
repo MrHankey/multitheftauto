@@ -21,7 +21,7 @@
 //
 // System wide defines
 //
-#define WITH_VEHICLE_HANDLING 0
+#define WITH_VEHICLE_HANDLING 1
 
 //
 // _vsnprintf with buffer full check
