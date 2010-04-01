@@ -90,23 +90,13 @@ public:
                     // Constructor for creatable dummy entries
                     CHandlingEntrySA                ( void );
 
-                    // Constructor for game linked entries
-                    CHandlingEntrySA                ( tHandlingDataSA* pDataSA, tHandlingDataSA* pOriginalUncalculatedData );
-
                     // Constructor for original entries
                     CHandlingEntrySA                ( tHandlingDataSA* pOriginal );
 
     virtual         ~CHandlingEntrySA               ( void );
 
-    bool            IsVehicleAdded                  ( CVehicle* pVeh );
-    // We add a vehicle to this entry
-    void            AddVehicle                      ( CVehicle* pVeh );
-
     // Use this to copy data from an another handling class to this
     void            ApplyHandlingData               ( CHandlingEntry* pData );
-
-    // Remove a vehicle from list
-    void            RemoveVehicle                   ( CVehicle* pVeh );
 
     // Get functions
     float           GetMass                         ( void ) const    { return m_Handling.fMass; };
@@ -210,7 +200,6 @@ private:
     tHandlingDataSA         m_Handling;
 
     tHandlingDataSA*        m_pOriginalData;
-    std::list < CVehicleSA* > m_VehicleList;    // Single vehicles to apply data to
 };
 
 #endif

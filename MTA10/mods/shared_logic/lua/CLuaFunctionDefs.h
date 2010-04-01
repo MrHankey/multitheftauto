@@ -283,7 +283,6 @@ public:
     LUA_DECLARE ( GetVehicleHeadLightColor );
 #if WITH_VEHICLE_HANDLING
     LUA_DECLARE ( GetVehicleHandlingData );
-    LUA_DECLARE ( GetDefaultHandling );
 #endif
 
     // Vehicle set functions

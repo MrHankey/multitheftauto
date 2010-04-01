@@ -473,7 +473,6 @@ void CLuaManager::LoadCFunctions ( void )
     CLuaCFunctions::AddFunction ( "getVehicleHeadLightColor", CLuaFunctionDefs::GetVehicleHeadLightColor );
 #if WITH_VEHICLE_HANDLING
     CLuaCFunctions::AddFunction ( "getVehicleHandling", CLuaFunctionDefs::GetVehicleHandlingData );
-    CLuaCFunctions::AddFunction ( "getDefaultHandling", CLuaFunctionDefs::GetDefaultHandling );
 #endif
 
     // Vehicle set funcs
