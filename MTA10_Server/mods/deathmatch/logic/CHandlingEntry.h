@@ -20,7 +20,6 @@ class CHandlingEntry;
 class CTransmissionSAInterface
 {
 public:
-    float           fUnknown  [18];                 // +40
 
     unsigned char   ucDriveType         :8;         // +112
     unsigned char   ucEngineType        :8;         // +113
@@ -33,7 +32,6 @@ public:
     float           fEngineInertia;                 // +124
     float           fMaxVelocity;                   // +128
 
-    float           fUnknown2 [3];                  // +132
 };
 
 struct tHandlingData
@@ -42,14 +40,11 @@ struct tHandlingData
 
     float           fMass;                          // +4
 
-    float           fUnknown1;                      // +8    Automatically calculated
 
     float           fTurnMass;                      // +12
     float           fDragCoeff;                     // +16
     CVector         vecCenterOfMass;                // +20
     unsigned int    uiPercentSubmerged;             // +32
-
-    float           fUnknown2;                      // +36  Automatically calculated
 
     float           fTractionMultiplier;            // +40
 
@@ -80,7 +75,6 @@ struct tHandlingData
     unsigned char   ucHeadLight     : 8;            // +220
     unsigned char   ucTailLight     : 8;            // +221
     unsigned char   ucAnimGroup     : 8;            // +222
-    unsigned char   ucUnused        : 8;            // +223
 };
 
 
