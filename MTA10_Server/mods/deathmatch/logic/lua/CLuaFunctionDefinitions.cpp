@@ -5657,6 +5657,52 @@ int CLuaFunctionDefinitions::SetVehicleHeadLightColor ( lua_State* luaVM )
     return 1;
 }
 
+int CLuaFunctionDefinitions::SetVehicleHandling ( lua_State* luaVM )
+{
+    if ( lua_type ( luaVM, 1 ) == LUA_TLIGHTUSERDATA && lua_type ( luaVM, 2 ) == LUA_TNUMBER )
+    {
+        CVehicle* pVehicle = lua_tovehicle ( luaVM, 1 );
+        if ( pVehicle )
+        {
+            eHandlingProperty eProperty = static_cast < eHandlingProperty > ( (int)lua_tonumber ( luaVM, 2 ) );
+            if ( eProperty )
+            {
+                if ( eProperty == PROPERTY_ABS )
+                {
+                    if ( lua_type ( luaVM, 3 ) == LUA_TBOOLEAN )
+                    {
+                        if ( CStaticFunctionDefinitions::SetVehicleHandling ( pVehicle, lua_toboolean ( luaVM, 3 ) ) )
+                        {
+                            lua_pushboolean ( luaVM, true );
+                            return 1;
+                        }
+                    }
+                }
+                else if ( eProperty == PROPERTY_CENTEROFMASS )
+                {
+                    
+                }
+                else
+                {
+                    if ( lua_type ( luaVM, 3 ) == LUA_TNUMBER )
+                    {
+                        float fTest = (float)lua_tonumber ( luaVM, 3 );
+                        if ( CStaticFunctionDefinitions::SetVehicleHandling ( pVehicle, eProperty, fTest ) )
+                        {
+                            lua_pushboolean ( luaVM, true );
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+        m_pScriptDebugging->LogBadType ( luaVM, "setVehicleHandling" );
+
+    lua_pushboolean ( luaVM, false );
+    return 1;
+}
 
 int CLuaFunctionDefinitions::CreateMarker ( lua_State* luaVM )
 {

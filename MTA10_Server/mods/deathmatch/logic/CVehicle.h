@@ -350,7 +350,6 @@ private:
     bool                            m_bLandingGearDown;
     unsigned short                  m_usAdjustableProperty;
 
-protected:
     const CHandlingEntry*           m_pOriginalHandlingEntry;
     CHandlingEntry*                 m_pHandlingEntry;
 
