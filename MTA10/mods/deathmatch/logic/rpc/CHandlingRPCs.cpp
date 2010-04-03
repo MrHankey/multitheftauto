@@ -26,7 +26,7 @@ void CHandlingRPCs::LoadFunctions ( void )
 // Enum with property id's for handling
 enum eHandlingProperty
 {
-    PROPERTY_MASS,
+    PROPERTY_MASS = 1,
     PROPERTY_TURNMASS,
     PROPERTY_DRAGCOEFF,
     PROPERTY_CENTEROFMASS,
@@ -53,6 +53,7 @@ enum eHandlingProperty
     PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER,
     PROPERTY_COLLISIONDAMAGEMULTIPLIER,
     PROPERTY_SEATOFFSETDISTANCE,
+    PROPERTY_MONETARY,
     PROPERTY_HANDLINGFLAGS,
     PROPERTY_MODELFLAGS,
     PROPERTY_HEADLIGHT,
@@ -244,6 +245,11 @@ void CHandlingRPCs::SetVehicleHandlingProperty ( NetBitStreamInterface& bitStrea
                 case PROPERTY_SEATOFFSETDISTANCE:
                     bitStream.Read ( fFloat );
                     pHandlingEntry->SetSeatOffsetDistance ( fFloat );
+                    break;
+
+                case PROPERTY_MONETARY:
+                    bitStream.Read ( uiInt );
+                    pHandlingEntry->SetMonetary ( uiInt );
                     break;
 
                 case PROPERTY_HANDLINGFLAGS:
