@@ -213,6 +213,7 @@ public:
     static int      GetTrainSpeed                       ( lua_State* luaVM );
     static int      IsVehicleBlown                      ( lua_State* luaVM );
     static int      GetVehicleHeadLightColor            ( lua_State* luaVM );
+    static int      GetVehicleHandling                  ( lua_State* luaVM );
 
     // Vehicle set functions
     static int      FixVehicle                          ( lua_State* luaVM );
