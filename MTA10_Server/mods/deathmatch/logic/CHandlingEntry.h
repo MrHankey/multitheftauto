@@ -104,25 +104,15 @@ public:
     };
 
                     // Constructor for creatable dummy entries
-                    CHandlingEntry                ( void );
-
-                    // Constructor for game linked entries
-                    CHandlingEntry                ( tHandlingData* pData, tHandlingData* pOriginalUncalculatedData );
+                    CHandlingEntry                ( void ){};
 
                     // Constructor for original entries
                     CHandlingEntry                ( tHandlingData* pOriginal );
 
-    virtual         ~CHandlingEntry               ( void );
-
-    bool            IsVehicleAdded                  ( CVehicle* pVeh );
-    // We add a vehicle to this entry
-    void            AddVehicle                      ( CVehicle* pVeh );
+                    ~CHandlingEntry               ( void ){};
 
     // Use this to copy data from an another handling class to this
     void            ApplyHandlingData               ( CHandlingEntry* pData );
-
-    // Remove a vehicle from list
-    void            RemoveVehicle                   ( CVehicle* pVeh );
 
     // Get functions
     float           GetMass                         ( void ) const    { return m_Handling.fMass; };
@@ -213,20 +203,8 @@ public:
     void            SetTailLight                    ( eLightType Style )            { m_Handling.ucTailLight = Style; };
     void            SetAnimGroup                    ( unsigned char ucGroup )       { m_Handling.ucAnimGroup = ucGroup; };
 
-    void            Recalculate                     ( void );
-
-    void            Restore                         ( void );
-
-    tHandlingData*      GetInterface                ( void )                        { return m_pHandling; };
-
 private:
-    tHandlingData*        m_pHandling;
-    bool                  m_bDeleteInterface;
-
     tHandlingData         m_Handling;
-
-    tHandlingData*        m_pOriginalData;
-    std::list < CVehicle* > m_VehicleList;    // Single vehicles to apply data to
 };
 
 #endif

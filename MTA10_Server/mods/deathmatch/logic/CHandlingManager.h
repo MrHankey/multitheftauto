@@ -24,40 +24,20 @@ public:
                                 CHandlingManager              ( void );
                                 ~CHandlingManager             ( void );
 
-    void                        LoadDefaultHandlings            ( void );
-
     CHandlingEntry*             CreateHandlingData              ( void );
-    bool                        ApplyHandlingData               ( enum eVehicleTypes eModel, CHandlingEntry* pEntry );
-    void                        RemoveFromVeh                   ( CVehicle* pVeh );
 
-    CHandlingEntry*             GetHandlingData                 ( eVehicleTypes eModel );
     const CHandlingEntry*       GetOriginalHandlingData         ( eVehicleTypes eModel );
-    CHandlingEntry*             GetOriginalHandlingTable        ( eHandlingTypes eHandling );
-    CHandlingEntry*             GetPreviousHandlingTable        ( eHandlingTypes eHandling );
-    float                       GetDragMultiplier               ( void );
-    float                       GetBasicDragCoeff               ( void );
+
     eHandlingTypes              GetHandlingID                   ( eVehicleTypes eModel );
 
 private:
     void                        InitializeDefaultHandlings      ( void );
 
-    static DWORD                m_dwStore_LoadHandlingCfg;
-
-    static void                 LoadHandlingCfg                 ( void );
-    static void                 Hook_LoadHandlingCfg            ( void );
-
     // Original handling data unaffected by handling.cfg changes
     static tHandlingData        m_OriginalHandlingData [HT_MAX];
 
     // Our wrapper classes for the classes GTA use and the original data
-    static CHandlingEntry*      m_pEntries [HT_MAX];
     static CHandlingEntry*      m_pOriginalEntries [HT_MAX];
-
-    // These are the entries GTA use
-    static tHandlingData        m_RealHandlingData [HT_MAX];
-
-    // Additional entries are saved here
-    std::list < CHandlingEntry* > m_HandlingList;
 };
 
 #endif

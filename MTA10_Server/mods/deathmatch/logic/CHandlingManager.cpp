@@ -24,151 +24,14 @@
 #define Var_fTurnMassMultiplier     0x858B8C
 #define Var_fBasicDragCoeff         0x858C58
 
-DWORD CHandlingManager::m_dwStore_LoadHandlingCfg = 0;
-
 tHandlingData CHandlingManager::m_OriginalHandlingData [HT_MAX];
-CHandlingEntry* CHandlingManager::m_pEntries [HT_MAX];
 CHandlingEntry* CHandlingManager::m_pOriginalEntries [HT_MAX];  
-tHandlingData CHandlingManager::m_RealHandlingData [HT_MAX];
 
-// Use the following code to dump handling data unrecalculated on GTA load.
-// NB: You need to disable the other hook in the constructor of the manager and uncomment the other
-
-DWORD m_dwStore_Calculate = 0;
-
-void DumpHandlingData ( tHandlingData* pData )
-{
-    unsigned int iCounter = pData->iVehicleID;
-
-    FILE* pFile = fopen ( "C:/dumped.txt", "a+" );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].iVehicleID = %u;\n", iCounter, iCounter );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fMass = %ff;\n", iCounter, pData->fMass );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fTurnMass = %ff;\n", iCounter, pData->fTurnMass );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fDragCoeff = %ff;\n", iCounter, pData->fDragCoeff );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].vecCenterOfMass = CVector ( %ff, %ff, %ff );\n", iCounter, pData->vecCenterOfMass.fX, pData->vecCenterOfMass.fY, pData->vecCenterOfMass.fZ );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].uiPercentSubmerged = %u;\n", iCounter, pData->uiPercentSubmerged );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fTractionMultiplier = %ff;\n", iCounter, pData->fTractionMultiplier );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.ucDriveType = '%c';\n", iCounter, pData->Transmission.ucDriveType );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.ucEngineType = '%c';\n", iCounter, pData->Transmission.ucEngineType );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.ucNumberOfGears = %u;\n", iCounter, pData->Transmission.ucNumberOfGears );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.uiHandlingFlags = %u;\n", iCounter, pData->Transmission.uiHandlingFlags );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.fEngineAccelleration = %ff;\n", iCounter, pData->Transmission.fEngineAccelleration );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.fEngineInertia = %ff;\n", iCounter, pData->Transmission.fEngineInertia );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].Transmission.fMaxVelocity = %ff;\n", iCounter, pData->Transmission.fMaxVelocity );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fBrakeDecelleration = %ff;\n", iCounter, pData->fBrakeDecelleration );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fBrakeBias = %ff;\n", iCounter, pData->fBrakeBias );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].bABS = false;\n", iCounter );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSteeringLock = %ff;\n", iCounter, pData->fSteeringLock );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fTractionLoss = %ff;\n", iCounter, pData->fTractionLoss );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fTractionBias = %ff;\n", iCounter, pData->fTractionBias );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionForceLevel = %ff;\n", iCounter, pData->fSuspensionForceLevel );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionDamping = %ff;\n", iCounter, pData->fSuspensionDamping );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionHighSpdDamping = %ff;\n", iCounter, pData->fSuspensionHighSpdDamping );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionUpperLimit = %ff;\n", iCounter, pData->fSuspensionUpperLimit );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionLowerLimit = %ff;\n", iCounter, pData->fSuspensionLowerLimit );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionFrontRearBias = %ff;\n", iCounter, pData->fSuspensionFrontRearBias );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSuspensionAntidiveMultiplier = %ff;\n", iCounter, pData->fSuspensionAntidiveMultiplier );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fCollisionDamageMultiplier = %ff;\n", iCounter, pData->fCollisionDamageMultiplier );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].uiModelFlags = 0x%X;\n", iCounter, pData->uiModelFlags );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].uiHandlingFlags = 0x%X;\n", iCounter, pData->uiHandlingFlags );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].fSeatOffsetDistance = %ff;\n", iCounter, pData->fSeatOffsetDistance );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].uiMonetary = %u;\n", iCounter, pData->uiMonetary );
-
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].ucHeadLight = %u;\n", iCounter, pData->ucHeadLight );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].ucTailLight = %u;\n", iCounter, pData->ucTailLight );
-    fprintf ( pFile, "    m_OriginalHandlingData [%u].ucAnimGroup = %u;\n", iCounter, pData->ucAnimGroup );
-    fprintf ( pFile, "\n" );
-
-    fclose ( pFile );
-}
-
-__declspec(naked) void Hook_Calculate ( void )
-{
-    tHandlingData *pData;
-    DWORD dwHandlingData;
-    _asm
-    {
-        mov         eax, [esp+4]
-        mov         dwHandlingData, eax
-    }
-
-    pData = (tHandlingData*)(dwHandlingData);
-    DumpHandlingData ( pData );
-
-    _asm
-    {
-        ret         4
-    }
-}
-
-// Fixme: Does return Vehicledata, I guess
-CHandlingEntry* CHandlingManager::GetOriginalHandlingTable ( eHandlingTypes eHandling )
-{
-    tHandlingData* pRet;
-    // GTA has a function for that
-    BYTE ucID = (BYTE)eHandling;
-    __asm
-    {
-        mov     ecx,ARRAY_HANDLINGDATA
-        xor     eax,eax
-        mov     al,ucID
-        mov     ebx,Func_GetOriginalHandling
-        push    eax
-        call    ebx
-        mov     pRet,eax
-    }
-    //return (CHandlingEntry*)pRet;
-    return m_pEntries[eHandling];
-}
-
-// Fixme: Retrives vehicle type specific handlingdata
-CHandlingEntry* CHandlingManager::GetPreviousHandlingTable ( eHandlingTypes eHandling )
-{
-    tHandlingData* pRet;
-    // Well, as above :P
-    BYTE ucID = (BYTE)eHandling;
-    __asm
-    {
-        mov     ecx,ARRAY_HANDLINGDATA
-        xor     eax,eax
-        mov     al,ucID
-        mov     ebx,Func_GetPreviousHandling
-        push    eax
-        call    ebx
-        mov     pRet,eax
-    }
-    //return pRet;
-    return m_pEntries[eHandling-1];
-}
-
-float CHandlingManager::GetDragMultiplier ( void )
-{
-    return *(float*)(Var_fTurnMassMultiplier);
-}
-
-float CHandlingManager::GetBasicDragCoeff ( void )
-{
-    return *(float*)(Var_fBasicDragCoeff);
-}
 
 CHandlingManager::CHandlingManager ( void )
 {
     // Initialize all default handlings
     InitializeDefaultHandlings ();
-
-    // Create a handling entry for every handling data.
-    for ( int i = 0; i < HT_MAX; i++ )
-    {
-        m_pEntries [i] = new CHandlingEntry ( &m_RealHandlingData [i], &m_OriginalHandlingData[i]);
-    }
 
     // Create a handling entry for every original handling data.
     for ( int i = 0; i < HT_MAX; i++ )
@@ -195,83 +58,12 @@ CHandlingManager::~CHandlingManager ( void )
     {
         delete m_pOriginalEntries [i];
     }
-
-    // Destroy all handling entries
-    for ( int i = 0; i < HT_MAX; i++ )
-    {
-        delete m_pEntries [i];
-    }
 }
-
-
-void CHandlingManager::LoadDefaultHandlings ( void )
-{
-    // Create a handling entry for every handling data
-    for ( int i = 0; i < HT_MAX; i++ )
-    {
-        m_pEntries [i]->Restore ();
-    }    
-}
-
 
 CHandlingEntry* CHandlingManager::CreateHandlingData ( void )
 {
     return new CHandlingEntry ();
 }
-
-
-bool CHandlingManager::ApplyHandlingData ( enum eVehicleTypes eModel, CHandlingEntry* pEntry )
-{
-    // Within range?
-    if ( eModel >= 400 && eModel < VT_MAX )
-    {
-        // Apply the data and return success
-        m_pEntries [GetHandlingID(eModel)]->ApplyHandlingData ( pEntry );
-        return true;
-    }
-
-    // Failed
-    return false;
-}
-
-
-/*bool CHandlingManager::ApplyHandlingData ( CVehicle* pVehicle, CHandlingEntry* pEntry )
-{
-    // Create new handling and apply it
-    // Those entry have a higher priority than those global ones
-    //CHandlingEntry* pEntry = new CHandlingEntry;
-    //pEntry->ApplyHandlingData ( pEntry );
-    pVehicle->SetHandlingData ( pEntry );
-}*/
-
-/*bool CHandlingManager::ApplyHandlingData ( CVehicle *pVehicle, CHandlingEntry* pEntry )
-{
-    
-}
-
-
-void CHandlingManager::RemoveFromVeh ( CVehicle* pVeh )
-{
-    std::list < CHandlingEntry* > ::iterator iter = m_HandlingList.begin ();
-    for ( ; iter != m_HandlingList.end (); iter++ )
-    {
-        (*iter)->RemoveFromVeh
-    }
-}*/
-
-
-CHandlingEntry* CHandlingManager::GetHandlingData ( eVehicleTypes eModel )
-{
-    // Within range?
-    if ( eModel >= 400 && eModel < VT_MAX )
-    {
-        // Return it
-        return m_pEntries [GetHandlingID(eModel)];
-    }
-
-    return NULL;
-}
-
 
 const CHandlingEntry* CHandlingManager::GetOriginalHandlingData ( eVehicleTypes eModel )
 {
@@ -504,102 +296,6 @@ eHandlingTypes  CHandlingManager::GetHandlingID ( eVehicleTypes eModel )
     case VT_UTILTR1: return HT_UTIL_TR1;
     }
     return HT_LANDSTAL;
-}
-
-
-void CHandlingManager::LoadHandlingCfg ( void )
-{
-    // This is when GTA loads its default handlings. We do that for GTA so handling.cfg
-    // is not used anymore.
-    //pGame->GetHandlingManager ()->LoadDefaultHandlings ();
-    
-    // Lets do some stuff here
-    // Uncomment code to dump vehicle information
-    /*FILE *fh = fopen("C:\\yo.txt", "a+");
-    FILE *hh = fopen("C:\\Programme\\Rockstar Games\\GTA San Andreas\\data\\vehicles.ide", "r");
-    DWORD n=0;
-    DWORD j=0;
-    BYTE fbuff[256][4096];
-
-    while (!feof(hh))
-    {
-        BYTE ucRead; fread(&ucRead,1,1,hh);
-        if (ucRead==' ' || ucRead=='    ')
-            continue;
-        if (ucRead=='\n')
-        {
-            fbuff[j][n]=0;
-            j++;
-            n=0;
-            continue;
-        }
-        fbuff[j][n]=ucRead;
-        n++;
-
-    }
-    fbuff[j][n]=0;
-
-    for (n=0; n<j; n++)
-    {
-        if (fbuff[n][0] == '#' || fbuff[n][0] == 0)
-            continue;
-        BYTE *item = (BYTE*)strtok((char*)fbuff[n],",");
-        if (strncmp((const char*)item,"cars",4)==0 || strncmp((const char*)item,"end",3)==0)
-            continue;
-        BYTE act=0;
-        do
-        {
-            // Convert item to uppercase
-            DWORD j;
-            for (j=0; j<strlen((const char*)item); j++)
-                if (islower(item[j])) item[j]=toupper(item[j]);
-            switch(act)
-            {
-            case 1:
-                fprintf(fh, "case VT_%s:", item);
-                break;
-            case 4:
-                fprintf(fh, " return HT_%s;\n", item);
-                break;
-            }
-            act++;
-        } while ( item = (BYTE*)strtok( NULL, "," ) );
-    }
-    fclose(hh);
-    fclose(fh);*/
-}
-
-
-__declspec(naked) void CHandlingManager::Hook_LoadHandlingCfg ( void )
-{
-    _asm
-    {
-        // Save all registers
-        pushad
-
-        // Replaced code
-        mov         eax, 0x5BA8C0
-        call        eax
-
-        mov         ecx, 0xC2B9C8
-        mov         eax, 0x5BD830
-        call        eax
-    };
-
-    // Calculate handling.cfg values. We've already initialized them
-    // like they would come from handling.cfg
-    LoadHandlingCfg ();
-
-    _asm
-    {
-        // Restore registers
-        popad
-
-        // Go back in
-        mov         eax, Func_PostLoadHandlingCfg
-        add         eax, 15
-        jmp         eax
-    };
 }
 
 
