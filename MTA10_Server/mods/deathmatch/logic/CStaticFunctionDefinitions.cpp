@@ -4009,7 +4009,7 @@ bool CStaticFunctionDefinitions::GetVehicleHeadLightColor ( CVehicle * pVehicle,
 }
 
 
-bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, bool& bValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, bool& bValue )
 {
     assert ( pVehicle );
 
@@ -4019,7 +4019,7 @@ bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, bool& 
     return true;
 }
 
-bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, CVector& vecValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, CVector& vecValue )
 {
     assert ( pVehicle );
 
@@ -4029,7 +4029,7 @@ bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, CVecto
     return true;
 }
 
-bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, float &fValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, float &fValue )
 {
     assert ( pVehicle );
 
@@ -4105,7 +4105,7 @@ bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandl
     return true;
 }
 
-bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, unsigned int& uiValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, unsigned int& uiValue )
 {
     assert ( pVehicle );
 
@@ -4136,7 +4136,7 @@ bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandl
     return true;
 }
 
-bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue )
 {
     assert ( pVehicle );
 
@@ -5138,7 +5138,7 @@ bool CStaticFunctionDefinitions::SetVehicleHeadLightColor ( CVehicle* pVehicle, 
     return true;
 }
 
-bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, bool bValue )
+bool CStaticFunctionDefinitions::SetHandling ( CVehicle* pVehicle, bool bValue )
 {
     assert ( pVehicle );
 
@@ -5157,7 +5157,7 @@ bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, bool b
     return true;
 }
 
-bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, float fValue )
+bool CStaticFunctionDefinitions::SetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, float fValue )
 {
     assert ( pVehicle );
     
@@ -5326,7 +5326,7 @@ bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, eHandl
         return true;
 }
 
-bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, CVector vecValue )
+bool CStaticFunctionDefinitions::SetHandling ( CVehicle* pVehicle, CVector vecValue )
 {
     assert ( pVehicle );
 
@@ -5347,7 +5347,7 @@ bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, CVecto
     return true;
 }
 
-/*bool CStaticFunctionDefinitions::ResetVehicleHandlingProperty ( CVehicle* pVehicle, eHandlingProperty eProperty )
+/*bool CStaticFunctionDefinitions::ResetHandlingProperty ( CVehicle* pVehicle, eHandlingProperty eProperty )
 {
     assert ( pVehicle );
 
@@ -5364,7 +5364,7 @@ bool CStaticFunctionDefinitions::SetVehicleHandling ( CVehicle* pVehicle, CVecto
     }
 }
 
-bool CStaticFunctionDefinitions::ResetVehicleHandling ( CVehicle* pVehicle )
+bool CStaticFunctionDefinitions::ResetHandling ( CVehicle* pVehicle )
 {
     assert ( pVehicle );
 
