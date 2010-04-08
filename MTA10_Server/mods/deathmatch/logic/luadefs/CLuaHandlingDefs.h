@@ -18,7 +18,14 @@
 class CLuaHandlingDefs: public CLuaDefs
 {
 public:
-    static void     LoadFunctions                           ( void ){};
+    static void     LoadFunctions                           ( void );
+
+    // Set
+    static int      SetHandling                             ( lua_State* luaVM );
+
+    // Get
+    static int      GetHandling                             ( lua_State* luaVM );
+
 /*
     // Create/action
     static int      createHandling                          ( lua_State* luaVM );
