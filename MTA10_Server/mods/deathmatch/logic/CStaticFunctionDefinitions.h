@@ -249,6 +249,11 @@ public:
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, float& fValue );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue );
+    static bool                 GetEntryHandling                    ( CHandlingEntry* pEntry, eHandlingProperty eProperty, float& fValue );
+    static bool                 GetEntryHandling                    ( CHandlingEntry* pEntry, eHandlingProperty eProperty, std::string& strValue );
 
     // Vehicle set functions
     static bool                 FixVehicle                          ( CElement* pElement );
