@@ -246,9 +246,9 @@ public:
     static bool                 GetTrainSpeed                       ( CVehicle* pVehicle, float& fSpeed );
     static bool                 IsVehicleBlown                      ( CVehicle* pVehicle );
     static bool                 GetVehicleHeadLightColor            ( CVehicle* pVehicle, SColor& outColor );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
+    static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
+    static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
+    static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
     static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue );
     static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, float& fValue );
     static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue );
@@ -295,11 +295,11 @@ public:
     static bool                 SetTrainDirection                   ( CVehicle* pVehicle, bool bDireciton );
     static bool                 SetTrainSpeed                       ( CVehicle* pVehicle, float fSpeed );
     static bool                 SetVehicleHeadLightColor            ( CVehicle* pVehicle, const SColor color );
-    static bool                 SetHandling                         ( CVehicle* pVehicle, bool bValue );
-    static bool                 SetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, float fValue );
-    static bool                 SetHandling                         ( CVehicle* pVehicle, CVector vecValue );
-    static bool                 ResetHandling                       ( CVehicle* pVehicle, eHandlingProperty eProperty );
-    static bool                 ResetHandlingProperty               ( CVehicle* pVehicle );
+    static bool                 SetVehicleHandling                  ( CVehicle* pVehicle, bool bValue );
+    static bool                 SetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, float fValue );
+    static bool                 SetVehicleHandling                  ( CVehicle* pVehicle, CVector vecValue );
+    static bool                 ResetVehicleHandling                ( CVehicle* pVehicle, eHandlingProperty eProperty );
+    static bool                 ResetVehicleHandlingProperty        ( CVehicle* pVehicle );
 
     // Marker create/destroy functions
     static CMarker*             CreateMarker                        ( CResource* pResource, const CVector& vecPosition, const char* szType, float fSize, const SColor color, CElement* pVisibleTo );

@@ -17,10 +17,10 @@
 void CLuaHandlingDefs::LoadFunctions ( void )
 {
     // Set
-    CLuaCFunctions::AddFunction ( "setHandling", CLuaHandlingDefs::SetHandling );
+    CLuaCFunctions::AddFunction ( "setVehicleHandling", CLuaHandlingDefs::SetVehicleHandling );
 
     // Get
-    CLuaCFunctions::AddFunction ( "getHandling", CLuaHandlingDefs::GetHandling );
+    CLuaCFunctions::AddFunction ( "getVehicleHandling", CLuaHandlingDefs::GetVehicleHandling );
     CLuaCFunctions::AddFunction ( "getModelHandling", CLuaHandlingDefs::GetModelHandling );
 
     /*
@@ -2714,7 +2714,7 @@ int CLuaHandlingDefs::handlingSetAnimGroup ( lua_State* luaVM )
 }*/
 
 
-int CLuaHandlingDefs::SetHandling ( lua_State* luaVM )
+int CLuaHandlingDefs::SetVehicleHandling ( lua_State* luaVM )
 {
     if ( lua_type ( luaVM, 1 ) == LUA_TLIGHTUSERDATA && lua_type ( luaVM, 2 ) == LUA_TNUMBER )
     {
@@ -2728,7 +2728,7 @@ int CLuaHandlingDefs::SetHandling ( lua_State* luaVM )
                 {
                     if ( lua_type ( luaVM, 3 ) == LUA_TBOOLEAN )
                     {
-                        if ( CStaticFunctionDefinitions::SetHandling ( pVehicle, lua_toboolean ( luaVM, 3 ) ) )
+                        if ( CStaticFunctionDefinitions::SetVehicleHandling ( pVehicle, lua_toboolean ( luaVM, 3 ) ) )
                         {
                             lua_pushboolean ( luaVM, true );
                             return 1;
@@ -2744,7 +2744,7 @@ int CLuaHandlingDefs::SetHandling ( lua_State* luaVM )
                     if ( lua_type ( luaVM, 3 ) == LUA_TNUMBER )
                     {
                         float fTest = (float)lua_tonumber ( luaVM, 3 );
-                        if ( CStaticFunctionDefinitions::SetHandling ( pVehicle, eProperty, fTest ) )
+                        if ( CStaticFunctionDefinitions::SetVehicleHandling ( pVehicle, eProperty, fTest ) )
                         {
                             lua_pushboolean ( luaVM, true );
                             return 1;
@@ -2755,14 +2755,14 @@ int CLuaHandlingDefs::SetHandling ( lua_State* luaVM )
         }
     }
     else
-        m_pScriptDebugging->LogBadType ( luaVM, "setHandling" );
+        m_pScriptDebugging->LogBadType ( luaVM, "setVehicleHandling" );
 
     lua_pushboolean ( luaVM, false );
     return 1;
 }
 
 
-int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
+int CLuaHandlingDefs::GetVehicleHandling ( lua_State* luaVM )
 {
     if ( lua_type ( luaVM, 1 ) == LUA_TLIGHTUSERDATA )
     {
@@ -2805,7 +2805,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_ANIMGROUP:
                             {
                                 float fValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, fValue ) )
+                                if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, fValue ) )
                                 {
                                     lua_pushnumber ( luaVM, fValue );
                                     break;
@@ -2814,7 +2814,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_CENTEROFMASS:
                             {
                                 CVector vecValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, vecValue ) )
+                                if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, vecValue ) )
                                 {
                                     lua_pushnumber ( luaVM, vecValue.fX );
                                     lua_pushnumber ( luaVM, vecValue.fY );
@@ -2828,7 +2828,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_TAILLIGHT:
                             {
                                 std::string strValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, strValue ) )
+                                if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, strValue ) )
                                 {
                                     lua_pushstring ( luaVM, strValue.c_str () );
                                     break;
@@ -2837,7 +2837,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_ABS:
                             {
                                 float fValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, fValue ) )
+                                if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, fValue ) )
                                 {
                                     lua_pushboolean ( luaVM, fValue ? true : false );
                                     break;
@@ -2850,7 +2850,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                     return 1;
                 }
                 else
-                    m_pScriptDebugging->LogBadPointer ( luaVM, "getHandling", "property", 2 );
+                    m_pScriptDebugging->LogBadPointer ( luaVM, "getVehicleHandling", "property", 2 );
             }
             else if ( lua_type ( luaVM, 2 ) == LUA_TNIL || lua_type ( luaVM, 2 ) == LUA_TNONE )
             {
@@ -3005,13 +3005,13 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                 return 1;
             }
             else
-                m_pScriptDebugging->LogBadPointer ( luaVM, "getHandling", "property", 2 );
+                m_pScriptDebugging->LogBadPointer ( luaVM, "getVehicleHandling", "property", 2 );
         }
         else
-            m_pScriptDebugging->LogBadPointer ( luaVM, "getHandling", "vehicle", 1 );
+            m_pScriptDebugging->LogBadPointer ( luaVM, "getVehicleHandling", "vehicle", 1 );
     }
     else
-        m_pScriptDebugging->LogBadType ( luaVM, "getHandling" );
+        m_pScriptDebugging->LogBadType ( luaVM, "getVehicleHandling" );
 
     lua_pushboolean ( luaVM, false );
     return 1;

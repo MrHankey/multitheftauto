@@ -21,10 +21,10 @@ public:
     static void     LoadFunctions                           ( void );
 
     // Set
-    static int      SetHandling                             ( lua_State* luaVM );
+    static int      SetVehicleHandling                      ( lua_State* luaVM );
 
     // Get
-    static int      GetHandling                             ( lua_State* luaVM );
+    static int      GetVehicleHandling                      ( lua_State* luaVM );
     static int      GetModelHandling                        ( lua_State* luaVM );
 
 /*
