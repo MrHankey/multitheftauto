@@ -4093,45 +4093,33 @@ bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProp
         case HANDLING_SEATOFFSETDISTANCE:
             fValue = pEntry->GetSeatOffsetDistance ();
             break;
-        default:
-            return false;
-    }
-    return true;
-}
-
-bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, unsigned int& uiValue )
-{
-    assert ( pVehicle );
-
-    CHandlingEntry* pEntry = pVehicle->GetHandlingData ();
-    switch ( eProperty )
-    {
-        case HANDLING_PERCENTSUBMERGED:
-            uiValue = pEntry->GetPercentSubmerged ();
+        case HANDLING_PERCENTSUBMERGED: // unsigned int
+            fValue = (float) pEntry->GetPercentSubmerged ();
             break;
         case HANDLING_MONETARY:
-            uiValue = pEntry->GetMonetary ();
+            fValue = (float) pEntry->GetMonetary ();
             break;
         case HANDLING_HANDLINGFLAGS:
-            uiValue = pEntry->GetHandlingFlags ();
+            fValue = (float) pEntry->GetHandlingFlags ();
             break;
         case HANDLING_MODELFLAGS:
-            uiValue = pEntry->GetModelFlags ();
+            fValue = (float) pEntry->GetModelFlags ();
             break;
         case HANDLING_NUMOFGEARS:
-            uiValue = pEntry->GetNumberOfGears ();
+            fValue = (float) pEntry->GetNumberOfGears ();
             break;
         case HANDLING_ANIMGROUP:
-            uiValue = pEntry->GetAnimGroup ();
+            fValue = (float) pEntry->GetAnimGroup ();
             break;
-        case HANDLING_ABS:
-            uiValue = pEntry->GetABS ();
+        case HANDLING_ABS: // bool
+            fValue = (float) pEntry->GetABS ();
             break;
         default:
             return false;
     }
     return true;
 }
+
 
 bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue )
 {

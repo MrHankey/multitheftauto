@@ -2796,6 +2796,12 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER:
                         case HANDLING_COLLISIONDAMAGEMULTIPLIER:
                         case HANDLING_SEATOFFSETDISTANCE:
+                        case HANDLING_PERCENTSUBMERGED: // unsigned int
+                        case HANDLING_MONETARY:
+                        case HANDLING_HANDLINGFLAGS:
+                        case HANDLING_MODELFLAGS:
+                        case HANDLING_NUMOFGEARS:
+                        case HANDLING_ANIMGROUP:
                             {
                                 float fValue;
                                 if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, fValue ) )
@@ -2815,20 +2821,6 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                                     return 3;
                                 }
                             }
-                        case HANDLING_PERCENTSUBMERGED:
-                        case HANDLING_MONETARY:
-                        case HANDLING_HANDLINGFLAGS:
-                        case HANDLING_MODELFLAGS:
-                        case HANDLING_NUMOFGEARS:
-                        case HANDLING_ANIMGROUP:
-                            {
-                                unsigned int uiValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, uiValue ) )
-                                {
-                                    lua_pushnumber ( luaVM, uiValue );
-                                    break;
-                                }
-                            }
                         case HANDLING_DRIVETYPE:
                         case HANDLING_ENGINETYPE:
                         case HANDLING_HEADLIGHT:
@@ -2843,10 +2835,10 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                             }
                         case HANDLING_ABS:
                             {
-                                unsigned int uiValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, uiValue ) )
+                                float fValue;
+                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, fValue ) )
                                 {
-                                    lua_pushboolean ( luaVM, uiValue ? true : false );
+                                    lua_pushboolean ( luaVM, fValue ? true : false );
                                     break;
                                 }
                             }

@@ -248,7 +248,6 @@ public:
     static bool                 GetVehicleHeadLightColor            ( CVehicle* pVehicle, SColor& outColor );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, unsigned int& uiValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
 
     // Vehicle set functions
