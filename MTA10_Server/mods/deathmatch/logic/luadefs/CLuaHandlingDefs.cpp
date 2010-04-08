@@ -2807,7 +2807,7 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                         case HANDLING_CENTEROFMASS:
                             {
                                 CVector vecValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, vecValue ) )
+                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, vecValue ) )
                                 {
                                     lua_pushnumber ( luaVM, vecValue.fX );
                                     lua_pushnumber ( luaVM, vecValue.fY );
@@ -2843,10 +2843,10 @@ int CLuaHandlingDefs::GetHandling ( lua_State* luaVM )
                             }
                         case HANDLING_ABS:
                             {
-                                bool bValue;
-                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, bValue ) )
+                                unsigned int uiValue;
+                                if ( CStaticFunctionDefinitions::GetHandling ( pVehicle, eProperty, uiValue ) )
                                 {
-                                    lua_pushboolean ( luaVM, bValue );
+                                    lua_pushboolean ( luaVM, uiValue ? true : false );
                                     break;
                                 }
                             }

@@ -4009,25 +4009,19 @@ bool CStaticFunctionDefinitions::GetVehicleHeadLightColor ( CVehicle * pVehicle,
 }
 
 
-bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, bool& bValue )
+bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue )
 {
     assert ( pVehicle );
 
     CHandlingEntry* pEntry = pVehicle->GetHandlingData ();
-
-    bValue = pEntry->GetABS ();
-    return true;
+    if ( eProperty == HANDLING_CENTEROFMASS )
+    {
+        vecValue = pEntry->GetCenterOfMass ();
+        return true;
+    }
+    return false;
 }
 
-bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, CVector& vecValue )
-{
-    assert ( pVehicle );
-
-    CHandlingEntry* pEntry = pVehicle->GetHandlingData ();
-
-    vecValue = pEntry->GetCenterOfMass ();
-    return true;
-}
 
 bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProperty eProperty, float &fValue )
 {
@@ -4129,6 +4123,9 @@ bool CStaticFunctionDefinitions::GetHandling ( CVehicle* pVehicle, eHandlingProp
             break;
         case HANDLING_ANIMGROUP:
             uiValue = pEntry->GetAnimGroup ();
+            break;
+        case HANDLING_ABS:
+            uiValue = pEntry->GetABS ();
             break;
         default:
             return false;

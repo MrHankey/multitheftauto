@@ -246,8 +246,7 @@ public:
     static bool                 GetTrainSpeed                       ( CVehicle* pVehicle, float& fSpeed );
     static bool                 IsVehicleBlown                      ( CVehicle* pVehicle );
     static bool                 GetVehicleHeadLightColor            ( CVehicle* pVehicle, SColor& outColor );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, bool& bValue );
-    static bool                 GetHandling                         ( CVehicle* pVehicle, CVector& vecValue );
+    static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, unsigned int& uiValue );
     static bool                 GetHandling                         ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
