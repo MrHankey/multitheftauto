@@ -1427,71 +1427,71 @@ int CLuaHandlingDefs::handlingGetAnimGroup ( lua_State* luaVM )
 // Enum with property id's for handling
 enum eHandlingProperty
 {
-    PROPERTY_MASS,
-    PROPERTY_TURNMASS,
-    PROPERTY_DRAGCOEFF,
-    PROPERTY_CENTEROFMASS,
-    PROPERTY_PERCENTSUBMERGED,
-    PROPERTY_TRACTIONMULTIPLIER,
-    PROPERTY_DRIVETYPE,
-    PROPERTY_ENGINETYPE,
-    PROPERTY_NUMOFGEARS,
-    PROPERTY_ENGINEACCELLERATION,
-    PROPERTY_ENGINEINERTIA,
-    PROPERTY_MAXVELOCITY,
-    PROPERTY_BRAKEDECELLERATION,
-    PROPERTY_BRAKEBIAS,
-    PROPERTY_ABS,
-    PROPERTY_STEERINGLOCK,
-    PROPERTY_TRACTIONLOSS,
-    PROPERTY_TRACTIONBIAS,
-    PROPERTY_SUSPENSION_FORCELEVEL,
-    PROPERTY_SUSPENSION_DAMPING,
-    PROPERTY_SUSPENSION_HIGHSPEEDDAMPING,
-    PROPERTY_SUSPENSION_UPPER_LIMIT,
-    PROPERTY_SUSPENSION_LOWER_LIMIT,
-    PROPERTY_SUSPENSION_FRONTREARBIAS,
-    PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER,
-    PROPERTY_COLLISIONDAMAGEMULTIPLIER,
-    PROPERTY_SEATOFFSETDISTANCE,
-    PROPERTY_HANDLINGFLAGS,
-    PROPERTY_MODELFLAGS,
-    PROPERTY_HEADLIGHT,
-    PROPERTY_TAILLIGHT,
-    PROPERTY_ANIMGROUP,
+    HANDLING_MASS,
+    HANDLING_TURNMASS,
+    HANDLING_DRAGCOEFF,
+    HANDLING_CENTEROFMASS,
+    HANDLING_PERCENTSUBMERGED,
+    HANDLING_TRACTIONMULTIPLIER,
+    HANDLING_DRIVETYPE,
+    HANDLING_ENGINETYPE,
+    HANDLING_NUMOFGEARS,
+    HANDLING_ENGINEACCELLERATION,
+    HANDLING_ENGINEINERTIA,
+    HANDLING_MAXVELOCITY,
+    HANDLING_BRAKEDECELLERATION,
+    HANDLING_BRAKEBIAS,
+    HANDLING_ABS,
+    HANDLING_STEERINGLOCK,
+    HANDLING_TRACTIONLOSS,
+    HANDLING_TRACTIONBIAS,
+    HANDLING_SUSPENSION_FORCELEVEL,
+    HANDLING_SUSPENSION_DAMPING,
+    HANDLING_SUSPENSION_HIGHSPEEDDAMPING,
+    HANDLING_SUSPENSION_UPPER_LIMIT,
+    HANDLING_SUSPENSION_LOWER_LIMIT,
+    HANDLING_SUSPENSION_FRONTREARBIAS,
+    HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER,
+    HANDLING_COLLISIONDAMAGEMULTIPLIER,
+    HANDLING_SEATOFFSETDISTANCE,
+    HANDLING_HANDLINGFLAGS,
+    HANDLING_MODELFLAGS,
+    HANDLING_HEADLIGHT,
+    HANDLING_TAILLIGHT,
+    HANDLING_ANIMGROUP,
 
-    PROPERTY_MASS_RESTORE,
-    PROPERTY_TURNMASS_RESTORE,
-    PROPERTY_DRAGCOEFF_RESTORE,
-    PROPERTY_CENTEROFMASS_RESTORE,
-    PROPERTY_PERCENTSUBMERGED_RESTORE,
-    PROPERTY_TRACTIONMULTIPLIER_RESTORE,
-    PROPERTY_DRIVETYPE_RESTORE,
-    PROPERTY_ENGINETYPE_RESTORE,
-    PROPERTY_NUMOFGEARS_RESTORE,
-    PROPERTY_ENGINEACCELLERATION_RESTORE,
-    PROPERTY_ENGINEINERTIA_RESTORE,
-    PROPERTY_MAXVELOCITY_RESTORE,
-    PROPERTY_BRAKEDECELLERATION_RESTORE,
-    PROPERTY_BRAKEBIAS_RESTORE,
-    PROPERTY_ABS_RESTORE,
-    PROPERTY_STEERINGLOCK_RESTORE,
-    PROPERTY_TRACTIONLOSS_RESTORE,
-    PROPERTY_TRACTIONBIAS_RESTORE,
-    PROPERTY_SUSPENSION_FORCELEVEL_RESTORE,
-    PROPERTY_SUSPENSION_DAMPING_RESTORE,
-    PROPERTY_SUSPENSION_HIGHSPEEDDAMPING_RESTORE,
-    PROPERTY_SUSPENSION_UPPER_LIMIT_RESTORE,
-    PROPERTY_SUSPENSION_LOWER_LIMIT_RESTORE,
-    PROPERTY_SUSPENSION_FRONTREARBIAS_RESTORE,
-    PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER_RESTORE,
-    PROPERTY_COLLISIONDAMAGEMULTIPLIER_RESTORE,
-    PROPERTY_SEATOFFSETDISTANCE_RESTORE,
-    PROPERTY_HANDLINGFLAGS_RESTORE,
-    PROPERTY_MODELFLAGS_RESTORE,
-    PROPERTY_HEADLIGHT_RESTORE,
-    PROPERTY_TAILLIGHT_RESTORE,
-    PROPERTY_ANIMGROUP_RESTORE,
+    HANDLING_MASS_RESTORE,
+    HANDLING_TURNMASS_RESTORE,
+    HANDLING_DRAGCOEFF_RESTORE,
+    HANDLING_CENTEROFMASS_RESTORE,
+    HANDLING_PERCENTSUBMERGED_RESTORE,
+    HANDLING_TRACTIONMULTIPLIER_RESTORE,
+    HANDLING_DRIVETYPE_RESTORE,
+    HANDLING_ENGINETYPE_RESTORE,
+    HANDLING_NUMOFGEARS_RESTORE,
+    HANDLING_ENGINEACCELLERATION_RESTORE,
+    HANDLING_ENGINEINERTIA_RESTORE,
+    HANDLING_MAXVELOCITY_RESTORE,
+    HANDLING_BRAKEDECELLERATION_RESTORE,
+    HANDLING_BRAKEBIAS_RESTORE,
+    HANDLING_ABS_RESTORE,
+    HANDLING_STEERINGLOCK_RESTORE,
+    HANDLING_TRACTIONLOSS_RESTORE,
+    HANDLING_TRACTIONBIAS_RESTORE,
+    HANDLING_SUSPENSION_FORCELEVEL_RESTORE,
+    HANDLING_SUSPENSION_DAMPING_RESTORE,
+    HANDLING_SUSPENSION_HIGHSPEEDDAMPING_RESTORE,
+    HANDLING_SUSPENSION_UPPER_LIMIT_RESTORE,
+    HANDLING_SUSPENSION_LOWER_LIMIT_RESTORE,
+    HANDLING_SUSPENSION_FRONTREARBIAS_RESTORE,
+    HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER_RESTORE,
+    HANDLING_COLLISIONDAMAGEMULTIPLIER_RESTORE,
+    HANDLING_SEATOFFSETDISTANCE_RESTORE,
+    HANDLING_HANDLINGFLAGS_RESTORE,
+    HANDLING_MODELFLAGS_RESTORE,
+    HANDLING_HEADLIGHT_RESTORE,
+    HANDLING_TAILLIGHT_RESTORE,
+    HANDLING_ANIMGROUP_RESTORE,
 };
 
 
@@ -1511,7 +1511,7 @@ int CLuaHandlingDefs::handlingSetMass ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_MASS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_MASS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1523,7 +1523,7 @@ int CLuaHandlingDefs::handlingSetMass ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_MASS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_MASS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1554,7 +1554,7 @@ int CLuaHandlingDefs::handlingSetTurnMass ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TURNMASS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TURNMASS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1566,7 +1566,7 @@ int CLuaHandlingDefs::handlingSetTurnMass ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TURNMASS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TURNMASS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1597,7 +1597,7 @@ int CLuaHandlingDefs::handlingSetDragCoefficiency ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_DRAGCOEFF ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_DRAGCOEFF ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1609,7 +1609,7 @@ int CLuaHandlingDefs::handlingSetDragCoefficiency ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_DRAGCOEFF_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_DRAGCOEFF_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1647,7 +1647,7 @@ int CLuaHandlingDefs::handlingSetCenterOfMass ( lua_State* luaVM )
                 // Tell the players
                 CBitStream BitStream;
                 BitStream.pBitStream->Write ( pHandling->GetID () );
-                BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_CENTEROFMASS ) );
+                BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_CENTEROFMASS ) );
                 BitStream.pBitStream->Write ( vecCenterOfMass.fX );
                 BitStream.pBitStream->Write ( vecCenterOfMass.fY );
                 BitStream.pBitStream->Write ( vecCenterOfMass.fZ );
@@ -1668,7 +1668,7 @@ int CLuaHandlingDefs::handlingSetCenterOfMass ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_CENTEROFMASS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_CENTEROFMASS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1699,7 +1699,7 @@ int CLuaHandlingDefs::handlingSetPercentSubmerged ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_PERCENTSUBMERGED ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_PERCENTSUBMERGED ) );
             BitStream.pBitStream->Write ( uiPercentSubmerged );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1711,7 +1711,7 @@ int CLuaHandlingDefs::handlingSetPercentSubmerged ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_PERCENTSUBMERGED_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_PERCENTSUBMERGED_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1742,7 +1742,7 @@ int CLuaHandlingDefs::handlingSetTractionMultiplier ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONMULTIPLIER ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONMULTIPLIER ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1754,7 +1754,7 @@ int CLuaHandlingDefs::handlingSetTractionMultiplier ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONMULTIPLIER_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONMULTIPLIER_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1800,7 +1800,7 @@ int CLuaHandlingDefs::handlingSetDriveType ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_DRIVETYPE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_DRIVETYPE ) );
             BitStream.pBitStream->Write ( static_cast < unsigned char > ( Drive ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1812,7 +1812,7 @@ int CLuaHandlingDefs::handlingSetDriveType ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_DRIVETYPE_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_DRIVETYPE_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1858,7 +1858,7 @@ int CLuaHandlingDefs::handlingSetEngineType ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINETYPE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINETYPE ) );
             BitStream.pBitStream->Write ( static_cast < unsigned char > ( Engine ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1870,7 +1870,7 @@ int CLuaHandlingDefs::handlingSetEngineType ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINETYPE_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINETYPE_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1901,7 +1901,7 @@ int CLuaHandlingDefs::handlingSetNumberOfGears ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_NUMOFGEARS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_NUMOFGEARS ) );
             BitStream.pBitStream->Write ( ucNumberOfGears );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1913,7 +1913,7 @@ int CLuaHandlingDefs::handlingSetNumberOfGears ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_NUMOFGEARS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_NUMOFGEARS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1944,7 +1944,7 @@ int CLuaHandlingDefs::handlingSetEngineAccelleration ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINEACCELLERATION ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINEACCELLERATION ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1956,7 +1956,7 @@ int CLuaHandlingDefs::handlingSetEngineAccelleration ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINEACCELLERATION_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINEACCELLERATION_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -1987,7 +1987,7 @@ int CLuaHandlingDefs::handlingSetEngineInertia ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINEINERTIA ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINEINERTIA ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -1999,7 +1999,7 @@ int CLuaHandlingDefs::handlingSetEngineInertia ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ENGINEINERTIA_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ENGINEINERTIA_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2030,7 +2030,7 @@ int CLuaHandlingDefs::handlingSetMaxVelocity ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_MAXVELOCITY ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_MAXVELOCITY ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2042,7 +2042,7 @@ int CLuaHandlingDefs::handlingSetMaxVelocity ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_MAXVELOCITY_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_MAXVELOCITY_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2073,7 +2073,7 @@ int CLuaHandlingDefs::handlingSetBrakeDecelleration ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_BRAKEDECELLERATION ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_BRAKEDECELLERATION ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2085,7 +2085,7 @@ int CLuaHandlingDefs::handlingSetBrakeDecelleration ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_BRAKEDECELLERATION_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_BRAKEDECELLERATION_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2116,7 +2116,7 @@ int CLuaHandlingDefs::handlingSetBrakeBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_BRAKEBIAS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_BRAKEBIAS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2128,7 +2128,7 @@ int CLuaHandlingDefs::handlingSetBrakeBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_BRAKEBIAS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_BRAKEBIAS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2163,7 +2163,7 @@ int CLuaHandlingDefs::handlingSetABS ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ABS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ABS ) );
             BitStream.pBitStream->Write ( ucABS );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2175,7 +2175,7 @@ int CLuaHandlingDefs::handlingSetABS ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_ABS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_ABS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2206,7 +2206,7 @@ int CLuaHandlingDefs::handlingSetSteeringLock ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_STEERINGLOCK ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_STEERINGLOCK ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2218,7 +2218,7 @@ int CLuaHandlingDefs::handlingSetSteeringLock ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_STEERINGLOCK_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_STEERINGLOCK_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2249,7 +2249,7 @@ int CLuaHandlingDefs::handlingSetTractionLoss ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONLOSS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONLOSS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2261,7 +2261,7 @@ int CLuaHandlingDefs::handlingSetTractionLoss ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONLOSS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONLOSS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2292,7 +2292,7 @@ int CLuaHandlingDefs::handlingSetTractionBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONBIAS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONBIAS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2304,7 +2304,7 @@ int CLuaHandlingDefs::handlingSetTractionBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_TRACTIONBIAS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_TRACTIONBIAS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2335,7 +2335,7 @@ int CLuaHandlingDefs::handlingSetSuspensionForceLevel ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_FORCELEVEL ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_FORCELEVEL ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2347,7 +2347,7 @@ int CLuaHandlingDefs::handlingSetSuspensionForceLevel ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_FORCELEVEL_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_FORCELEVEL_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2378,7 +2378,7 @@ int CLuaHandlingDefs::handlingSetSuspensionDamping ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_DAMPING ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_DAMPING ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2390,7 +2390,7 @@ int CLuaHandlingDefs::handlingSetSuspensionDamping ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_DAMPING_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_DAMPING_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2421,7 +2421,7 @@ int CLuaHandlingDefs::handlingSetSuspensionHighSpeedDamping ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_HIGHSPEEDDAMPING ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_HIGHSPEEDDAMPING ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2433,7 +2433,7 @@ int CLuaHandlingDefs::handlingSetSuspensionHighSpeedDamping ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_HIGHSPEEDDAMPING_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_HIGHSPEEDDAMPING_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2464,7 +2464,7 @@ int CLuaHandlingDefs::handlingSetSuspensionUpperLimit ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_UPPER_LIMIT ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_UPPER_LIMIT ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2476,7 +2476,7 @@ int CLuaHandlingDefs::handlingSetSuspensionUpperLimit ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_UPPER_LIMIT_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_UPPER_LIMIT_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2507,7 +2507,7 @@ int CLuaHandlingDefs::handlingSetSuspensionLowerLimit ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_LOWER_LIMIT ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_LOWER_LIMIT ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2519,7 +2519,7 @@ int CLuaHandlingDefs::handlingSetSuspensionLowerLimit ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_LOWER_LIMIT_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_LOWER_LIMIT_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2550,7 +2550,7 @@ int CLuaHandlingDefs::handlingSetSuspensionFrontRearBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_FRONTREARBIAS ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_FRONTREARBIAS ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2562,7 +2562,7 @@ int CLuaHandlingDefs::handlingSetSuspensionFrontRearBias ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_FRONTREARBIAS_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_FRONTREARBIAS_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2593,7 +2593,7 @@ int CLuaHandlingDefs::handlingSetSuspensionAntidiveMultiplier ( lua_State* luaVM
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2605,7 +2605,7 @@ int CLuaHandlingDefs::handlingSetSuspensionAntidiveMultiplier ( lua_State* luaVM
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 
@@ -2636,7 +2636,7 @@ int CLuaHandlingDefs::handlingSetCollisionDamageMultiplier ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_COLLISIONDAMAGEMULTIPLIER ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_COLLISIONDAMAGEMULTIPLIER ) );
             BitStream.pBitStream->Write ( fValue );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
@@ -2648,7 +2648,7 @@ int CLuaHandlingDefs::handlingSetCollisionDamageMultiplier ( lua_State* luaVM )
             // Tell the players
             CBitStream BitStream;
             BitStream.pBitStream->Write ( pHandling->GetID () );
-            BitStream.pBitStream->Write ( static_cast < unsigned char > ( PROPERTY_COLLISIONDAMAGEMULTIPLIER_RESTORE ) );
+            BitStream.pBitStream->Write ( static_cast < unsigned char > ( HANDLING_COLLISIONDAMAGEMULTIPLIER_RESTORE ) );
             m_pPlayerManager->BroadcastOnlyJoined ( CLuaPacket ( HANDLING_SET_PROPERTY, *BitStream.pBitStream ) );
         }
 

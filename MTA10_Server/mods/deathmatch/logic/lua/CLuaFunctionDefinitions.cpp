@@ -4548,27 +4548,27 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 {
                     switch ( eProperty )
                     {
-                        case PROPERTY_MASS:
-                        case PROPERTY_TURNMASS:
-                        case PROPERTY_DRAGCOEFF:
-                        case PROPERTY_TRACTIONMULTIPLIER:
-                        case PROPERTY_ENGINEACCELLERATION:
-                        case PROPERTY_ENGINEINERTIA:
-                        case PROPERTY_MAXVELOCITY:
-                        case PROPERTY_BRAKEDECELLERATION:
-                        case PROPERTY_BRAKEBIAS:
-                        case PROPERTY_STEERINGLOCK:
-                        case PROPERTY_TRACTIONLOSS:
-                        case PROPERTY_TRACTIONBIAS:
-                        case PROPERTY_SUSPENSION_FORCELEVEL:
-                        case PROPERTY_SUSPENSION_DAMPING:
-                        case PROPERTY_SUSPENSION_HIGHSPEEDDAMPING:
-                        case PROPERTY_SUSPENSION_UPPER_LIMIT:
-                        case PROPERTY_SUSPENSION_LOWER_LIMIT:
-                        case PROPERTY_SUSPENSION_FRONTREARBIAS:
-                        case PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER:
-                        case PROPERTY_COLLISIONDAMAGEMULTIPLIER:
-                        case PROPERTY_SEATOFFSETDISTANCE:
+                        case HANDLING_MASS:
+                        case HANDLING_TURNMASS:
+                        case HANDLING_DRAGCOEFF:
+                        case HANDLING_TRACTIONMULTIPLIER:
+                        case HANDLING_ENGINEACCELLERATION:
+                        case HANDLING_ENGINEINERTIA:
+                        case HANDLING_MAXVELOCITY:
+                        case HANDLING_BRAKEDECELLERATION:
+                        case HANDLING_BRAKEBIAS:
+                        case HANDLING_STEERINGLOCK:
+                        case HANDLING_TRACTIONLOSS:
+                        case HANDLING_TRACTIONBIAS:
+                        case HANDLING_SUSPENSION_FORCELEVEL:
+                        case HANDLING_SUSPENSION_DAMPING:
+                        case HANDLING_SUSPENSION_HIGHSPEEDDAMPING:
+                        case HANDLING_SUSPENSION_UPPER_LIMIT:
+                        case HANDLING_SUSPENSION_LOWER_LIMIT:
+                        case HANDLING_SUSPENSION_FRONTREARBIAS:
+                        case HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER:
+                        case HANDLING_COLLISIONDAMAGEMULTIPLIER:
+                        case HANDLING_SEATOFFSETDISTANCE:
                             {
                                 float fValue;
                                 if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, fValue ) )
@@ -4577,7 +4577,7 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                                     break;
                                 }
                             }
-                        case PROPERTY_CENTEROFMASS:
+                        case HANDLING_CENTEROFMASS:
                             {
                                 CVector vecValue;
                                 if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, vecValue ) )
@@ -4588,12 +4588,12 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                                     return 3;
                                 }
                             }
-                        case PROPERTY_PERCENTSUBMERGED:
-                        case PROPERTY_MONETARY:
-                        case PROPERTY_HANDLINGFLAGS:
-                        case PROPERTY_MODELFLAGS:
-                        case PROPERTY_NUMOFGEARS:
-                        case PROPERTY_ANIMGROUP:
+                        case HANDLING_PERCENTSUBMERGED:
+                        case HANDLING_MONETARY:
+                        case HANDLING_HANDLINGFLAGS:
+                        case HANDLING_MODELFLAGS:
+                        case HANDLING_NUMOFGEARS:
+                        case HANDLING_ANIMGROUP:
                             {
                                 unsigned int uiValue;
                                 if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, uiValue ) )
@@ -4602,10 +4602,10 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                                     break;
                                 }
                             }
-                        case PROPERTY_DRIVETYPE:
-                        case PROPERTY_ENGINETYPE:
-                        case PROPERTY_HEADLIGHT:
-                        case PROPERTY_TAILLIGHT:
+                        case HANDLING_DRIVETYPE:
+                        case HANDLING_ENGINETYPE:
+                        case HANDLING_HEADLIGHT:
+                        case HANDLING_TAILLIGHT:
                             {
                                 std::string strValue;
                                 if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, eProperty, strValue ) )
@@ -4614,7 +4614,7 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                                     break;
                                 }
                             }
-                        case PROPERTY_ABS:
+                        case HANDLING_ABS:
                             {
                                 bool bValue;
                                 if ( CStaticFunctionDefinitions::GetVehicleHandling ( pVehicle, bValue ) )
@@ -4637,16 +4637,16 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 CHandlingEntry* pEntry = pVehicle->GetHandlingData ();
 
                 lua_newtable ( luaVM );
-                lua_pushnumber ( luaVM, PROPERTY_MASS );
+                lua_pushnumber ( luaVM, HANDLING_MASS );
                 lua_pushnumber ( luaVM, pEntry->GetMass() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_TURNMASS );
+                lua_pushnumber ( luaVM, HANDLING_TURNMASS );
                 lua_pushnumber ( luaVM, pEntry->GetTurnMass() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_DRAGCOEFF );
+                lua_pushnumber ( luaVM, HANDLING_DRAGCOEFF );
                 lua_pushnumber ( luaVM, pEntry->GetDragCoeff() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_CENTEROFMASS );
+                lua_pushnumber ( luaVM, HANDLING_CENTEROFMASS );
                 lua_newtable ( luaVM );
                 CVector vecCenter = pEntry->GetCenterOfMass ();
                 lua_pushnumber ( luaVM, 1 );
@@ -4659,13 +4659,13 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 lua_pushnumber ( luaVM, vecCenter.fZ );
                 lua_settable ( luaVM, -3 );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_PERCENTSUBMERGED );
+                lua_pushnumber ( luaVM, HANDLING_PERCENTSUBMERGED );
                 lua_pushnumber ( luaVM, pEntry->GetPercentSubmerged() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_TRACTIONMULTIPLIER );
+                lua_pushnumber ( luaVM, HANDLING_TRACTIONMULTIPLIER );
                 lua_pushnumber ( luaVM, pEntry->GetTractionMultiplier() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_DRIVETYPE );
+                lua_pushnumber ( luaVM, HANDLING_DRIVETYPE );
                 CHandlingEntry::eDriveType eDriveType=pEntry->GetCarDriveType();
                 if (eDriveType==CHandlingEntry::eDriveType::FWD)
                     lua_pushstring(luaVM,"fwd");
@@ -4676,7 +4676,7 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 else // What the ... (yeah, security)
                     lua_pushnil ( luaVM );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_ENGINETYPE );
+                lua_pushnumber ( luaVM, HANDLING_ENGINETYPE );
                 CHandlingEntry::eEngineType eEngineType=pEntry->GetCarEngineType();
                 if (eEngineType==CHandlingEntry::eEngineType::PETROL)
                     lua_pushstring(luaVM,"petrol");
@@ -4687,73 +4687,73 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 else
                     lua_pushnil ( luaVM );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_NUMOFGEARS );
+                lua_pushnumber ( luaVM, HANDLING_NUMOFGEARS );
                 lua_pushnumber ( luaVM, pEntry->GetNumberOfGears() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_ENGINEACCELLERATION );
+                lua_pushnumber ( luaVM, HANDLING_ENGINEACCELLERATION );
                 lua_pushnumber ( luaVM, pEntry->GetEngineAccelleration() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_ENGINEINERTIA );
+                lua_pushnumber ( luaVM, HANDLING_ENGINEINERTIA );
                 lua_pushnumber ( luaVM, pEntry->GetEngineInertia() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_MAXVELOCITY );
+                lua_pushnumber ( luaVM, HANDLING_MAXVELOCITY );
                 lua_pushnumber ( luaVM, pEntry->GetMaxVelocity() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_BRAKEDECELLERATION );
+                lua_pushnumber ( luaVM, HANDLING_BRAKEDECELLERATION );
                 lua_pushnumber ( luaVM, pEntry->GetBrakeDecelleration() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_BRAKEBIAS );
+                lua_pushnumber ( luaVM, HANDLING_BRAKEBIAS );
                 lua_pushnumber ( luaVM, pEntry->GetBrakeBias() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_ABS );
+                lua_pushnumber ( luaVM, HANDLING_ABS );
                 lua_pushboolean ( luaVM, pEntry->GetABS() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_STEERINGLOCK );
+                lua_pushnumber ( luaVM, HANDLING_STEERINGLOCK );
                 lua_pushnumber ( luaVM, pEntry->GetSteeringLock() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_TRACTIONLOSS );
+                lua_pushnumber ( luaVM, HANDLING_TRACTIONLOSS );
                 lua_pushnumber ( luaVM, pEntry->GetTractionLoss() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_TRACTIONBIAS );
+                lua_pushnumber ( luaVM, HANDLING_TRACTIONBIAS );
                 lua_pushnumber ( luaVM, pEntry->GetTractionBias() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_FORCELEVEL );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_FORCELEVEL );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionForceLevel() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_DAMPING );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_DAMPING );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionDamping() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_HIGHSPEEDDAMPING );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_HIGHSPEEDDAMPING );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionHighSpeedDamping() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_UPPER_LIMIT );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_UPPER_LIMIT );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionUpperLimit() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_LOWER_LIMIT );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_LOWER_LIMIT );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionLowerLimit() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_FRONTREARBIAS );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_FRONTREARBIAS );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionFrontRearBias() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SUSPENSION_ANTIDIVEMULTIPLIER );
+                lua_pushnumber ( luaVM, HANDLING_SUSPENSION_ANTIDIVEMULTIPLIER );
                 lua_pushnumber ( luaVM, pEntry->GetSuspensionAntidiveMultiplier() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_COLLISIONDAMAGEMULTIPLIER );
+                lua_pushnumber ( luaVM, HANDLING_COLLISIONDAMAGEMULTIPLIER );
                 lua_pushnumber ( luaVM, pEntry->GetCollisionDamageMultiplier() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_SEATOFFSETDISTANCE );
+                lua_pushnumber ( luaVM, HANDLING_SEATOFFSETDISTANCE );
                 lua_pushnumber ( luaVM, pEntry->GetSeatOffsetDistance() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_HANDLINGFLAGS );
+                lua_pushnumber ( luaVM, HANDLING_HANDLINGFLAGS );
                 lua_pushnumber ( luaVM, pEntry->GetHandlingFlags() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_MODELFLAGS );
+                lua_pushnumber ( luaVM, HANDLING_MODELFLAGS );
                 lua_pushnumber ( luaVM, pEntry->GetModelFlags() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_MONETARY );
+                lua_pushnumber ( luaVM, HANDLING_MONETARY );
                 lua_pushnumber ( luaVM, pEntry->GetMonetary() );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_HEADLIGHT );
+                lua_pushnumber ( luaVM, HANDLING_HEADLIGHT );
                 CHandlingEntry::eLightType eHeadType=pEntry->GetHeadLight();
                 if (eHeadType==CHandlingEntry::eLightType::LONG)
                     lua_pushstring(luaVM,"long");
@@ -4766,7 +4766,7 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 else
                     lua_pushnil( luaVM );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_TAILLIGHT );
+                lua_pushnumber ( luaVM, HANDLING_TAILLIGHT );
                 CHandlingEntry::eLightType eTailType=pEntry->GetTailLight();
                 if (eTailType==CHandlingEntry::eLightType::LONG)
                     lua_pushstring(luaVM,"long");
@@ -4779,7 +4779,7 @@ int CLuaFunctionDefinitions::GetVehicleHandling ( lua_State* luaVM )
                 else
                     lua_pushnil( luaVM );
                 lua_settable ( luaVM, -3 );
-                lua_pushnumber ( luaVM, PROPERTY_ANIMGROUP );
+                lua_pushnumber ( luaVM, HANDLING_ANIMGROUP );
                 lua_pushnumber ( luaVM, pEntry->GetAnimGroup() );
                 lua_settable ( luaVM, -3 );
                 return 1;
@@ -5932,7 +5932,7 @@ int CLuaFunctionDefinitions::SetVehicleHandling ( lua_State* luaVM )
             eHandlingProperty eProperty = static_cast < eHandlingProperty > ( (int)lua_tonumber ( luaVM, 2 ) );
             if ( eProperty )
             {
-                if ( eProperty == PROPERTY_ABS )
+                if ( eProperty == HANDLING_ABS )
                 {
                     if ( lua_type ( luaVM, 3 ) == LUA_TBOOLEAN )
                     {
@@ -5943,7 +5943,7 @@ int CLuaFunctionDefinitions::SetVehicleHandling ( lua_State* luaVM )
                         }
                     }
                 }
-                else if ( eProperty == PROPERTY_CENTEROFMASS )
+                else if ( eProperty == HANDLING_CENTEROFMASS )
                 {
                     
                 }
