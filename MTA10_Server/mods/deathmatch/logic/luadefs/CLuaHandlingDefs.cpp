@@ -21,7 +21,7 @@ void CLuaHandlingDefs::LoadFunctions ( void )
 
     // Get
     CLuaCFunctions::AddFunction ( "getVehicleHandling", CLuaHandlingDefs::GetVehicleHandling );
-    CLuaCFunctions::AddFunction ( "getModelHandling", CLuaHandlingDefs::GetModelHandling );
+    CLuaCFunctions::AddFunction ( "getOriginalHandling", CLuaHandlingDefs::GetOriginalHandling );
 
     /*
     // Create
@@ -3018,11 +3018,11 @@ int CLuaHandlingDefs::GetVehicleHandling ( lua_State* luaVM )
 }
 
 
-int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
+int CLuaHandlingDefs::GetOriginalHandling ( lua_State* luaVM )
 {
     if ( lua_type ( luaVM, 1 ) == LUA_TNUMBER )
     {
-        eVehicleTypes eModel = static_cast < eVehicleTypes > ( (int) lua_tonumber ( luaVM, 1 ) );
+        eVehicleTypes eModel = static_cast < eVehicleTypes > ( (int)lua_tonumber ( luaVM, 1 ) );
         if ( eModel )
         {
             if ( lua_type ( luaVM, 2 ) == LUA_TNUMBER )
@@ -3113,7 +3113,7 @@ int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
                     return 1;
                 }
                 else
-                    m_pScriptDebugging->LogBadPointer ( luaVM, "getModelHandling", "property", 2 );
+                    m_pScriptDebugging->LogBadPointer ( luaVM, "getOriginalHandling", "property", 2 );
             }
             else if ( lua_type ( luaVM, 2 ) == LUA_TNIL || lua_type ( luaVM, 2 ) == LUA_TNONE )
             {
@@ -3268,13 +3268,13 @@ int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
                 return 1;
             }
             else
-                m_pScriptDebugging->LogBadPointer ( luaVM, "getModelHandling", "property", 2 );
+                m_pScriptDebugging->LogBadPointer ( luaVM, "getOriginalHandling", "property", 2 );
         }
         else
-            m_pScriptDebugging->LogBadPointer ( luaVM, "getModelHandling", "model", 1 );
+            m_pScriptDebugging->LogBadPointer ( luaVM, "getOriginalHandling", "model", 1 );
     }
     else
-        m_pScriptDebugging->LogBadType ( luaVM, "getModelHandling" );
+        m_pScriptDebugging->LogBadType ( luaVM, "getOriginalHandling" );
 
     lua_pushboolean ( luaVM, false );
     return 1;

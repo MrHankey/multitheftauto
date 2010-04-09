@@ -25,7 +25,7 @@ public:
 
     // Get
     static int      GetVehicleHandling                      ( lua_State* luaVM );
-    static int      GetModelHandling                        ( lua_State* luaVM );
+    static int      GetOriginalHandling                     ( lua_State* luaVM );
 
 /*
     // Create/action
