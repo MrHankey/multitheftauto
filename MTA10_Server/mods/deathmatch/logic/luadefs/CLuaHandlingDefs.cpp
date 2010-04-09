@@ -3062,10 +3062,11 @@ int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
                             {
                                 float fValue;
                                 if ( CStaticFunctionDefinitions::GetModelHandling ( eModel, eProperty, fValue ) )
-                                {
                                     lua_pushnumber ( luaVM, fValue );
-                                    break;
-                                }
+                                else
+                                    lua_pushboolean ( luaVM, false );
+
+                                break;
                             }
                         case HANDLING_CENTEROFMASS:
                             {
@@ -3077,6 +3078,10 @@ int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
                                     lua_pushnumber ( luaVM, vecValue.fZ );
                                     return 3;
                                 }
+                                else
+                                    lua_pushboolean ( luaVM, false );
+
+                                break;
                             }
                         case HANDLING_DRIVETYPE:
                         case HANDLING_ENGINETYPE:
@@ -3085,19 +3090,21 @@ int CLuaHandlingDefs::GetModelHandling ( lua_State* luaVM )
                             {
                                 std::string strValue;
                                 if ( CStaticFunctionDefinitions::GetModelHandling ( eModel, eProperty, strValue ) )
-                                {
                                     lua_pushstring ( luaVM, strValue.c_str () );
-                                    break;
-                                }
+                                else
+                                    lua_pushboolean ( luaVM, false );
+
+                                break;
                             }
                         case HANDLING_ABS:
                             {
                                 float fValue;
                                 if ( CStaticFunctionDefinitions::GetModelHandling ( eModel, eProperty, fValue ) )
-                                {
                                     lua_pushboolean ( luaVM, fValue ? true : false );
-                                    break;
-                                }
+                                else
+                                    lua_pushboolean ( luaVM, false );
+
+                                break;
                             }
                         default:
                             lua_pushboolean ( luaVM, false );

@@ -4061,7 +4061,7 @@ bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandl
 
 bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, float &fValue )
 {
-    CHandlingEntry* pEntry = ( CHandlingEntry* ) g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    CHandlingEntry* pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
     if ( GetEntryHandling ( pEntry, eProperty, fValue ) )
         return true;
 
@@ -4071,7 +4071,7 @@ bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandl
 
 bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue )
 {
-    CHandlingEntry* pEntry = ( CHandlingEntry* ) g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    CHandlingEntry* pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
     if ( GetEntryHandling ( pEntry, eProperty, strValue ) )
         return true;
 
@@ -4149,25 +4149,25 @@ bool CStaticFunctionDefinitions::GetEntryHandling ( CHandlingEntry* pEntry, eHan
                 fValue = pEntry->GetSeatOffsetDistance ();
                 break;
             case HANDLING_PERCENTSUBMERGED: // unsigned int
-                fValue = (float) pEntry->GetPercentSubmerged ();
+                fValue = (float)pEntry->GetPercentSubmerged ();
                 break;
             case HANDLING_MONETARY:
-                fValue = (float) pEntry->GetMonetary ();
+                fValue = (float)pEntry->GetMonetary ();
                 break;
             case HANDLING_HANDLINGFLAGS:
-                fValue = (float) pEntry->GetHandlingFlags ();
+                fValue = (float)pEntry->GetHandlingFlags ();
                 break;
             case HANDLING_MODELFLAGS:
-                fValue = (float) pEntry->GetModelFlags ();
+                fValue = (float)pEntry->GetModelFlags ();
                 break;
-            case HANDLING_NUMOFGEARS:
-                fValue = (float) pEntry->GetNumberOfGears ();
+            case HANDLING_NUMOFGEARS: // unsigned char
+                fValue = (float)pEntry->GetNumberOfGears ();
                 break;
             case HANDLING_ANIMGROUP:
-                fValue = (float) pEntry->GetAnimGroup ();
+                fValue = (float)pEntry->GetAnimGroup ();
                 break;
             case HANDLING_ABS: // bool
-                fValue = (float) pEntry->GetABS ();
+                fValue = (float)(pEntry->GetABS () ? 1 : 0);
                 break;
             default:
                 return false;
@@ -4243,6 +4243,9 @@ bool CStaticFunctionDefinitions::GetEntryHandling ( CHandlingEntry* pEntry, eHan
                 return false;
         }
     }
+    else
+        return false;
+
     return true;
 }
 
