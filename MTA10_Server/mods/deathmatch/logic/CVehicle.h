@@ -280,6 +280,7 @@ public:
     void                            SpawnAt                 ( const CVector& vecPosition, const CVector& vecRotation );
     void                            Respawn                 ( void );
 
+    void                            GenerateHandlingData    ( void );
     CHandlingEntry*                 GetHandlingData         ( void )                      { return m_pHandlingEntry; }
     const CHandlingEntry*           GetOriginalHandlingData ( void )                      { return m_pOriginalHandlingEntry; }
 

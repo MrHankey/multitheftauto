@@ -22,9 +22,6 @@ CVehicle::CVehicle ( CVehicleManager* pVehicleManager, CElement* pParent, CXMLNo
     m_pVehicleManager = pVehicleManager;
     m_usModel = usModel;
     m_pUpgrades = new CVehicleUpgrades ( this );
-    m_pOriginalHandlingEntry = g_pGame->GetHandlingManager ()->GetOriginalHandlingData ( static_cast < eVehicleTypes > ( usModel ) );
-    m_pHandlingEntry = g_pGame->GetHandlingManager ()->CreateHandlingData ();
-    m_pHandlingEntry->ApplyHandlingData ( (CHandlingEntry*)m_pOriginalHandlingEntry );
 
     m_iType = CElement::VEHICLE;
     SetTypeName ( "vehicle" );
@@ -88,6 +85,9 @@ CVehicle::CVehicle ( CVehicleManager* pVehicleManager, CElement* pParent, CXMLNo
 
     // Generate a random reg plate
     GenerateRegPlate ();
+
+    // Generate the handling data
+    GenerateHandlingData ();
 }
 
 
@@ -181,9 +181,7 @@ bool CVehicle::ReadSpecialData ( void )
         if ( CVehicleManager::IsValidModel ( iTemp ) )
         {
             // Remember it and generate a new random color
-            m_usModel = static_cast < unsigned short > ( iTemp );
-            m_Color = RandomizeColor ();
-            GetInitialDoorStates ( m_ucDoorStates );
+            SetModel ( static_cast < unsigned short > ( iTemp ) );
 
             m_usAdjustableProperty = 0;
         }
@@ -360,6 +358,9 @@ void CVehicle::SetModel ( unsigned short usModel )
         m_usModel = usModel;
         RandomizeColor ();
         GetInitialDoorStates ( m_ucDoorStates );
+
+        // Generate new handling data to fit the vehicle
+        GenerateHandlingData ();
     }
 }
 
@@ -677,4 +678,12 @@ void CVehicle::GetInitialDoorStates ( unsigned char * pucDoorStates )
         default:
             memset ( pucDoorStates, DT_DOOR_INTACT, 6 );
     }
+}
+
+
+void CVehicle::GenerateHandlingData ()
+{
+    m_pOriginalHandlingEntry = g_pGame->GetHandlingManager ()->GetOriginalHandlingData ( static_cast < eVehicleTypes > ( m_usModel ) );
+    m_pHandlingEntry = g_pGame->GetHandlingManager ()->CreateHandlingData ();
+    m_pHandlingEntry->ApplyHandlingData ( (CHandlingEntry*)m_pOriginalHandlingEntry );
 }
