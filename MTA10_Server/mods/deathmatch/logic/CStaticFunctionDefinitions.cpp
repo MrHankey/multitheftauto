@@ -4047,9 +4047,14 @@ bool CStaticFunctionDefinitions::GetVehicleHandling ( CVehicle* pVehicle, eHandl
 }
 
 
-bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue )
+bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue, bool origin )
 {
-    const CHandlingEntry* pEntry = g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    CHandlingEntry* pEntry = new CHandlingEntry ();
+    if ( origin )
+        pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    else
+        pEntry = g_pGame->GetHandlingManager()->GetModelHandlingData( eModel );
+
     if ( eProperty == HANDLING_CENTEROFMASS )
     {
         vecValue = pEntry->GetCenterOfMass ();
@@ -4059,9 +4064,14 @@ bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandl
 }
 
 
-bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, float &fValue )
+bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, float &fValue, bool origin )
 {
-    CHandlingEntry* pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    CHandlingEntry* pEntry = new CHandlingEntry ();
+    if ( origin )
+        pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    else
+        pEntry = g_pGame->GetHandlingManager()->GetModelHandlingData( eModel );
+
     if ( GetEntryHandling ( pEntry, eProperty, fValue ) )
         return true;
 
@@ -4069,9 +4079,14 @@ bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandl
 }
 
 
-bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue )
+bool CStaticFunctionDefinitions::GetModelHandling ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue, bool origin )
 {
-    CHandlingEntry* pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    CHandlingEntry* pEntry = new CHandlingEntry ();
+    if ( origin )
+        pEntry = (CHandlingEntry*)g_pGame->GetHandlingManager()->GetOriginalHandlingData( eModel );
+    else
+        pEntry = g_pGame->GetHandlingManager()->GetModelHandlingData( eModel );
+
     if ( GetEntryHandling ( pEntry, eProperty, strValue ) )
         return true;
 

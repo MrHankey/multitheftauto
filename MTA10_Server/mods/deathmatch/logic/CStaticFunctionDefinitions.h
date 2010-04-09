@@ -249,9 +249,9 @@ public:
     static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, CVector& vecValue );
     static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, float& fValue );
     static bool                 GetVehicleHandling                  ( CVehicle* pVehicle, eHandlingProperty eProperty, std::string& strValue );
-    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue );
-    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, float& fValue );
-    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, CVector& vecValue, bool origin = false );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, float& fValue, bool origin = false );
+    static bool                 GetModelHandling                    ( eVehicleTypes eModel, eHandlingProperty eProperty, std::string& strValue, bool origin = false );
     static bool                 GetEntryHandling                    ( CHandlingEntry* pEntry, eHandlingProperty eProperty, float& fValue );
     static bool                 GetEntryHandling                    ( CHandlingEntry* pEntry, eHandlingProperty eProperty, std::string& strValue );
 

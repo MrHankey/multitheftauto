@@ -21,11 +21,14 @@ class CHandlingManager;
 class CHandlingManager
 {
 public:
-                                CHandlingManager              ( void );
-                                ~CHandlingManager             ( void );
+                                CHandlingManager                ( void );
+                                ~CHandlingManager               ( void );
 
     CHandlingEntry*             CreateHandlingData              ( void );
 
+    bool                        ApplyHandlingData               ( eVehicleTypes eModel, CHandlingEntry* pEntry );
+
+    CHandlingEntry*             GetModelHandlingData            ( eVehicleTypes eModel );
     const CHandlingEntry*       GetOriginalHandlingData         ( eVehicleTypes eModel );
 
     eHandlingTypes              GetHandlingID                   ( eVehicleTypes eModel );
@@ -36,8 +39,11 @@ private:
     // Original handling data unaffected by handling.cfg changes
     static tHandlingData        m_OriginalHandlingData [HT_MAX];
 
-    // Our wrapper classes for the classes GTA use and the original data
+    // Array with the original handling entries
     static CHandlingEntry*      m_pOriginalEntries [HT_MAX];
+
+    // Array with the model handling entries
+    static CHandlingEntry*      m_pModelEntries [VT_MAX];
 };
 
 #endif

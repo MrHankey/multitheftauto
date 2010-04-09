@@ -13,19 +13,10 @@
 
 #include "StdInc.h"
 
-#define USE_GTASA_HANDLING          FALSE
-
-#define ARRAY_HANDLINGDATA          0xC2B9DC
-
-#define Func_PostLoadHandlingCfg    0x5BFA90
-#define Func_Calculate              0x6F5080
-#define Func_GetOriginalHandling    0x6F52D0
-#define Func_GetPreviousHandling    0x6F5300
-#define Var_fTurnMassMultiplier     0x858B8C
-#define Var_fBasicDragCoeff         0x858C58
-
 tHandlingData CHandlingManager::m_OriginalHandlingData [HT_MAX];
-CHandlingEntry* CHandlingManager::m_pOriginalEntries [HT_MAX];  
+
+CHandlingEntry* CHandlingManager::m_pOriginalEntries [HT_MAX];
+CHandlingEntry* CHandlingManager::m_pModelEntries [VT_MAX];
 
 
 CHandlingManager::CHandlingManager ( void )
@@ -33,37 +24,56 @@ CHandlingManager::CHandlingManager ( void )
     // Initialize all default handlings
     InitializeDefaultHandlings ();
 
-    // Create a handling entry for every original handling data.
+    // Create a handling entry for every original handling data
     for ( int i = 0; i < HT_MAX; i++ )
     {
         m_pOriginalEntries [i] = new CHandlingEntry ( &m_OriginalHandlingData [i] );
     }
 
-    // Install load handling.cfg hook. We let GTA perform its normal loading, then we
-    // replace all the values by with our own default and let GTA calculate all the handling
-    // stuff again. We do it this way because GTA will crash later on if we don't, I think
-    // it does some additional initializing that GTA requires other than initing all the
-    // handlings.
-    //HookInstall ( Func_PostLoadHandlingCfg, (DWORD) Hook_LoadHandlingCfg, 15 );
-
-    // Uncomment this to dump
-    //HookInstall ( Func_Calculate, (DWORD) Hook_Calculate, 11 );
+    // Create a handling entry for every model
+    for ( int i = 0; i < VT_MAX; i++ )
+    {
+        m_pModelEntries [i] = new CHandlingEntry ( &m_OriginalHandlingData [GetHandlingID( (eVehicleTypes)i )] );
+    }
 }
 
 
 CHandlingManager::~CHandlingManager ( void )
 {
-    // // Destroy all original handling entries
+    // Destroy all original handling entries
     for ( int i = 0; i < HT_MAX; i++ )
     {
         delete m_pOriginalEntries [i];
     }
+
+     // Destroy all model handling entries
+    for ( int i = 0; i < VT_MAX; i++ )
+    {
+        delete m_pModelEntries [i];
+    }
 }
+
 
 CHandlingEntry* CHandlingManager::CreateHandlingData ( void )
 {
     return new CHandlingEntry ();
 }
+
+
+bool CHandlingManager::ApplyHandlingData ( eVehicleTypes eModel, CHandlingEntry* pEntry )
+{
+    // Within range?
+    if ( eModel >= 400 && eModel < VT_MAX )
+    {
+        // Apply the data and return success
+        m_pModelEntries [eModel]->ApplyHandlingData ( pEntry );
+        return true;
+    }
+
+    // Failed
+    return false;
+}
+
 
 const CHandlingEntry* CHandlingManager::GetOriginalHandlingData ( eVehicleTypes eModel )
 {
@@ -76,6 +86,20 @@ const CHandlingEntry* CHandlingManager::GetOriginalHandlingData ( eVehicleTypes 
 
     return NULL;
 }
+
+
+CHandlingEntry* CHandlingManager::GetModelHandlingData ( eVehicleTypes eModel )
+{
+    // Within range?
+    if ( eModel >= 400 && eModel < VT_MAX )
+    {
+        // Return it
+        return m_pModelEntries [eModel];
+    }
+
+    return NULL;
+}
+
 
 // Return the handling manager id
 eHandlingTypes  CHandlingManager::GetHandlingID ( eVehicleTypes eModel )
