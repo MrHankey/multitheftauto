@@ -282,7 +282,6 @@ public:
 
     void                            GenerateHandlingData    ( void );
     CHandlingEntry*                 GetHandlingData         ( void )                      { return m_pHandlingEntry; }
-    const CHandlingEntry*           GetOriginalHandlingData ( void )                      { return m_pOriginalHandlingEntry; }
 
 private:
     class CVehicleManager*          m_pVehicleManager;
@@ -351,7 +350,6 @@ private:
     bool                            m_bLandingGearDown;
     unsigned short                  m_usAdjustableProperty;
 
-    const CHandlingEntry*           m_pOriginalHandlingEntry;
     CHandlingEntry*                 m_pHandlingEntry;
 
 public: // 'Safe' variables (that have no need for accessors)
