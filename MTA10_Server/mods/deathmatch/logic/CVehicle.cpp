@@ -683,5 +683,5 @@ void CVehicle::GetInitialDoorStates ( unsigned char * pucDoorStates )
 
 void CVehicle::GenerateHandlingData ()
 {
-    m_pHandlingEntry = (CHandlingEntry*)g_pGame->GetHandlingManager ()->GetOriginalHandlingData ( static_cast < eVehicleTypes > ( m_usModel ) );
+    m_pHandlingEntry = g_pGame->GetHandlingManager ()->GetModelHandlingData ( static_cast < eVehicleTypes > ( m_usModel ) );
 }
